@@ -8,4 +8,30 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        hmr: {
+            host: 'localhost',
+        },
+        watch: {
+            usePolling: true,
+            interval: 500,
+            ignored: [
+                '**/node_modules/**',
+                '**/vendor/**',
+                '**/storage/**',
+                '**/public/**',
+                '**/resources/views/**',
+                '**/app/**',
+                '**/config/**',
+                '**/database/**',
+                '**/routes/**',
+                '**/tests/**',
+                '**/docs/**',
+                '**/scripts/**',
+                '**/bootstrap/**',
+            ],
+        },
+    },
 });

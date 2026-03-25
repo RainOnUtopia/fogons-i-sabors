@@ -1,122 +1,212 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="h5 mb-0 text-dark">{{ __('admin.users_list') }}</h2>
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary btn-sm">{{ __('admin.users.back') }}</a>
-        </div>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ __('admin.users_list') }}</title>
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    </head>
+    <body class="bg-light">
+        <div class="users-container">
+            <!-- Header superior -->
+            <div class="users-header">
+                <div class="users-header-content">
+                    <h1 class="users-page-title">Membres de la Comunitat</h1>
+                </div>
+                <div class="users-header-actions">
+                    <a href="{{ route('admin.dashboard') }}" class="users-dashboard-btn">
+                        <i class="bi bi-arrow-left"></i>
+                        Panell Admin
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="users-logout-btn">
+                            <i class="bi bi-box-arrow-right"></i>
+                            {{ __('auth.logout') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
 
+            <!-- Missatges d'estat-->
             @if (session('status') === 'user-updated')
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ __('admin.users.updated_successfully') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="users-alert-container">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ __('admin.users.updated_successfully') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 </div>
             @endif
 
-            <form method="GET" action="{{ route('admin.users.index') }}" class="mb-4">
-                <div class="row g-2">
-                    <div class="col-md-4">
-                        <input type="text" name="search" class="form-control" placeholder="{{ __('admin.users.search_placeholder') }}" value="{{ request('search') }}">
+            <!-- Tarjeta principal dels usuaris -->
+            <div class="users-card">
+                <!-- Header de la tarjeta amb cerca i filtres -->
+                <div class="users-card-header">
+                    <h2 class="users-card-title">Llista d'Usuaris</h2>
+                    
+                    <div class="users-card-controls">
+                        <!-- Cerca -->
+                        <form method="GET" action="{{ route('admin.users.index') }}" class="users-search-form" id="usersSearchForm">
+                            <input type="hidden" name="sort" value="{{ request('sort', 'name') }}">
+                            <input type="hidden" name="direction" value="{{ request('direction', 'asc') }}">
+                            <input type="hidden" name="role" value="{{ request('role') }}">
+                            <input type="hidden" name="status" value="{{ request('status') }}">
+                            
+                            <div class="users-search-wrapper">
+                                <i class="bi bi-search"></i>
+                                <input 
+                                    type="text" 
+                                    name="search" 
+                                    class="users-search-input" 
+                                    placeholder="Cercar usuari..." 
+                                    value="{{ request('search') }}"
+                                    id="searchInput">
+                            </div>
+                        </form>
+
+                        <!-- Botó de filtre -->
+                        <button class="users-filter-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#filtersOffcanvas">
+                            <i class="bi bi-funnel"></i>
+                        </button>
                     </div>
-                    <div class="col-md-3">
-                        <select name="role" class="form-select">
-                            <option value="">{{ __('admin.users.filter_all_roles') }}</option>
-                            <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>User</option>
+                </div>
+
+                <!-- Taula d'usuaris -->
+                <div class="users-table-wrapper">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                @php
+                                    $buildSortUrl = function($column) {
+                                        $currentSort = request('sort', 'name');
+                                        $currentDirection = request('direction', 'asc');
+                                        $newDirection = ($currentSort === $column && $currentDirection === 'asc') ? 'desc' : 'asc';
+                                        return request()->fullUrlWithQuery(['sort' => $column, 'direction' => $newDirection]);
+                                    };
+                                    $sortIndicator = function($column) {
+                                        if (request('sort', 'name') === $column) {
+                                            return request('direction', 'asc') === 'asc' ? '↑' : '↓';
+                                        }
+                                        return '';
+                                    };
+                                @endphp
+                                <th class="users-table-header">
+                                    <a href="{{ $buildSortUrl('name') }}" class="users-table-header-link">
+                                        USUARI {{ $sortIndicator('name') }}
+                                    </a>
+                                </th>
+                                <th class="users-table-header">
+                                    <a href="{{ $buildSortUrl('is_active') }}" class="users-table-header-link">
+                                        ESTAT {{ $sortIndicator('is_active') }}
+                                    </a>
+                                </th>
+                                <th class="users-table-header">
+                                    <a href="{{ $buildSortUrl('role') }}" class="users-table-header-link">
+                                        ROL {{ $sortIndicator('role') }}
+                                    </a>
+                                </th>
+                                <th class="users-table-header">RECEPTES</th>
+                                <th class="users-table-header">ACCIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($users as $user)
+                                <tr class="users-table-row">
+                                    <!-- Columna Usuari -->
+                                    <td class="users-table-cell users-user-cell">
+                                        <div class="users-user-info">
+                                            <div class="users-avatar">{{ substr($user->name, 0, 1) }}</div>
+                                            <div class="users-user-details">
+                                                <div class="users-user-name">{{ $user->name }}</div>
+                                                <div class="users-user-email">{{ $user->email }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <!-- Columna Estat -->
+                                    <td class="users-table-cell">
+                                        @if($user->is_active)
+                                            <span class="users-badge users-badge-active">ACTIU</span>
+                                        @else
+                                            <span class="users-badge users-badge-inactive">INACTIU</span>
+                                        @endif
+                                    </td>
+                                    <!-- Columna Rol -->
+                                    <td class="users-table-cell">
+                                        <span class="users-role-text">{{ ucfirst($user->role) }}</span>
+                                    </td>
+                                    <!-- Columna Receptes -->
+                                    <td class="users-table-cell">
+                                        <span class="users-recipes-count">{{ $user->recipes_count ?? 0 }}</span>
+                                    </td>
+                                    <!-- Columna Accions -->
+                                    <td class="users-table-cell users-actions-cell">
+                                        <a href="{{ route('admin.users.edit', $user) }}" class="users-edit-btn">
+                                            Editar
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginació -->
+                <div class="users-pagination-wrapper">
+                    {{ $users->links() }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Offcanvas de filtres -->
+        <div class="offcanvas offcanvas-end users-filters-offcanvas" tabindex="-1" id="filtersOffcanvas">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Filtres</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form method="GET" action="{{ route('admin.users.index') }}" class="users-filters-form">
+                    <input type="hidden" name="sort" value="{{ request('sort', 'name') }}">
+                    <input type="hidden" name="direction" value="{{ request('direction', 'asc') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+
+                    <!-- Filtre per Rol -->
+                    <div class="users-filter-group">
+                        <label class="users-filter-label">Rol</label>
+                        <select name="role" class="users-filter-select">
+                            <option value="">Tots els rols</option>
+                            <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>Usuari</option>
                             <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <select name="status" class="form-select">
-                            <option value="">{{ __('admin.users.filter_all_statuses') }}</option>
-                            <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>{{ __('admin.users.active') }}</option>
-                            <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>{{ __('admin.users.inactive') }}</option>
+
+                    <!-- Filtre per Estat -->
+                    <div class="users-filter-group">
+                        <label class="users-filter-label">Estat</label>
+                        <select name="status" class="users-filter-select">
+                            <option value="">Tots els estats</option>
+                            <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Actiu</option>
+                            <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactiu</option>
                         </select>
                     </div>
-                    <div class="col-md-2 d-flex gap-2">
-                        <input type="hidden" name="sort" value="{{ request('sort', 'name') }}">
-                        <input type="hidden" name="direction" value="{{ request('direction', 'asc') }}">
-                        <button type="submit" class="btn btn-primary w-100">{{ __('admin.users.filter_button') }}</button>
+
+                    <!-- Botons d'acció -->
+                    <div class="users-filter-actions">
+                        <button type="submit" class="users-filter-apply-btn">Aplicar Filtres</button>
                         @if(request()->anyFilled(['search', 'role', 'status']))
-                            <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">{{ __('admin.users.reset_button') }}</a>
+                            <a href="{{ route('admin.users.index') }}" class="users-filter-reset-btn">Netejar</a>
                         @endif
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+        </div>
 
-            <div class="card shadow-sm">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    @php
-                                        // Helper func for sorting
-                                        $buildSortUrl = function($column) {
-                                            $currentSort = request('sort', 'name');
-                                            $currentDirection = request('direction', 'asc');
-                                            $newDirection = ($currentSort === $column && $currentDirection === 'asc') ? 'desc' : 'asc';
-                                            return request()->fullUrlWithQuery(['sort' => $column, 'direction' => $newDirection]);
-                                        };
-                                        $sortIndicator = function($column) {
-                                            if (request('sort', 'name') === $column) {
-                                                return request('direction', 'asc') === 'asc' ? '↑' : '↓';
-                                            }
-                                            return '';
-                                        };
-                                    @endphp
-                                    <th>
-                                        <a href="{{ $buildSortUrl('name') }}" class="text-decoration-none text-dark">
-                                            {{ __('auth.name') }} {{ $sortIndicator('name') }}
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a href="{{ $buildSortUrl('email') }}" class="text-decoration-none text-dark">
-                                            {{ __('auth.email') }} {{ $sortIndicator('email') }}
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a href="{{ $buildSortUrl('role') }}" class="text-decoration-none text-dark">
-                                            {{ __('admin.users.role') }} {{ $sortIndicator('role') }}
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a href="{{ $buildSortUrl('is_active') }}" class="text-decoration-none text-dark">
-                                            {{ __('admin.users.status') }} {{ $sortIndicator('is_active') }}
-                                        </a>
-                                    </th>
-                                    <th class="text-end">{{ __('admin.users.actions') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($users as $user)
-                                    <tr>
-                                        <td class="align-middle">{{ $user->name }}</td>
-                                        <td class="align-middle">{{ $user->email }}</td>
-                                        <td class="align-middle">
-                                            <span class="badge bg-{{ $user->role === 'admin' ? 'danger' : 'primary' }}">
-                                                {{ ucfirst($user->role) }}
-                                            </span>
-                                        </td>
-                                        <td class="align-middle">
-                                            @if($user->is_active)
-                                                <span class="badge bg-success">{{ __('admin.users.active') }}</span>
-                                            @else
-                                                <span class="badge bg-secondary">{{ __('admin.users.inactive') }}</span>
-                                            @endif
-                                        </td>
-                                        <td class="align-middle text-end">
-                                            <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-primary">
-                                                {{ __('admin.users.edit_title') }}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-4">
-                {{ $users->links() }}
-            </div>
-</x-app-layout>
+        <script>
+            // Auto-submit search form
+            document.getElementById('searchInput')?.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('usersSearchForm').submit();
+                }
+            });
+        </script>
+    </body>
+</html>

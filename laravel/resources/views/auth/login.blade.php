@@ -1,59 +1,113 @@
-<x-guest-layout>
-    @if (session('status'))
-        <div class="alert alert-success" role="alert">
-            {{ session('status') }}
-        </div>
-    @endif
+@extends('layouts.app')
 
-    <h4 class="mb-4 text-center">{{ __('auth.login_title') }}</h4>
-
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div class="mb-3">
-            <label for="email" class="form-label">{{ __('auth.email') }}</label>
-            <input id="email" class="form-control @error('email') is-invalid @enderror" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
-            @error('email')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+@section('content')
+<div class="login-container">
+    <div class="login-card">
+        <!-- Icona del Header -->
+        <div class="login-icon-header">
+            <div class="login-icon">
+                <i class="bi bi-lock-fill"></i>
+            </div>
         </div>
 
-        <!-- Password -->
-        <div class="mb-3">
-            <label for="password" class="form-label">{{ __('auth.password') }}</label>
-            <input id="password" class="form-control @error('password') is-invalid @enderror" type="password" name="password" required autocomplete="current-password">
-            @error('password')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Remember Me -->
-        <div class="mb-3 form-check">
-            <input id="remember_me" type="checkbox" class="form-check-input" name="remember">
-            <label class="form-check-label" for="remember_me">
-                {{ __('auth.remember_password') }}
-            </label>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            @if (Route::has('password.request'))
-                <a class="text-decoration-none small" href="{{ route('password.request') }}">
-                    {{ __('auth.forgot_password') }}
-                </a>
+        <!-- Contigut de la Tarjeta -->
+        <div class="login-card-content">
+            {{-- Estat de l'alerta --}}
+            @if (session('status'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('status') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             @endif
 
-            <button type="submit" class="btn btn-primary">
-                {{ __('auth.login_button') }}
-            </button>
+            <!-- Títol -->
+            <h1 class="login-title">Benvingut</h1>
+            
+            <!-- Descripció -->
+            <p class="login-description">Inicia sessió amb el teu compte</p>
+
+            <!-- Formulari Accedir -->
+            <form method="POST" action="{{ route('login') }}" class="login-form">
+                @csrf
+
+                <!-- Email -->
+                <div class="login-form-group">
+                    <label for="email" class="login-label">{{ __('auth.email') }}</label>
+                    <div class="login-input-wrapper">
+                        <span class="login-input-icon">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input 
+                            id="email" 
+                            class="login-input @error('email') is-invalid @enderror" 
+                            type="email" 
+                            name="email" 
+                            value="{{ old('email') }}" 
+                            required 
+                            autofocus 
+                            autocomplete="username"
+                            placeholder="correu@exemple.com">
+                    </div>
+                    @error('email')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Contrasenya -->
+                <div class="login-form-group">
+                    <label for="password" class="login-label">{{ __('auth.password') }}</label>
+                    <div class="login-input-wrapper">
+                        <span class="login-input-icon">
+                            <i class="bi bi-key"></i>
+                        </span>
+                        <input 
+                            id="password" 
+                            class="login-input @error('password') is-invalid @enderror" 
+                            type="password" 
+                            name="password" 
+                            required 
+                            autocomplete="current-password"
+                            placeholder="••••••••">
+                    </div>
+                    @error('password')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Recorda'm -->
+                <div class="login-remember">
+                    <input id="remember_me" type="checkbox" class="form-check-input" name="remember">
+                    <label class="form-check-label" for="remember_me">
+                        {{ __('auth.remember_password') }}
+                    </label>
+                </div>
+
+                <!-- Contrasenya Oblidada i Enviar -->
+                <div class="login-footer-actions">
+                    <button type="submit" class="login-btn">
+                        {{ __('auth.login_button') }}
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+                @if (Route::has('password.request'))
+                    <div class="login-forgot-wrapper">
+                        <a class="login-forgot-link" href="{{ route('password.request') }}">
+                            Has oblidat la teva contrasenya?
+                        </a>
+                    </div>
+                @endif
+            </form>
+
+            <!-- Link Registrar-se -->
+            @if (Route::has('register'))
+                <div class="login-register-footer">
+                    <span class="login-register-text">No tens compte?</span>
+                    <a class="login-register-link" href="{{ route('register') }}">
+                        Registra't
+                    </a>
+                </div>
+            @endif
         </div>
-        
-        @if (Route::has('register'))
-        <div class="text-center mt-3">
-            <a class="text-decoration-none small" href="{{ route('register') }}">
-                {{ __('auth.register_link') }}
-            </a>
-        </div>
-        @endif
-    </form>
-</x-guest-layout>
+    </div>
+</div>
+@endsection

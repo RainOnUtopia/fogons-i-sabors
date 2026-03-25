@@ -15,13 +15,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-light">
-        <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
-            <div class="mb-4">
-                <!-- Logo eliminat temporalment -->
-            </div>
-
-            <div class="card shadow-sm w-100" style="max-width: 400px;">
-                <div class="card-body p-4">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-card-content">
                     {{ $slot }}
                 </div>
             </div>

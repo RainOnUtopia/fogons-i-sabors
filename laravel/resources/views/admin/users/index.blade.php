@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ __('admin.users_list') }}</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="bg-light">
+{{-- Vista de la llista d'usuaris del sistema — Estén layouts/admin.blade.php --}}
+@extends('layouts.admin')
+
+@section('title', __('admin.users_list'))
+
+@section('content')
         <div class="users-container">
             <!-- Header superior -->
             <div class="users-header">
@@ -38,9 +35,9 @@
                 </div>
             @endif
 
-            <!-- Tarjeta principal dels usuaris -->
+            <!-- Targeta principal dels usuaris -->
             <div class="users-card">
-                <!-- Header de la tarjeta amb cerca i filtres -->
+                <!-- Header de la Targeta amb cerca i filtres -->
                 <div class="users-card-header">
                     <h2 class="users-card-title">Llista d'Usuaris</h2>
                     
@@ -76,33 +73,19 @@
                     <table class="users-table">
                         <thead>
                             <tr>
-                                @php
-                                    $buildSortUrl = function($column) {
-                                        $currentSort = request('sort', 'name');
-                                        $currentDirection = request('direction', 'asc');
-                                        $newDirection = ($currentSort === $column && $currentDirection === 'asc') ? 'desc' : 'asc';
-                                        return request()->fullUrlWithQuery(['sort' => $column, 'direction' => $newDirection]);
-                                    };
-                                    $sortIndicator = function($column) {
-                                        if (request('sort', 'name') === $column) {
-                                            return request('direction', 'asc') === 'asc' ? '↑' : '↓';
-                                        }
-                                        return '';
-                                    };
-                                @endphp
                                 <th class="users-table-header">
-                                    <a href="{{ $buildSortUrl('name') }}" class="users-table-header-link">
-                                        USUARI {{ $sortIndicator('name') }}
+                                    <a href="{{ $sortData['name']['url'] }}" class="users-table-header-link">
+                                        USUARI {{ $sortData['name']['indicator'] }}
                                     </a>
                                 </th>
                                 <th class="users-table-header">
-                                    <a href="{{ $buildSortUrl('is_active') }}" class="users-table-header-link">
-                                        ESTAT {{ $sortIndicator('is_active') }}
+                                    <a href="{{ $sortData['is_active']['url'] }}" class="users-table-header-link">
+                                        ESTAT {{ $sortData['is_active']['indicator'] }}
                                     </a>
                                 </th>
                                 <th class="users-table-header">
-                                    <a href="{{ $buildSortUrl('role') }}" class="users-table-header-link">
-                                        ROL {{ $sortIndicator('role') }}
+                                    <a href="{{ $sortData['role']['url'] }}" class="users-table-header-link">
+                                        ROL {{ $sortData['role']['indicator'] }}
                                     </a>
                                 </th>
                                 <th class="users-table-header">RECEPTES</th>
@@ -115,7 +98,16 @@
                                     <!-- Columna Usuari -->
                                     <td class="users-table-cell users-user-cell">
                                         <div class="users-user-info">
-                                            <div class="users-avatar">{{ substr($user->name, 0, 1) }}</div>
+                                            <div class="users-avatar">
+                                                @if($user->avatar)
+                                                    <img
+                                                        src="{{ asset('storage/' . $user->avatar) . '?v=' . $user->updated_at?->timestamp }}"
+                                                        alt="Avatar de {{ $user->name }}"
+                                                    >
+                                                @else
+                                                    {{ substr($user->name, 0, 1) }}
+                                                @endif
+                                            </div>
                                             <div class="users-user-details">
                                                 <div class="users-user-name">{{ $user->name }}</div>
                                                 <div class="users-user-email">{{ $user->email }}</div>
@@ -208,5 +200,4 @@
                 }
             });
         </script>
-    </body>
-</html>
+@endsection

@@ -6,6 +6,10 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Middleware que verifica que l'usuari autenticat té el rol 'admin'.
+ * S'aplica a totes les rutes del grup /admin.
+ */
 class CheckAdminRole
 {
     /**

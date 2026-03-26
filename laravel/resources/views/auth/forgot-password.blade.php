@@ -1,12 +1,12 @@
 <x-guest-layout>
-    <!-- Icona del Header -->
+    <!-- ICONA DEL HEADER -->
     <div class="login-icon-header">
         <div class="login-icon">
             <i class="bi bi-envelope-fill"></i>
         </div>
     </div>
 
-    {{-- Estat de l'alerta --}}
+    {{-- ESTAT DE L'ALERTA --}}
     @if (session('status'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('status') }}
@@ -14,17 +14,17 @@
         </div>
     @endif
 
-    <!-- Títol -->
+    <!-- TÍTOL -->
     <h1 class="login-title">Has oblidat la teva contrasenya?</h1>
 
-    <!-- Descripció -->
+    <!-- DESCRIPCIÓ -->
     <p class="login-description">{{ __('auth.forgot_password_intro') }}</p>
 
-    <!-- Formulari Recuperar Contrasenya -->
+    <!-- FORMULARI RECUPERAR CONTRASENYA -->
     <form method="POST" action="{{ route('password.email') }}" class="login-form">
         @csrf
 
-        <!-- Email -->
+        <!-- EMAIL -->
         <div class="login-form-group">
             <label for="email" class="login-label">{{ __('auth.email') }}</label>
             <div class="login-input-wrapper">
@@ -47,8 +47,8 @@
             @enderror
         </div>
 
-        <!-- Botó Enviar -->
-        <div class="login-footer-actions" style="justify-content: center;">
+        <!-- BOTÓ ENVIAR -->
+        <div class="login-footer-actions login-center-actions">
             <button type="submit" class="login-btn">
                 {{ __('auth.password_reset_link_button') }}
                 <i class="bi bi-arrow-right"></i>
@@ -56,7 +56,7 @@
         </div>
     </form>
 
-    <!-- Link Accedir -->
+    <!-- LINK ACCEDIR -->
     <div class="login-register-footer">
         <span class="login-register-text">Recordes la contrasenya?</span>
         <a class="login-register-link" href="{{ route('login') }}">

@@ -1,10 +1,585 @@
-@import 'bootstrap-icons/font/bootstrap-icons.css';
-@import 'bootstrap/dist/css/bootstrap.min.css';
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* ================================================================
+   1. VARIABLES GLOBALS CSS
+   Paleta de colors, ombres, radis i tipografia reutilitzables
+   ================================================================ */
+:root {
+    /* Colors principals */
+    --primary: #be3144;
+    --primary-hover: #a82838;
+    --background: #f4efea;
+    --card: #ffffff;
+    --input-bg: #f3f3f3;
+    --text-main: #2d2d2d;
+    --text-secondary: #7a7a7a;
+    --text-muted: #9a9a9a;
+    --border: #e8e8e8;
+    --border-input: #d0d0d0;
+
+    /* Ombres */
+    --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --shadow-primary-hover: 0 6px 20px rgba(190, 49, 68, 0.25);
+    --shadow-primary-active: 0 2px 8px rgba(190, 49, 68, 0.15);
+
+    /* Radis */
+    --radius-card: 24px;
+    --radius-btn: 12px;
+    --radius-input: 12px;
+
+    /* Tipografia */
+    --font-serif: "Georgia", "Garamond", serif;
+
+    /* Patró de graella de fons */
+    --grid-bg:
+        linear-gradient(
+            0deg,
+            transparent 24%,
+            rgba(200, 200, 200, 0.05) 25%,
+            rgba(200, 200, 200, 0.05) 26%,
+            transparent 27%,
+            transparent 74%,
+            rgba(200, 200, 200, 0.05) 75%,
+            rgba(200, 200, 200, 0.05) 76%,
+            transparent 77%,
+            transparent
+        ),
+        linear-gradient(
+            90deg,
+            transparent 24%,
+            rgba(200, 200, 200, 0.05) 25%,
+            rgba(200, 200, 200, 0.05) 26%,
+            transparent 27%,
+            transparent 74%,
+            rgba(200, 200, 200, 0.05) 75%,
+            rgba(200, 200, 200, 0.05) 76%,
+            transparent 77%,
+            transparent
+        );
+    --grid-bg-size: 50px 50px;
+}
+
+/* ================================================================
+   2. RESET GLOBAL
+   ================================================================ */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.body-reset {
+    margin: 0;
+    padding: 0;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* ================================================================
+   3. CLASSES REUTILITZABLES
+   ================================================================ */
+
+/* Fons amb patró de graella */
+.page-grid-bg {
+    background-color: var(--background);
+    background-image: var(--grid-bg);
+    background-size: var(--grid-bg-size);
+}
+
+/* Targeta reutilitzable del sistema */
+.card-ui {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+}
+
+/* ----------------------------------------------------------------
+   Botó principal d'acció
+   ---------------------------------------------------------------- */
+.btn-primary-ui,
+.admin-logout-btn,
+.users-logout-btn,
+.edit-logout-btn {
+    height: 44px;
+    padding: 0 20px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    text-decoration: none;
+}
+.btn-primary-ui:hover,
+.admin-logout-btn:hover,
+.users-logout-btn:hover,
+.edit-logout-btn:hover {
+    background-color: var(--primary-hover);
+    box-shadow: var(--shadow-primary-hover);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+.btn-primary-ui:active,
+.admin-logout-btn:active,
+.users-logout-btn:active,
+.edit-logout-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-primary-active);
+}
+
+/* ----------------------------------------------------------------
+   Botó secundari (retorn, cancel·lació)
+   ---------------------------------------------------------------- */
+.btn-secondary-ui,
+.users-dashboard-btn,
+.edit-dashboard-btn {
+    height: 44px;
+    padding: 0 16px;
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+.btn-secondary-ui:hover,
+.users-dashboard-btn:hover,
+.edit-dashboard-btn:hover {
+    background-color: var(--input-bg);
+    border-color: var(--primary);
+    color: var(--primary);
+    text-decoration: none;
+}
+.btn-secondary-ui:active,
+.users-dashboard-btn:active,
+.edit-dashboard-btn:active {
+    background-color: var(--border);
+    transform: scale(0.98);
+}
+
+/* Camp d'entrada */
+.input-ui {
+    width: 100%;
+    height: 48px;
+    padding: 12px 16px;
+    background-color: var(--input-bg);
+    border: none;
+    border-radius: var(--radius-input);
+    font-size: 14px;
+    color: var(--text-main);
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+.input-ui::placeholder {
+    color: #bfbfbf;
+}
+.input-ui:focus {
+    outline: none;
+    background-color: var(--card);
+    box-shadow: 0 0 0 3px rgba(190, 49, 68, 0.1);
+}
+
+/* Avatar rodó */
+.avatar-ui {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Secció de pàgina completa amb fons de graella */
+.section-ui {
+    width: 100vw;
+    min-height: 100vh;
+    background-color: var(--background);
+    background-image: var(--grid-bg);
+    background-size: var(--grid-bg-size);
+    padding: 40px 20px;
+    margin: 0;
+    margin-left: calc(-50vw + 50%);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ----------------------------------------------------------------
+   Contenidors de pàgina fullscreen
+   ---------------------------------------------------------------- */
+.admin-container,
+.users-container,
+.edit-container {
+    width: 100vw;
+    min-height: 100vh;
+    background-color: var(--background);
+    background-image: var(--grid-bg);
+    background-size: var(--grid-bg-size);
+    padding: 40px 20px;
+    margin: 0;
+    margin-left: calc(-50vw + 50%);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ================================================================
+   4. NAVBAR — Efectes hover i estils de navegació
+   ================================================================ */
+
+/* Hover sobre l'enllaç de perfil */
+.user-profile-link:hover {
+    color: var(--primary) !important;
+}
+.user-profile-link:hover img {
+    filter: brightness(0.85) drop-shadow(0 0 4px rgba(190, 49, 68, 0.67));
+    transition: filter 0.2s;
+}
+
+/* Avatar de perfil amb hover a la navbar */
+.navbar-profile-avatar {
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+    cursor: pointer;
+}
+.navbar-profile-avatar:hover {
+    border-color: var(--primary) !important;
+}
+.navbar-profile-name {
+    transition: color 0.2s;
+    cursor: pointer;
+}
+.navbar-profile-name:hover {
+    color: var(--primary) !important;
+}
+
+/* Hover dels enllaços principals del nav */
+.navbar-nav .nav-link:hover {
+    color: #a82838 !important;
+}
+
+.navbar-main {
+    height: 65px;
+}
+
+.navbar-logo {
+    width: 34px;
+    height: 34px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #dc3544;
+}
+
+.navbar-brand-fogons {
+    color: #000;
+}
+
+.navbar-brand-i {
+    color: #ffbb55;
+}
+
+.navbar-brand-sabors {
+    color: #be3144;
+}
+
+.navbar-icon-btn {
+    width: 32px;
+    height: 32px;
+}
+
+.navbar-bell-icon {
+    font-size: 16px;
+}
+
+.navbar-profile-reset {
+    text-decoration: none;
+}
+
+.navbar-avatar-shell {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.navbar-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Logo amb rotació */
+.navbar-brand img {
+    transition: transform 0.3s ease;
+}
+.navbar-brand:hover img {
+    transform: rotate(15deg);
+}
+
+/* ================================================================
+   5. PÀGINA PRINCIPAL (WELCOME)
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   Animació secció principal 
+   ---------------------------------------------------------------- */
+/* Keyframes */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.92) translateY(18px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+/* Entrada escalonada en càrrega */
+.principal-anim {
+    opacity: 0;
+    animation: fadeInUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.principal-anim-scale {
+    opacity: 0;
+    animation: fadeInScale 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.anim-d1 { animation-delay: 0.05s; }
+.anim-d2 { animation-delay: 0.2s; }
+.anim-d3 { animation-delay: 0.35s; }
+.anim-d4 { animation-delay: 0.52s; }
+
+/* Reveal per scroll (seccions inferiors) */
+.reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible      { opacity: 1; transform: translateY(0); }
+.reveal-delay-1      { transition-delay: 0.10s; }
+.reveal-delay-2      { transition-delay: 0.25s; }
+.reveal-delay-3      { transition-delay: 0.40s; }
+
+/* Fons de graella de la pàgina d'inici */
+.home-grid-bg {
+    background-color: var(--background);
+    background-image: var(--grid-bg);
+    background-size: var(--grid-bg-size);
+}
+
+/* Títol principal de la pàgina */
+.home-principal-title {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+/* Botó primari de la pàgina principal */
+.home-btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border-radius: var(--radius-btn);
+    border: none;
+    padding: 12px 32px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: var(--shadow-card);
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.home-btn-primary:hover {
+    background: var(--primary-hover);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Botó contorn de la pàgina principal */
+.home-btn-outline {
+    background: var(--card);
+    color: var(--text-main);
+    border: 2px solid var(--input-bg);
+    border-radius: var(--radius-btn);
+    padding: 12px 32px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: var(--shadow-card);
+    text-decoration: none;
+    transition:
+        border 0.2s,
+        color 0.2s;
+}
+.home-btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Targeta de la pàgina principal */
+.home-card {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+}
+
+/* Badge de categoria */
+.home-badge {
+    display: inline-block;
+    background: var(--input-bg);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 4px 12px;
+    margin-right: 8px;
+}
+
+/* Badge de categoria destacada */
+.home-badge--featured {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Targeta de mètrica de la plataforma */
+.home-metric-card {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 32px 16px;
+    text-align: center;
+}
+.home-metric-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+/* Valors i etiquetes de mètrica */
+.home-metric-value {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+.home-metric-label {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Targeta de cita del xef */
+.home-quote-card {
+    background: #4f646f;
+    border-radius: var(--radius-card);
+    color: #fff;
+    box-shadow: var(--shadow-card);
+    padding: 48px 32px 32px 32px;
+    position: relative;
+    overflow: hidden;
+}
+.home-quote-icon-bg {
+    position: absolute;
+    right: 32px;
+    top: 32px;
+    font-size: 6rem;
+    color: rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+}
+.home-quote-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+.home-quote-author {
+    font-weight: 600;
+    margin-bottom: 0;
+}
+.home-quote-role {
+    color: var(--input-bg);
+    font-size: 0.95rem;
+}
+@media (max-width: 991.98px) {
+    .home-metrics-row {
+        flex-direction: column !important;
+    }
+    .home-metric-card {
+        margin-bottom: 24px;
+    }
+}
+
+/* Classes auxiliars per a textos de la pàgina principal */
+.home-hero-tag {
+    font-size: 1rem;
+    color: var(--primary);
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+.home-hero-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.1;
+}
+.home-hero-desc {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+}
+.home-section-title {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+.home-recipe-img {
+    width: 220px;
+    height: 180px;
+    object-fit: cover;
+}
+.home-recipe-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+.home-chef-avatar {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+}
+.home-chef-name {
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+}
+.text-primary-ui {
+    color: var(--primary);
+}
+.footer-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #dc3544;
+}
+.footer-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+.footer-link:hover {
+    text-decoration: underline;
+    color: var(--primary-hover);
+}
 
 /* SECCIÓ PRINCIPAL FONS AMB OVERLAY */
 .principal-section {
-    background-image: url('../img/background.jpg');
-    z-index:9999;
+    background-image: url("../img/background.jpg");
+    z-index: 9999;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -15,8 +590,8 @@
     justify-content: center;
 }
 .principal-section::before {
-    content: '';
-    background: rgba(255,255,255,0.75);
+    content: "";
+    background: rgba(255, 255, 255, 0.75);
     position: absolute;
     top: 0;
     left: 0;
@@ -31,22 +606,80 @@
     text-align: center;
 }
 
-/* ========== ESTILS DE LA PÀGINA DE CONNEXIÓ ========== */
-
-/* Superseti el fons del cos per a la pàgina de connexió */
-body.bg-light .login-container {
-    background-color: #F4EFEA !important;
+.home-principal-content {
+    max-width: 700px;
+    margin: auto;
 }
 
-/* Fons amb patró de graella */
+.home-hero-icon {
+    font-size: 1.1em;
+    vertical-align: middle;
+}
+
+.home-hero-accent {
+    color: var(--primary);
+}
+
+.home-btn-reset {
+    text-decoration: none;
+}
+
+.home-badge-featured {
+    background: var(--input-bg);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.home-recipe-card {
+    max-width: 900px;
+}
+
+.home-btn-primary-compact {
+    padding: 8px 20px;
+    font-size: 1rem;
+}
+
+.home-metric-number {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.home-metric-text {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.home-quote-container {
+    max-width: 800px;
+}
+
+.home-quote-text {
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.footer-brand-text {
+    color: var(--text-main);
+}
+
+.footer-copy {
+    color: var(--text-secondary) !important;
+}
+
+/* ================================================================
+   6. LOGIN
+   ================================================================ */
+
+/* Contenidor principal del login */
 .login-container {
     width: 100vw;
     min-height: calc(100vh - 65px);
-    background-color: #F4EFEA;
-    background-image: 
-        linear-gradient(0deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent),
-        linear-gradient(90deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent);
-    background-size: 50px 50px;
+    background-color: var(--background);
+    background-image: var(--grid-bg);
+    background-size: var(--grid-bg-size);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -55,13 +688,13 @@ body.bg-light .login-container {
     margin-left: calc(-50vw + 50%);
 }
 
-/* Targeta principal de connexió */
+/* Targeta principal del login */
 .login-card {
     width: 100%;
     max-width: 420px;
-    background: white;
-    border-radius: 24px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    background: var(--card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
     overflow: hidden;
 }
 
@@ -69,7 +702,7 @@ body.bg-light .login-container {
 .login-icon-header {
     padding: 32px 0 24px;
     text-align: center;
-    background: white;
+    background: var(--card);
 }
 
 .login-icon {
@@ -78,8 +711,8 @@ body.bg-light .login-container {
     align-items: center;
     width: 64px;
     height: 64px;
-    background-color: #BE3144;
-    border-radius: 12px;
+    background-color: var(--primary);
+    border-radius: var(--radius-btn);
     color: white;
     font-size: 32px;
     margin: 0 auto;
@@ -92,10 +725,10 @@ body.bg-light .login-container {
 
 /* Títol */
 .login-title {
-    font-family: 'Georgia', 'Garamond', serif;
+    font-family: var(--font-serif);
     font-size: 32px;
     font-weight: 700;
-    color: #2D2D2D;
+    color: var(--text-main);
     text-align: center;
     margin: 0 0 8px;
     letter-spacing: -0.5px;
@@ -104,7 +737,7 @@ body.bg-light .login-container {
 /* Descripció */
 .login-description {
     font-size: 14px;
-    color: #7A7A7A;
+    color: #7a7a7a;
     text-align: center;
     margin: 0 0 32px;
     font-weight: 400;
@@ -123,12 +756,16 @@ body.bg-light .login-container {
     margin-bottom: 16px;
 }
 
+.login-form-group-spaced {
+    margin-bottom: 24px;
+}
+
 /* Etiquetes del formulari */
 .login-label {
     display: block;
     font-size: 12px;
     font-weight: 600;
-    color: #9A9A9A;
+    color: #9a9a9a;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 10px;
@@ -147,38 +784,38 @@ body.bg-light .login-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #9A9A9A;
+    color: var(--text-muted);
     font-size: 18px;
     pointer-events: none;
     z-index: 1;
 }
 
-/* Estil d'entrada personalitzat */
+/* Estil d'entrada */
 .login-input {
     width: 100%;
     height: 48px;
     padding: 12px 16px 12px 48px;
-    background-color: #F3F3F3;
+    background-color: var(--input-bg);
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-input);
     font-size: 14px;
-    color: #2D2D2D;
+    color: var(--text-main);
     transition: all 0.3s ease;
     font-family: inherit;
 }
 
 .login-input::placeholder {
-    color: #BFBFBF;
+    color: #bfbfbf;
 }
 
 .login-input:focus {
     outline: none;
-    background-color: #FFFFFF;
+    background-color: var(--card);
     box-shadow: 0 0 0 3px rgba(190, 49, 68, 0.1);
 }
 
 .login-input.is-invalid {
-    background-color: #FFF5F5;
+    background-color: #fff5f5;
     border: none;
 }
 
@@ -188,7 +825,7 @@ body.bg-light .login-container {
 
 /* Retroacció invàlida */
 .invalid-feedback {
-    color: #DC3544;
+    color: #dc3544;
     font-size: 12px;
     margin-top: 6px;
     display: none;
@@ -205,13 +842,13 @@ body.bg-light .login-container {
     gap: 10px;
     margin-bottom: 24px;
     font-size: 14px;
-    color: #2D2D2D;
+    color: #2d2d2d;
 }
 
 .login-remember .form-check-input {
     width: 18px;
     height: 18px;
-    border: 1px solid #D0D0D0;
+    border: 1px solid var(--border-input);
     border-radius: 4px;
     margin: 0;
     cursor: pointer;
@@ -220,8 +857,8 @@ body.bg-light .login-container {
 }
 
 .login-remember .form-check-input:checked {
-    background-color: #BE3144;
-    border-color: #BE3144;
+    background-color: var(--primary);
+    border-color: var(--primary);
 }
 
 .login-remember label {
@@ -249,14 +886,14 @@ body.bg-light .login-container {
 /* Enllaç de contrasenya oblidada */
 .login-forgot-link {
     font-size: 13px;
-    color: #BE3144;
+    color: var(--primary);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
 }
 
 .login-forgot-link:hover {
-    color: #A82838;
+    color: var(--primary-hover);
     text-decoration: underline;
 }
 
@@ -264,7 +901,7 @@ body.bg-light .login-container {
 .login-btn {
     flex: 1;
     height: 52px;
-    background-color: #BE3144;
+    background-color: var(--primary);
     color: white;
     border: none;
     border-radius: 14px;
@@ -280,14 +917,14 @@ body.bg-light .login-container {
 }
 
 .login-btn:hover {
-    background-color: #A82838;
-    box-shadow: 0 6px 20px rgba(190, 49, 68, 0.25);
+    background-color: var(--primary-hover);
+    box-shadow: var(--shadow-primary-hover);
     transform: translateY(-2px);
 }
 
 .login-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(190, 49, 68, 0.15);
+    box-shadow: var(--shadow-primary-active);
 }
 
 .login-btn i {
@@ -297,25 +934,25 @@ body.bg-light .login-container {
 /* Peu de registre */
 .login-register-footer {
     padding-top: 20px;
-    border-top: 1px solid #E8E8E8;
+    border-top: 1px solid var(--border);
     text-align: center;
     font-size: 14px;
 }
 
 .login-register-text {
-    color: #7A7A7A;
+    color: var(--text-secondary);
     margin-right: 6px;
 }
 
 .login-register-link {
-    color: #BE3144;
+    color: var(--primary);
     text-decoration: none;
     font-weight: 600;
     transition: color 0.2s ease;
 }
 
 .login-register-link:hover {
-    color: #A82838;
+    color: var(--primary-hover);
     text-decoration: underline;
 }
 
@@ -323,14 +960,38 @@ body.bg-light .login-container {
 .alert {
     padding: 12px 16px;
     margin-bottom: 20px;
-    border-radius: 12px;
+    border-radius: var(--radius-btn);
     border: none;
     font-size: 14px;
 }
 
 .alert-success {
-    background-color: #E8F5E9;
-    color: #2E7D32;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.login-alert-danger-strong {
+    border: 1px solid #dc3545;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+.login-center-actions {
+    justify-content: center;
+}
+
+.login-legal-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin: 0;
+}
+
+.login-legal-link {
+    color: var(--primary);
+    text-decoration: none;
 }
 
 .alert .btn-close {
@@ -368,25 +1029,9 @@ body.bg-light .login-container {
 
 /* ========== ESTILS DEL DASHBOARD ADMIN ========== */
 
-/* Contenidor principal del dashboard */
-body.bg-light .admin-container {
-    background-color: #F4EFEA !important;
-}
-
-.admin-container {
-    width: 100vw;
-    min-height: 100vh;
-    background-color: #F4EFEA;
-    background-image: 
-        linear-gradient(0deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent),
-        linear-gradient(90deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent);
-    background-size: 50px 50px;
-    padding: 40px 20px;
-    margin: 0;
-    margin-left: calc(-50vw + 50%);
-    display: flex;
-    flex-direction: column;
-}
+/* ================================================================
+   7. DASHBOARD ADMIN
+   ================================================================ */
 
 /* Header superior del dashboard */
 .admin-header {
@@ -406,7 +1051,7 @@ body.bg-light .admin-container {
 .admin-page-subtitle {
     font-size: 12px;
     font-weight: 600;
-    color: #BE3144;
+    color: var(--primary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0 0 4px 0;
@@ -420,23 +1065,23 @@ body.bg-light .admin-container {
 }
 
 .admin-page-title {
-    font-family: 'Georgia', 'Garamond', serif;
+    font-family: var(--font-serif);
     font-size: 40px;
     font-weight: 700;
-    color: #2D2D2D;
+    color: var(--text-main);
     margin: 0 0 12px;
     letter-spacing: -0.5px;
 }
 
 .admin-welcome-message {
     font-size: 16px;
-    color: #7A7A7A;
+    color: var(--text-secondary);
     margin: 0;
     font-weight: 400;
 }
 
 .admin-welcome-message strong {
-    color: #2D2D2D;
+    color: var(--text-main);
     font-weight: 600;
 }
 
@@ -444,44 +1089,13 @@ body.bg-light .admin-container {
     display: inline-block;
     margin-left: 8px;
     padding: 4px 12px;
-    background-color: #BE3144;
+    background-color: var(--primary);
     color: white;
-    border-radius: 12px;
+    border-radius: var(--radius-btn);
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-
-/* Botó de logout */
-.admin-logout-btn {
-    height: 44px;
-    padding: 0 20px;
-    background-color: #BE3144;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-}
-
-.admin-logout-btn:hover {
-    background-color: #A82838;
-    box-shadow: 0 6px 20px rgba(190, 49, 68, 0.25);
-    transform: translateY(-2px);
-    color: white;
-    text-decoration: none;
-}
-
-.admin-logout-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(190, 49, 68, 0.15);
 }
 
 /* Contenidor d'accions al header */
@@ -495,10 +1109,10 @@ body.bg-light .admin-container {
 .admin-home-btn {
     height: 44px;
     padding: 0 20px;
-    background-color: #6C7E7F;
+    background-color: #6c7e7f;
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-btn);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -511,7 +1125,7 @@ body.bg-light .admin-container {
 }
 
 .admin-home-btn:hover {
-    background-color: #5A6667;
+    background-color: #5a6667;
     box-shadow: 0 6px 20px rgba(108, 126, 127, 0.25);
     transform: translateY(-2px);
     color: white;
@@ -525,7 +1139,7 @@ body.bg-light .admin-container {
     text-decoration: none;
 }
 
-/* Graella de tarjetes */
+/* Graella de targetes */
 .admin-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -535,11 +1149,11 @@ body.bg-light .admin-container {
     margin: 0 auto;
 }
 
-/* Tarjeta individual */
+/* Targeta individual */
 .admin-card {
-    background: white;
-    border-radius: 24px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    background: var(--card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
     padding: 40px 32px;
     display: flex;
     flex-direction: column;
@@ -553,47 +1167,47 @@ body.bg-light .admin-container {
     transform: translateY(-4px);
 }
 
-/* Icona de la tarjeta */
+/* Icona de la targeta */
 .admin-card-icon {
     display: inline-flex;
     justify-content: center;
     align-items: center;
     width: 64px;
     height: 64px;
-    background-color: #BE3144;
-    border-radius: 12px;
+    background-color: var(--primary);
+    border-radius: var(--radius-btn);
     color: white;
     font-size: 32px;
     margin-bottom: 24px;
 }
 
-/* Títol de la tarjeta */
+/* Títol de la targeta */
 .admin-card-title {
-    font-family: 'Georgia', 'Garamond', serif;
+    font-family: var(--font-serif);
     font-size: 22px;
     font-weight: 700;
-    color: #2D2D2D;
+    color: var(--text-main);
     margin: 0 0 12px;
     letter-spacing: -0.3px;
 }
 
-/* Descripció de la tarjeta */
+/* Descripció de la targeta */
 .admin-card-description {
     font-size: 14px;
-    color: #7A7A7A;
+    color: var(--text-secondary);
     margin: 0 0 32px;
     font-weight: 400;
     line-height: 1.5;
 }
 
-/* Botó de la tarjeta */
+/* Botó de la targeta */
 .admin-card-btn {
     width: 100%;
     height: 48px;
-    background-color: #BE3144;
+    background-color: var(--primary);
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-btn);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -607,8 +1221,8 @@ body.bg-light .admin-container {
 }
 
 .admin-card-btn:hover {
-    background-color: #A82838;
-    box-shadow: 0 6px 20px rgba(190, 49, 68, 0.25);
+    background-color: var(--primary-hover);
+    box-shadow: var(--shadow-primary-hover);
     transform: translateY(-2px);
     color: white;
     text-decoration: none;
@@ -616,7 +1230,7 @@ body.bg-light .admin-container {
 
 .admin-card-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(190, 49, 68, 0.15);
+    box-shadow: var(--shadow-primary-active);
 }
 
 .admin-card-btn i {
@@ -729,27 +1343,9 @@ body.bg-light .admin-container {
     }
 }
 
-/* ========== ESTILS DE LA PÀGINA DE USUARIS ========== */
-
-/* Contenidor principal de usuaris */
-body.bg-light .users-container {
-    background-color: #F4EFEA !important;
-}
-
-.users-container {
-    width: 100vw;
-    min-height: 100vh;
-    background-color: #F4EFEA;
-    background-image: 
-        linear-gradient(0deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent),
-        linear-gradient(90deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent);
-    background-size: 50px 50px;
-    padding: 40px 20px;
-    margin: 0;
-    margin-left: calc(-50vw + 50%);
-    display: flex;
-    flex-direction: column;
-}
+/* ================================================================
+   8. PÀGINA D'USUARIS
+   ================================================================ */
 
 /* Header superior d'usuaris */
 .users-header {
@@ -767,10 +1363,10 @@ body.bg-light .users-container {
 }
 
 .users-page-title {
-    font-family: 'Georgia', 'Garamond', serif;
+    font-family: var(--font-serif);
     font-size: 40px;
     font-weight: 700;
-    color: #2D2D2D;
+    color: var(--text-main);
     margin: 0;
     letter-spacing: -0.5px;
 }
@@ -780,68 +1376,6 @@ body.bg-light .users-container {
     display: flex;
     align-items: center;
     gap: 12px;
-}
-
-/* Botó a panell d'administració */
-.users-dashboard-btn {
-    height: 44px;
-    padding: 0 16px;
-    background-color: transparent;
-    color: #7A7A7A;
-    border: 1px solid #D0D0D0;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-}
-
-.users-dashboard-btn:hover {
-    background-color: #F3F3F3;
-    border-color: #BE3144;
-    color: #BE3144;
-    text-decoration: none;
-}
-
-.users-dashboard-btn:active {
-    background-color: #E8E8E8;
-    transform: scale(0.98);
-}
-
-/* Botó de tancar sessió */
-.users-logout-btn {
-    height: 44px;
-    padding: 0 20px;
-    background-color: #BE3144;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-}
-
-.users-logout-btn:hover {
-    background-color: #A82838;
-    box-shadow: 0 6px 20px rgba(190, 49, 68, 0.25);
-    transform: translateY(-2px);
-    color: white;
-    text-decoration: none;
-}
-
-.users-logout-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(190, 49, 68, 0.15);
 }
 
 /* Contenidor d'alertes */
@@ -858,7 +1392,7 @@ body.bg-light .users-container {
     padding: 16px 20px;
 }
 
-/* Tarjeta principal d'usuaris */
+/* Targeta principal d'usuaris */
 .users-card {
     max-width: 1100px;
     width: 100%;
@@ -871,10 +1405,10 @@ body.bg-light .users-container {
     flex-direction: column;
 }
 
-/* Header de la tarjeta */
+/* Header de la targeta */
 .users-card-header {
     padding: 32px 36px;
-    border-bottom: 1px solid #E8E8E8;
+    border-bottom: 1px solid #e8e8e8;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -884,7 +1418,7 @@ body.bg-light .users-container {
 .users-card-title {
     font-size: 20px;
     font-weight: 600;
-    color: #2D2D2D;
+    color: var(--text-main);
     margin: 0;
     padding: 0;
     flex-shrink: 0;
@@ -914,7 +1448,7 @@ body.bg-light .users-container {
     position: absolute;
     left: 14px;
     font-size: 16px;
-    color: #9A9A9A;
+    color: var(--text-muted);
     pointer-events: none;
 }
 
@@ -922,22 +1456,22 @@ body.bg-light .users-container {
     width: 100%;
     height: 40px;
     padding: 10px 16px 10px 40px;
-    background-color: #F3F3F3;
+    background-color: var(--input-bg);
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-input);
     font-size: 14px;
-    color: #2D2D2D;
+    color: var(--text-main);
     transition: all 0.3s ease;
     font-family: inherit;
 }
 
 .users-search-input::placeholder {
-    color: #BFBFBF;
+    color: #bfbfbf;
 }
 
 .users-search-input:focus {
     outline: none;
-    background-color: #FFFFFF;
+    background-color: var(--card);
     box-shadow: 0 0 0 3px rgba(190, 49, 68, 0.1);
 }
 
@@ -947,10 +1481,10 @@ body.bg-light .users-container {
     width: 40px;
     padding: 0;
     background-color: transparent;
-    border: 1px solid #D0D0D0;
-    border-radius: 12px;
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-input);
     font-size: 16px;
-    color: #7A7A7A;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -960,9 +1494,9 @@ body.bg-light .users-container {
 }
 
 .users-filter-btn:hover {
-    background-color: #F3F3F3;
-    border-color: #BE3144;
-    color: #BE3144;
+    background-color: var(--input-bg);
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 /* Contenidor de taula */
@@ -979,8 +1513,8 @@ body.bg-light .users-container {
 }
 
 .users-table thead {
-    background-color: #FFFFFF;
-    border-bottom: 1px solid #E8E8E8;
+    background-color: var(--card);
+    border-bottom: 1px solid var(--border);
 }
 
 .users-table-header {
@@ -988,39 +1522,39 @@ body.bg-light .users-container {
     text-align: left;
     font-size: 11px;
     font-weight: 700;
-    color: #9A9A9A;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border: none;
 }
 
 .users-table-header-link {
-    color: #9A9A9A;
+    color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s ease;
     cursor: pointer;
 }
 
 .users-table-header-link:hover {
-    color: #BE3144;
+    color: var(--primary);
 }
 
 /* Files de taula */
 .users-table-row {
-    border-bottom: 1px solid #E8E8E8;
+    border-bottom: 1px solid var(--border);
     transition: background-color 0.2s ease;
     height: 76px;
 }
 
 .users-table-row:hover {
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
 }
 
 .users-table-cell {
     padding: 16px 24px;
     vertical-align: middle;
     font-size: 14px;
-    color: #2D2D2D;
+    color: var(--text-main);
 }
 
 /* Cel·la d'informació d'usuari */
@@ -1038,7 +1572,8 @@ body.bg-light .users-container {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background-color: #BE3144;
+    overflow: hidden;
+    background-color: var(--primary);
     color: white;
     display: flex;
     align-items: center;
@@ -1046,6 +1581,14 @@ body.bg-light .users-container {
     font-weight: 600;
     font-size: 16px;
     flex-shrink: 0;
+}
+
+.users-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
 }
 
 .users-user-details {
@@ -1056,20 +1599,20 @@ body.bg-light .users-container {
 
 .users-user-name {
     font-weight: 600;
-    color: #2D2D2D;
+    color: var(--text-main);
     font-size: 14px;
 }
 
 .users-user-email {
     font-size: 13px;
-    color: #7A7A7A;
+    color: var(--text-secondary);
 }
 
 /* Badges d'estat */
 .users-badge {
     display: inline-block;
     padding: 6px 12px;
-    border-radius: 12px;
+    border-radius: var(--radius-btn);
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
@@ -1077,26 +1620,26 @@ body.bg-light .users-container {
 }
 
 .users-badge-active {
-    background-color: #C8E6C9;
-    color: #1B5E20;
+    background-color: #c8e6c9;
+    color: #1b5e20;
 }
 
 .users-badge-inactive {
-    background-color: #F8D7DA;
-    color: #BE3144;
+    background-color: #f8d7da;
+    color: var(--primary);
 }
 
 /* Text de rol */
 .users-role-text {
     font-size: 14px;
-    color: #2D2D2D;
+    color: var(--text-main);
     font-weight: 500;
 }
 
 /* Contador de receptes */
 .users-recipes-count {
     font-weight: 600;
-    color: #2D2D2D;
+    color: var(--text-main);
     font-size: 14px;
 }
 
@@ -1113,8 +1656,8 @@ body.bg-light .users-container {
     height: 32px;
     padding: 0 16px;
     background-color: transparent;
-    color: #BE3144;
-    border: 1px solid #BE3144;
+    color: var(--primary);
+    border: 1px solid var(--primary);
     border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
@@ -1125,7 +1668,7 @@ body.bg-light .users-container {
 }
 
 .users-edit-btn:hover {
-    background-color: #BE3144;
+    background-color: var(--primary);
     color: white;
     box-shadow: 0 4px 12px rgba(190, 49, 68, 0.25);
     text-decoration: none;
@@ -1138,7 +1681,7 @@ body.bg-light .users-container {
 /* Envoltori de paginació */
 .users-pagination-wrapper {
     padding: 24px 36px;
-    border-top: 1px solid #E8E8E8;
+    border-top: 1px solid var(--border);
     display: flex;
     justify-content: center;
 }
@@ -1150,8 +1693,8 @@ body.bg-light .users-container {
 }
 
 .users-pagination-wrapper .page-link {
-    color: #BE3144;
-    border: 1px solid #D0D0D0;
+    color: var(--primary);
+    border: 1px solid var(--border-input);
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 13px;
@@ -1164,20 +1707,20 @@ body.bg-light .users-container {
 }
 
 .users-pagination-wrapper .page-link:hover {
-    background-color: #BE3144;
+    background-color: var(--primary);
     color: white;
-    border-color: #BE3144;
+    border-color: var(--primary);
 }
 
 .users-pagination-wrapper .page-item.active .page-link {
-    background-color: #BE3144;
-    border-color: #BE3144;
+    background-color: var(--primary);
+    border-color: var(--primary);
     color: white;
 }
 
 .users-pagination-wrapper .page-item.disabled .page-link {
-    color: #BFBFBF;
-    border-color: #E8E8E8;
+    color: #bfbfbf;
+    border-color: var(--border);
     cursor: not-allowed;
 }
 
@@ -1189,13 +1732,13 @@ body.bg-light .users-container {
 
 .users-filters-offcanvas .offcanvas-header {
     padding: 24px 28px;
-    border-bottom: 1px solid #E8E8E8;
+    border-bottom: 1px solid var(--border);
 }
 
 .users-filters-offcanvas .offcanvas-title {
     font-size: 18px;
     font-weight: 600;
-    color: #2D2D2D;
+    color: var(--text-main);
     margin: 0;
 }
 
@@ -1219,7 +1762,7 @@ body.bg-light .users-container {
 .users-filter-label {
     font-size: 12px;
     font-weight: 600;
-    color: #9A9A9A;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -1228,11 +1771,11 @@ body.bg-light .users-container {
 .users-filter-select {
     height: 40px;
     padding: 10px 14px;
-    background-color: #F3F3F3;
+    background-color: var(--input-bg);
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-input);
     font-size: 14px;
-    color: #2D2D2D;
+    color: var(--text-main);
     font-family: inherit;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1245,12 +1788,12 @@ body.bg-light .users-container {
 
 .users-filter-select:focus {
     outline: none;
-    background-color: #FFFFFF;
+    background-color: var(--card);
     box-shadow: 0 0 0 3px rgba(190, 49, 68, 0.1);
 }
 
 .users-filter-select:hover {
-    background-color: #FFFFFF;
+    background-color: var(--card);
 }
 
 /* Accions de filtres */
@@ -1264,10 +1807,10 @@ body.bg-light .users-container {
 .users-filter-apply-btn {
     height: 44px;
     padding: 0 20px;
-    background-color: #BE3144;
+    background-color: var(--primary);
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-btn);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -1275,8 +1818,8 @@ body.bg-light .users-container {
 }
 
 .users-filter-apply-btn:hover {
-    background-color: #A82838;
-    box-shadow: 0 6px 20px rgba(190, 49, 68, 0.25);
+    background-color: var(--primary-hover);
+    box-shadow: var(--shadow-primary-hover);
     transform: translateY(-2px);
 }
 
@@ -1288,9 +1831,9 @@ body.bg-light .users-container {
     height: 44px;
     padding: 0 20px;
     background-color: transparent;
-    color: #7A7A7A;
-    border: 1px solid #D0D0D0;
-    border-radius: 12px;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -1302,9 +1845,9 @@ body.bg-light .users-container {
 }
 
 .users-filter-reset-btn:hover {
-    background-color: #F3F3F3;
-    border-color: #BE3144;
-    color: #BE3144;
+    background-color: var(--input-bg);
+    border-color: var(--primary);
+    color: var(--primary);
     text-decoration: none;
 }
 
@@ -1512,16 +2055,38 @@ body.bg-light .users-container {
 
 /* Contenidor principal d'edició */
 body.bg-light .edit-container {
-    background-color: #F4EFEA !important;
+    background-color: #f4efea !important;
 }
 
 .edit-container {
     width: 100vw;
     min-height: 100vh;
-    background-color: #F4EFEA;
-    background-image: 
-        linear-gradient(0deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent),
-        linear-gradient(90deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent);
+    background-color: #f4efea;
+    background-image:
+        linear-gradient(
+            0deg,
+            transparent 24%,
+            rgba(200, 200, 200, 0.05) 25%,
+            rgba(200, 200, 200, 0.05) 26%,
+            transparent 27%,
+            transparent 74%,
+            rgba(200, 200, 200, 0.05) 75%,
+            rgba(200, 200, 200, 0.05) 76%,
+            transparent 77%,
+            transparent
+        ),
+        linear-gradient(
+            90deg,
+            transparent 24%,
+            rgba(200, 200, 200, 0.05) 25%,
+            rgba(200, 200, 200, 0.05) 26%,
+            transparent 27%,
+            transparent 74%,
+            rgba(200, 200, 200, 0.05) 75%,
+            rgba(200, 200, 200, 0.05) 76%,
+            transparent 77%,
+            transparent
+        );
     background-size: 50px 50px;
     padding: 40px 20px;
     margin: 0;
@@ -1546,10 +2111,10 @@ body.bg-light .edit-container {
 }
 
 .edit-page-title {
-    font-family: 'Georgia', 'Garamond', serif;
+    font-family: "Georgia", "Garamond", serif;
     font-size: 40px;
     font-weight: 700;
-    color: #2D2D2D;
+    color: #2d2d2d;
     margin: 0;
     letter-spacing: -0.5px;
 }
@@ -1566,8 +2131,8 @@ body.bg-light .edit-container {
     height: 44px;
     padding: 0 16px;
     background-color: transparent;
-    color: #7A7A7A;
-    border: 1px solid #D0D0D0;
+    color: #7a7a7a;
+    border: 1px solid #d0d0d0;
     border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
@@ -1581,14 +2146,14 @@ body.bg-light .edit-container {
 }
 
 .edit-dashboard-btn:hover {
-    background-color: #F3F3F3;
-    border-color: #BE3144;
-    color: #BE3144;
+    background-color: #f3f3f3;
+    border-color: #be3144;
+    color: #be3144;
     text-decoration: none;
 }
 
 .edit-dashboard-btn:active {
-    background-color: #E8E8E8;
+    background-color: #e8e8e8;
     transform: scale(0.98);
 }
 
@@ -1596,7 +2161,7 @@ body.bg-light .edit-container {
 .edit-logout-btn {
     height: 44px;
     padding: 0 20px;
-    background-color: #BE3144;
+    background-color: #be3144;
     color: white;
     border: none;
     border-radius: 12px;
@@ -1611,7 +2176,7 @@ body.bg-light .edit-container {
 }
 
 .edit-logout-btn:hover {
-    background-color: #A82838;
+    background-color: #a82838;
     box-shadow: 0 6px 20px rgba(190, 49, 68, 0.25);
     transform: translateY(-2px);
     color: white;
@@ -1623,7 +2188,7 @@ body.bg-light .edit-container {
     box-shadow: 0 2px 8px rgba(190, 49, 68, 0.15);
 }
 
-/* Tarjeta principal d'edició */
+/* Targeta principal d'edició */
 .edit-card {
     max-width: 600px;
     width: 100%;
@@ -1636,10 +2201,10 @@ body.bg-light .edit-container {
     flex-direction: column;
 }
 
-/* Header de la tarjeta */
+/* Header de la targeta */
 .edit-card-header {
     padding: 32px 36px;
-    border-bottom: 1px solid #E8E8E8;
+    border-bottom: 1px solid #e8e8e8;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1653,14 +2218,14 @@ body.bg-light .edit-container {
 .edit-card-title {
     font-size: 24px;
     font-weight: 600;
-    color: #2D2D2D;
+    color: #2d2d2d;
     margin: 0 0 8px;
     padding: 0;
 }
 
 .edit-card-subtitle {
     font-size: 14px;
-    color: #7A7A7A;
+    color: #7a7a7a;
     margin: 0;
     padding: 0;
 }
@@ -1670,8 +2235,8 @@ body.bg-light .edit-container {
     height: 40px;
     padding: 0 16px;
     background-color: transparent;
-    color: #7A7A7A;
-    border: 1px solid #D0D0D0;
+    color: #7a7a7a;
+    border: 1px solid #d0d0d0;
     border-radius: 12px;
     font-size: 13px;
     font-weight: 600;
@@ -1686,16 +2251,71 @@ body.bg-light .edit-container {
 }
 
 .edit-back-btn:hover {
-    background-color: #F3F3F3;
-    border-color: #BE3144;
-    color: #BE3144;
+    background-color: #f3f3f3;
+    border-color: #be3144;
+    color: #be3144;
     text-decoration: none;
 }
 
-/* Contingut de la tarjeta */
+/* Contingut de la targeta */
 .edit-card-body {
     padding: 32px 36px;
     flex: 1;
+}
+
+.edit-danger-card {
+    border: 1px solid #f8d7da;
+}
+
+.edit-danger-header {
+    border-bottom-color: #f8d7da;
+}
+
+.edit-danger-title {
+    color: var(--primary);
+}
+
+.edit-link-primary {
+    color: var(--primary);
+}
+
+.danger-zone-banner {
+    background: #fff5f5;
+    border-radius: 12px;
+    border: 1px solid #f8d7da;
+}
+
+.danger-zone-icon {
+    font-size: 1.25rem;
+}
+
+.danger-zone-label {
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.danger-btn-rounded {
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.danger-modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+}
+
+.danger-modal-header {
+    border-bottom: 1px solid #f8d7da;
+}
+
+.danger-modal-footer {
+    border-top: 1px solid #f8d7da;
+}
+
+.btn-rounded {
+    border-radius: 12px;
 }
 
 /* Alerta d'errors */
@@ -1709,9 +2329,9 @@ body.bg-light .edit-container {
 }
 
 .edit-alert-error {
-    background-color: #FFF5F5;
-    border: 1px solid #F8D7DA;
-    color: #BE3144;
+    background-color: #fff5f5;
+    border: 1px solid #f8d7da;
+    color: #be3144;
 }
 
 .edit-alert-header {
@@ -1761,7 +2381,7 @@ body.bg-light .edit-container {
 .edit-form-label {
     font-size: 12px;
     font-weight: 600;
-    color: #9A9A9A;
+    color: #9a9a9a;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -1770,11 +2390,11 @@ body.bg-light .edit-container {
 .edit-form-select {
     height: 44px;
     padding: 12px 16px;
-    background-color: #F3F3F3;
+    background-color: #f3f3f3;
     border: none;
     border-radius: 12px;
     font-size: 14px;
-    color: #2D2D2D;
+    color: #2d2d2d;
     font-family: inherit;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1787,17 +2407,17 @@ body.bg-light .edit-container {
 
 .edit-form-select:focus {
     outline: none;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     box-shadow: 0 0 0 3px rgba(190, 49, 68, 0.1);
 }
 
 .edit-form-select:hover {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
 }
 
 .edit-form-select-error {
-    background-color: #FFF5F5;
-    border: 1px solid #F8D7DA;
+    background-color: #fff5f5;
+    border: 1px solid #f8d7da;
 }
 
 .edit-form-select-error:focus {
@@ -1806,7 +2426,7 @@ body.bg-light .edit-container {
 
 /* Missatge d'error */
 .edit-form-error {
-    color: #BE3144;
+    color: #be3144;
     font-size: 12px;
     margin-top: 4px;
 }
@@ -1822,7 +2442,7 @@ body.bg-light .edit-container {
 .edit-submit-btn {
     height: 44px;
     padding: 0 24px;
-    background-color: #BE3144;
+    background-color: #be3144;
     color: white;
     border: none;
     border-radius: 12px;
@@ -1836,7 +2456,7 @@ body.bg-light .edit-container {
 }
 
 .edit-submit-btn:hover {
-    background-color: #A82838;
+    background-color: #a82838;
     box-shadow: 0 6px 20px rgba(190, 49, 68, 0.25);
     transform: translateY(-2px);
 }
@@ -1848,6 +2468,19 @@ body.bg-light .edit-container {
 
 .edit-submit-btn i {
     font-size: 16px;
+}
+
+.edit-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.edit-form-error {
+    font-size: 12px;
+    color: #be3144;
+    margin-top: 4px;
 }
 
 /* Responsive per a edició */
@@ -2002,4 +2635,211 @@ body.bg-light .edit-container {
     .edit-alert-list {
         font-size: 12px;
     }
+}
+
+/* ========== PERFIL DE L'USUARI ========== */
+.profile-header {
+    background: linear-gradient(90deg, #be3144 0%, #f4efea 60%, #7fc29b 100%);
+    border-radius: 24px;
+    min-height: 260px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+.profile-header img {
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.profile-header .badge {
+    background: #f3f3f3;
+    color: #be3144;
+    font-weight: 600;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+.profile-header .btn-primary {
+    background: #be3144;
+    border-radius: 12px;
+    border: none;
+    transition: background 0.2s;
+}
+.profile-header .btn-primary:hover {
+    background: #a82838;
+}
+.profile-about-card,
+.profile-achievements-card {
+    border-radius: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+.profile-about-card {
+    background: #fff;
+}
+.profile-achievements-card {
+    background: #4f646f;
+    color: #fff;
+}
+.profile-tab-active {
+    border-bottom: 3px solid #be3144 !important;
+    color: #be3144 !important;
+    background: transparent !important;
+}
+.profile-tab-inactive {
+    color: #2d2d2d !important;
+    background: transparent !important;
+}
+.profile-recipe-card {
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+.profile-create-recipe-card {
+    border-radius: 24px;
+    background: #fff;
+    min-height: 180px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-create-recipe-card a {
+    color: #be3144;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.profile-create-recipe-card a:hover {
+    color: #a82838;
+}
+
+.profile-show-bg {
+    min-height: 100vh;
+    padding: 40px 20px;
+    margin-left: calc(-50vw + 50%);
+    width: 100vw;
+}
+
+.profile-show-container {
+    max-width: 1100px;
+}
+
+.profile-header-custom {
+    background: linear-gradient(135deg, #fff 0%, #fff0f2 60%, #ffe0e5 100%);
+    border-radius: 24px;
+    min-height: 260px;
+    box-shadow: 0 4px 20px rgba(190, 49, 68, 0.1);
+    border: 1px solid #f5d5d9;
+    border-top: 4px solid #be3144;
+}
+
+.profile-edit-btn {
+    background: var(--primary);
+    border-radius: 12px;
+    border: none;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-edit-icon {
+    font-size: 1.25rem;
+}
+
+.profile-avatar-alert {
+    font-size: 0.9rem;
+}
+
+.profile-avatar-label {
+    cursor: pointer;
+}
+
+.profile-avatar-image {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.profile-user-name,
+.profile-about-text,
+.profile-recipe-title {
+    color: var(--text-main);
+}
+
+.profile-user-meta {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+}
+
+.profile-card-title,
+.profile-stat-value,
+.profile-create-link {
+    color: var(--primary);
+}
+
+.profile-sidebar-card,
+.profile-recipe-card-custom {
+    border-radius: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    background: #fff;
+}
+
+.profile-about-text {
+    min-height: 60px;
+}
+
+.profile-stat-value {
+    font-size: 1.2rem;
+}
+
+.profile-stat-label,
+.profile-recipe-meta {
+    font-size: 0.95rem;
+}
+
+.profile-achievements-card-custom {
+    border-radius: 24px;
+    background: #4f646f;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.profile-tabs {
+    border-bottom: 2px solid #f3f3f3;
+}
+
+.profile-tab-active-custom {
+    border: none;
+    border-bottom: 3px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+}
+
+.profile-tab-inactive-custom {
+    border: none;
+    color: var(--text-main);
+    background: transparent;
+}
+
+.profile-create-card-custom {
+    border-radius: 24px;
+    background: #fff;
+    min-height: 180px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.profile-create-link {
+    text-decoration: none;
+}
+
+.profile-recipe-image {
+    border-radius: 24px 24px 0 0;
+    object-fit: cover;
+    height: 120px;
 }

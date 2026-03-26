@@ -1,48 +1,47 @@
 <section>
-    <header class="mb-4">
-        <h2 class="h5 text-dark">
-            {{ __('profile.update_password') }}
-        </h2>
 
-        <p class="text-muted small">
-            {{ __('profile.update_password_description') }}
-        </p>
-    </header>
-
-    <form method="post" action="{{ route('password.update') }}">
+    <form method="post" action="{{ route('password.update') }}" class="edit-form">
         @csrf
         @method('put')
 
-        <div class="mb-3">
-            <label for="update_password_current_password" class="form-label">{{ __('profile.current_password') }}</label>
-            <input id="update_password_current_password" name="current_password" type="password" class="form-control @if($errors->updatePassword->has('current_password')) is-invalid @endif" autocomplete="current-password">
+        <div class="edit-form-group">
+            <label for="update_password_current_password" class="edit-form-label">{{ __('profile.current_password') }}</label>
+            <input id="update_password_current_password" name="current_password" type="password"
+                class="input-ui @if($errors->updatePassword->has('current_password')) is-invalid @endif"
+                autocomplete="current-password">
             @if($errors->updatePassword->has('current_password'))
-                <div class="invalid-feedback">{{ $errors->updatePassword->first('current_password') }}</div>
+                <div class="edit-form-error">{{ $errors->updatePassword->first('current_password') }}</div>
             @endif
         </div>
 
-        <div class="mb-3">
-            <label for="update_password_password" class="form-label">{{ __('profile.new_password') }}</label>
-            <input id="update_password_password" name="password" type="password" class="form-control @if($errors->updatePassword->has('password')) is-invalid @endif" autocomplete="new-password">
+        <div class="edit-form-group">
+            <label for="update_password_password" class="edit-form-label">{{ __('profile.new_password') }}</label>
+            <input id="update_password_password" name="password" type="password"
+                class="input-ui @if($errors->updatePassword->has('password')) is-invalid @endif"
+                autocomplete="new-password">
             @if($errors->updatePassword->has('password'))
-                <div class="invalid-feedback">{{ $errors->updatePassword->first('password') }}</div>
+                <div class="edit-form-error">{{ $errors->updatePassword->first('password') }}</div>
             @endif
         </div>
 
-        <div class="mb-3">
-            <label for="update_password_password_confirmation" class="form-label">{{ __('auth.confirm_password') }}</label>
-            <input id="update_password_password_confirmation" name="password_confirmation" type="password" class="form-control @if($errors->updatePassword->has('password_confirmation')) is-invalid @endif" autocomplete="new-password">
+        <div class="edit-form-group">
+            <label for="update_password_password_confirmation" class="edit-form-label">{{ __('auth.confirm_password') }}</label>
+            <input id="update_password_password_confirmation" name="password_confirmation" type="password"
+                class="input-ui @if($errors->updatePassword->has('password_confirmation')) is-invalid @endif"
+                autocomplete="new-password">
             @if($errors->updatePassword->has('password_confirmation'))
-                <div class="invalid-feedback">{{ $errors->updatePassword->first('password_confirmation') }}</div>
+                <div class="edit-form-error">{{ $errors->updatePassword->first('password_confirmation') }}</div>
             @endif
         </div>
 
-        <div class="d-flex align-items-center gap-3 mt-4">
-            <button class="btn btn-primary">{{ __('common.save') }}</button>
-
+        <div class="edit-form-actions">
             @if (session('status') === 'password-updated')
-                <p class="text-success small mb-0">{{ __('common.saved') }}</p>
+                <p class="text-success small mb-0 me-auto"><i class="bi bi-check-circle me-1"></i>{{ __('common.saved') }}</p>
             @endif
+            <button type="submit" class="edit-submit-btn">
+                <i class="bi bi-check-lg"></i>
+                {{ __('common.save') }}
+            </button>
         </div>
     </form>
 </section>

@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ __('admin.users.edit_title') }}</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="bg-light">
+{{-- Vista d'edició d'usuari — Estén layouts/admin.blade.php --}}
+@extends('layouts.admin')
+
+@section('title', __('admin.users.edit_title'))
+
+@section('content')
         <div class="edit-container">
             <!-- Header superior -->
             <div class="edit-header">
@@ -15,9 +12,9 @@
                 </div>
             </div>
 
-            <!-- Tarjeta principal d''edició -->
+            <!-- Targeta principal d''edició -->
             <div class="edit-card">
-                <!-- Header de la tarjeta -->
+                <!-- Header de la Targeta -->
                 <div class="edit-card-header">
                     <div class="edit-card-header-info">
                         <h2 class="edit-card-title">{{ $user->name }}</h2>
@@ -84,5 +81,4 @@
                 </div>
             </div>
         </div>
-    </body>
-</html>
+@endsection

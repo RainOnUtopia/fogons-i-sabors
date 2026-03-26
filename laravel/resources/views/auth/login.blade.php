@@ -3,16 +3,16 @@
 @section('content')
 <div class="login-container">
     <div class="login-card">
-        <!-- Icona del Header -->
+        <!-- ICONA DEL HEADER -->
         <div class="login-icon-header">
             <div class="login-icon">
                 <i class="bi bi-lock-fill"></i>
             </div>
         </div>
 
-        <!-- Contigut de la Tarjeta -->
+        <!-- CONTINGUT DE LA TARGETA -->
         <div class="login-card-content">
-            {{-- Estat de l'alerta --}}
+            {{-- ESTAT DE L'ALERTA --}}
             @if (session('status'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('status') }}
@@ -20,17 +20,17 @@
                 </div>
             @endif
 
-            <!-- Títol -->
+            <!-- TÍTOL -->
             <h1 class="login-title">Benvingut</h1>
             
-            <!-- Descripció -->
+            <!-- DESCRIPCIÓ -->
             <p class="login-description">Inicia sessió amb el teu compte</p>
 
-            <!-- Formulari Accedir -->
+            <!-- FORMULARI ACCEDIR -->
             <form method="POST" action="{{ route('login') }}" class="login-form">
                 @csrf
 
-                <!-- Email -->
+                <!-- EMAIL -->
                 <div class="login-form-group">
                     <label for="email" class="login-label">{{ __('auth.email') }}</label>
                     <div class="login-input-wrapper">
@@ -53,7 +53,7 @@
                     @enderror
                 </div>
 
-                <!-- Contrasenya -->
+                <!-- CONTRASENYA -->
                 <div class="login-form-group">
                     <label for="password" class="login-label">{{ __('auth.password') }}</label>
                     <div class="login-input-wrapper">
@@ -74,7 +74,7 @@
                     @enderror
                 </div>
 
-                <!-- Recorda'm -->
+                <!-- RECORDA'M -->
                 <div class="login-remember">
                     <input id="remember_me" type="checkbox" class="form-check-input" name="remember">
                     <label class="form-check-label" for="remember_me">
@@ -82,7 +82,7 @@
                     </label>
                 </div>
 
-                <!-- Contrasenya Oblidada i Enviar -->
+                <!-- CONTRASENYA OBLIDADA I ENVIAR -->
                 <div class="login-footer-actions">
                     <button type="submit" class="login-btn">
                         {{ __('auth.login_button') }}
@@ -98,7 +98,7 @@
                 @endif
             </form>
 
-            <!-- Link Registrar-se -->
+            <!-- LINK REGISTRAR-SE -->
             @if (Route::has('register'))
                 <div class="login-register-footer">
                     <span class="login-register-text">No tens compte?</span>

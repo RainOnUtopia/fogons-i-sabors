@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ __('admin.dashboard_title') }}</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="bg-light">
+{{-- Vista del panell de control d'administrador — Estén layouts/admin.blade.php --}}
+@extends('layouts.admin')
+
+@section('title', __('admin.dashboard_title'))
+
+@section('content')
         <div class="admin-container">
             <!-- Header Superior -->
             <div class="admin-header">
@@ -38,9 +35,9 @@
                 </div>
             </div>
 
-            <!-- Graella de tarjetas -->
+            <!-- Graella de Targetes -->
             <div class="admin-cards-grid">
-                <!-- Tarjeta 1: Gestió d'usuaris -->
+                <!-- Targeta 1: Gestió d'usuaris -->
                 <div class="admin-card">
                     <div class="admin-card-icon">
                         <i class="bi bi-people-fill"></i>
@@ -53,7 +50,7 @@
                     </a>
                 </div>
 
-                <!-- Tarjeta 2: Moderació de duels -->
+                <!-- Targeta 2: Moderació de duels -->
                 <div class="admin-card">
                     <div class="admin-card-icon">
                         <i class="bi bi-shield-check"></i>
@@ -66,7 +63,7 @@
                     </a>
                 </div>
 
-                <!-- Tarjeta 3: Panell d'activitat -->
+                <!-- Targeta 3: Panell d'activitat -->
                 <div class="admin-card">
                     <div class="admin-card-icon">
                         <i class="bi bi-graph-up"></i>
@@ -80,5 +77,4 @@
                 </div>
             </div>
         </div>
-    </body>
-</html>
+@endsection

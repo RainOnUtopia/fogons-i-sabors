@@ -24,6 +24,7 @@
     "auth.logout_button": "Tancar sessió",
     "profile.edit_title": "Editar el meu perfil",
     "profile.profile": "Perfil",
+    "profile.back": "Tornar al perfil",
     "profile.update_profile_information": "Actualitzar la informació del perfil",
     "profile.update_profile_description": "Actualitzeu la informació del perfil i l'adreça electrònica del compte.",
     "profile.unverified_email": "La vostra adreça electrònica no està verificada.",

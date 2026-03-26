@@ -6,7 +6,7 @@
     <form method="POST" action="{{ route('password.confirm') }}">
         @csrf
 
-        <!-- Contrasenya -->
+        <!-- CONTRASENYA -->
         <div class="mb-3">
             <label for="password" class="form-label">{{ __('auth.password') }}</label>
             <input id="password" class="form-control @error('password') is-invalid @enderror" type="password" name="password" required autocomplete="current-password">

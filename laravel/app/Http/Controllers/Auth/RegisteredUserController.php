@@ -34,6 +34,31 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'name.required' => 'El nom és obligatori.',
+            'name.string' => 'El nom no té un format vàlid.',
+            'name.max' => 'El nom no pot superar els 255 caràcters.',
+
+            'email.required' => 'El correu electrònic és obligatori.',
+            'email.string' => 'El correu electrònic no té un format vàlid.',
+            'email.lowercase' => 'El correu electrònic s\'ha d\'escriure en minúscules.',
+            'email.email' => 'Introdueix un correu electrònic vàlid.',
+            'email.max' => 'El correu electrònic no pot superar els 255 caràcters.',
+            'email.unique' => 'Aquest correu electrònic ja està registrat.',
+
+            'password.required' => 'Has d\'introduir una contrasenya.',
+            'password.confirmed' => 'La confirmació de la contrasenya no coincideix. Escriu la mateixa contrasenya als dos camps.',
+            'password.min' => 'La contrasenya ha de tenir almenys :min caràcters.',
+            'password.letters' => 'La contrasenya ha d\'incloure almenys una lletra.',
+            'password.mixed' => 'La contrasenya ha d\'incloure majúscules i minúscules.',
+            'password.numbers' => 'La contrasenya ha d\'incloure almenys un número.',
+            'password.symbols' => 'La contrasenya ha d\'incloure almenys un símbol.',
+            'password.uncompromised' => 'Aquesta contrasenya no és segura. Prova\'n una altra.',
+        ], [
+            'name' => 'nom',
+            'email' => 'correu electrònic',
+            'password' => 'contrasenya',
+            'password_confirmation' => 'confirmació de la contrasenya',
         ]);
 
         $user = User::create([
@@ -46,8 +71,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        $url = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : route('dashboard', absolute: false);
-
-        return redirect($url);
+        return redirect('/');
     }
 }

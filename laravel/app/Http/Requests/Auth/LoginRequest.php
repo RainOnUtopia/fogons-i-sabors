@@ -34,6 +34,31 @@ class LoginRequest extends FormRequest
     }
 
     /**
+     * Get the validation messages for the defined rules.
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'El correu electrònic és obligatori.',
+            'email.string' => 'El correu electrònic no té un format vàlid.',
+            'email.email' => 'Introdueix un correu electrònic vàlid.',
+            'password.required' => 'Has d\'introduir la contrasenya.',
+            'password.string' => 'La contrasenya no té un format vàlid.',
+        ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     */
+    public function attributes(): array
+    {
+        return [
+            'email' => 'correu electrònic',
+            'password' => 'contrasenya',
+        ];
+    }
+
+    /**
      * Attempt to authenticate the request's credentials.
      *
      * @throws ValidationException
@@ -46,7 +71,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Les credencials no són correctes. Revisa el correu electrònic i la contrasenya.',
             ]);
         }
 
@@ -56,7 +81,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.inactive_account'),
+                'email' => 'El teu compte està desactivat. Contacta amb un administrador.',
             ]);
         }
 
@@ -79,10 +104,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            'email' => 'Has superat el nombre màxim d\'intents. Torna-ho a provar d\'aquí a '.$seconds.' segons.',
         ]);
     }
 

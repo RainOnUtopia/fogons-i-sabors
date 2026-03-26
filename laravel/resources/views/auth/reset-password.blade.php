@@ -4,7 +4,7 @@
     <form method="POST" action="{{ route('password.store') }}">
         @csrf
 
-        <!-- Token de restabliment -->
+        <!-- TOKEN DE RESTABLIMENT -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
         <div class="mb-3">

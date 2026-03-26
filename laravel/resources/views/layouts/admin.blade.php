@@ -12,6 +12,9 @@
 </head>
 
 <body class="bg-light body-reset">
+    {{-- NAVEGACIÓ PRINCIPAL COMPARTIDA --}}
+    @include('layouts.navigation')
+
     {{-- CONTINGUT PRINCIPAL DE LA SECCIO ADMIN --}}
     @yield('content')
 </body>

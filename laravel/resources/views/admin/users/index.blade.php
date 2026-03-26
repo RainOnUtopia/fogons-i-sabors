@@ -15,13 +15,6 @@
                         <i class="bi bi-arrow-left"></i>
                         Panell Admin
                     </a>
-                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="users-logout-btn">
-                            <i class="bi bi-box-arrow-right"></i>
-                            {{ __('auth.logout') }}
-                        </button>
-                    </form>
                 </div>
             </div>
 

@@ -25,13 +25,6 @@
                         <i class="bi bi-house-fill"></i>
                         Tornar a l'Inici
                     </a>
-                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="admin-logout-btn">
-                            <i class="bi bi-box-arrow-right"></i>
-                            {{ __('auth.logout') }}
-                        </button>
-                    </form>
                 </div>
             </div>
 

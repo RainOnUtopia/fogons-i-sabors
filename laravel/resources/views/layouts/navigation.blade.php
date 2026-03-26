@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom navbar-main">
-    <div class="container-fluid h-100 d-flex align-items-center">
+    <div class="container-fluid h-100 d-flex flex-wrap align-items-center">
         {{-- LOGO I NOM DE L'APLICACIÓ --}}
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url('/') }}">
             <img src="{{ asset('img/logo.png') }}" alt="Logo FogonsiSabors" class="navbar-logo">
@@ -9,7 +9,7 @@
         </a>
 
         {{-- RESPONSIVE PER MÒVIL --}}
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+        <button class="navbar-toggler border-0 navbar-toggler-custom" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
             aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

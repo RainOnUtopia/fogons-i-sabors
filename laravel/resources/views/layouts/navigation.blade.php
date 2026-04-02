@@ -18,7 +18,7 @@
             {{-- MENÚ DE NAVEGACIÓ HORITZONTAL --}}
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center gap-5 justify-content-start">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Receptes</a>
+                    <a class="nav-link text-dark" href="{{ route('recipes.index') }}">Receptes</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="#">Duels</a>

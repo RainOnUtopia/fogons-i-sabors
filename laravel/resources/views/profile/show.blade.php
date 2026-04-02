@@ -8,7 +8,7 @@
             <div class="profile-header profile-header-custom mb-4 p-4 position-relative d-flex flex-column align-items-center justify-content-center">
                 <div class="position-absolute top-0 end-0 m-3">
                     <a href="{{ route('profile.edit') }}" class="btn btn-primary p-2 fw-bold profile-edit-btn"
-                        title="Editar perfil">
+                        title="Edita el perfil">
                         <i class="bi bi-wrench profile-edit-icon"></i>
                     </a>
                 </div>
@@ -37,8 +37,8 @@
 
                 <h2 class="fw-bold mb-1 profile-user-name">{{ $user->name }}</h2>
                 <div class="d-flex flex-wrap gap-3 justify-content-center align-items-center mt-2 profile-user-meta">
-                    <span><i class="bi bi-geo-alt"></i> Barcelona, España</span>
-                    <span><i class="bi bi-calendar"></i> Miembro desde {{ $user->created_at->format('d/m/Y') }}</span>
+                    <span><i class="bi bi-geo-alt"></i> Barcelona, Espanya</span>
+                    <span><i class="bi bi-calendar"></i> Membre des de {{ $user->created_at->format('d/m/Y') }}</span>
                 </div>
             </div>
 
@@ -48,21 +48,45 @@
                 <div class="col-lg-4">
                     <div class="card mb-4 profile-sidebar-card">
                         <div class="card-body">
-                            <h5 class="fw-bold mb-3 profile-card-title">Sobre mí</h5>
-                            <p class="mb-4 profile-about-text">
-                                {{ $user->about_me ?? 'Sin descripción.' }}</p>
+                            <h5 class="fw-bold mb-3 profile-card-title">Sobre mi</h5>
+
+                            @if(session('status') === 'about-updated')
+                                <div class="alert alert-success py-2 px-3 mb-3 small">
+                                    Descripció actualitzada correctament.
+                                </div>
+                            @endif
+
+                            <form method="POST" action="{{ route('profile.about.update') }}">
+                                @csrf
+                                @method('PATCH')
+                                <textarea
+                                    name="about_me"
+                                    rows="4"
+                                    placeholder="Explica qui ets, la teva passió per la cuina..."
+                                    style="width: 100%; padding: 10px 12px; background-color: #f3f3f3; border: none; border-radius: 12px; font-size: 14px; color: #2d2d2d; font-family: inherit; resize: none; transition: background 0.2s;"
+                                    onfocus="this.style.backgroundColor='#fff';this.style.outline='2px solid #be3144'"
+                                    onblur="this.style.backgroundColor='#f3f3f3';this.style.outline='none'"
+                                >{{ old('about_me', $user->about_me) }}</textarea>
+                                @error('about_me')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                                <button type="submit"
+                                    style="margin-top: 10px; height: 36px; padding: 0 16px; background-color: #be3144; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">
+                                    Desar
+                                </button>
+                            </form>
                             <div class="d-flex justify-content-between text-center mt-4">
                                 <div>
                                     <div class="fw-bold profile-stat-value">12</div>
-                                    <div class="text-muted profile-stat-label">Recetas</div>
+                                    <div class="text-muted profile-stat-label">Receptes</div>
                                 </div>
                                 <div>
                                     <div class="fw-bold profile-stat-value">340</div>
-                                    <div class="text-muted profile-stat-label">Seguidores</div>
+                                    <div class="text-muted profile-stat-label">Seguidors</div>
                                 </div>
                                 <div>
                                     <div class="fw-bold profile-stat-value">4.8</div>
-                                    <div class="text-muted profile-stat-label">Estrellas</div>
+                                    <div class="text-muted profile-stat-label">Estrelles</div>
                                 </div>
                             </div>
                         </div>
@@ -80,52 +104,100 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- SECCIÓ CENTRAL: TABS I GRID -->
                 <div class="col-lg-8">
 
                     <!-- SECCIÓ 3: TABS CENTRALS -->
-                    <ul class="nav nav-tabs mb-4 profile-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active fw-bold profile-tab-active-custom"
-                                href="#">Mi despensa</a>
+                    <ul class="nav nav-tabs mb-4 profile-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-bold"
+                                id="profile-pantry-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#profile-pantry-pane"
+                                type="button"
+                                role="tab"
+                                aria-controls="profile-pantry-pane"
+                                aria-selected="true">El meu rebost</button>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link fw-bold profile-tab-inactive-custom"
-                                href="#">Platos favoritos</a>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold"
+                                id="profile-favorites-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#profile-favorites-pane"
+                                type="button"
+                                role="tab"
+                                aria-controls="profile-favorites-pane"
+                                aria-selected="false">Plats favorits</button>
                         </li>
                     </ul>
 
-                    <!-- SECCIÓ 4: GRAELLA RECEPTES -->
-                    <div class="row g-4">
-                        <!-- Targeta crear recepta -->
-                        <div class="col-md-4">
-                            <div class="card h-100 d-flex align-items-center justify-content-center profile-create-card-custom">
-                                <a href="#"
-                                    class="d-flex flex-column align-items-center justify-content-center text-decoration-none profile-create-link">
-                                    <span class="display-4 mb-2">+</span>
-                                    <span class="fw-bold">Crear receta</span>
-                                </a>
+                    <!-- Contingut separat per pestanyes mantenint la graella Bootstrap existent -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active"
+                            id="profile-pantry-pane"
+                            role="tabpanel"
+                            aria-labelledby="profile-pantry-tab"
+                            tabindex="0">
+                            <div class="row g-4">
+                                @if(auth()->check() && auth()->id() === $user->id)
+                                    <!-- Targeta crear recepta visible només al rebost propi -->
+                                    <div class="col-md-4">
+                                        <div class="card h-100 d-flex align-items-center justify-content-center profile-create-card-custom">
+                                            <a href="{{ route('recipes.create') }}"
+                                                class="d-flex flex-column align-items-center justify-content-center text-decoration-none profile-create-link">
+                                                <span class="display-4 mb-2">+</span>
+                                                <span class="fw-bold">Crear recepta</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
-                        <!-- Exemple de recepta -->
-                        <div class="col-md-4">
-                            <div class="card h-100 profile-recipe-card">
-                                <img src="{{ asset('img/risotto.jpg') }}" class="card-img-top profile-recipe-image">
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-2 profile-recipe-title">Risotto de safrà</h6>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-muted profile-recipe-meta"><i class="bi bi-clock"></i> 45
-                                            min</span>
-                                        <span>
-                                            <a href="#" class="text-primary me-2"><i class="bi bi-pencil"></i></a>
-                                            <a href="#" class="text-danger"><i class="bi bi-trash"></i></a>
-                                        </span>
+                        <div class="tab-pane fade"
+                            id="profile-favorites-pane"
+                            role="tabpanel"
+                            aria-labelledby="profile-favorites-tab"
+                            tabindex="0">
+                            <div class="row g-4">
+                                @forelse ($favoriteRecipes as $recipe)
+                                    <!-- Recepta favorita real mostrada a la graella existent -->
+                                    <div class="col-md-4">
+                                        <a href="{{ route('recipes.show', $recipe) }}" class="text-decoration-none">
+                                            <div class="card h-100 profile-recipe-card">
+                                                @if($recipe->image)
+                                                    <img src="{{ asset('storage/' . $recipe->image) }}" alt="{{ $recipe->title }}" class="card-img-top profile-recipe-image">
+                                                @else
+                                                    <div class="card-img-top profile-recipe-image d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #e0e0e0 0%, #f3f3f3 100%); color: #999; font-size: 2rem;">
+                                                        <i class="bi bi-image"></i>
+                                                    </div>
+                                                @endif
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                                        <h6 class="fw-bold mb-0 profile-recipe-title">{{ $recipe->title }}</h6>
+                                                        <i class="bi bi-heart-fill" style="color: #BE3144;"></i>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="text-muted profile-recipe-meta"><i class="bi bi-clock"></i> {{ $recipe->cooking_time }} min</span>
+                                                        <span class="text-muted profile-recipe-meta">{{ ucfirst($recipe->difficulty) }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
                                     </div>
-                                </div>
+                                @empty
+                                    <div class="col-12">
+                                        <div class="card profile-recipe-card">
+                                            <div class="card-body text-center py-5">
+                                                <h6 class="fw-bold mb-2 profile-recipe-title">Encara no tens plats favorits</h6>
+                                                <p class="text-muted mb-0 profile-recipe-meta">Quan marquis receptes amb el cor, apareixeran ací.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforelse
                             </div>
                         </div>
-                        <!-- Més recetes... -->
                     </div>
                 </div>
             </div>

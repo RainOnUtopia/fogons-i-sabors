@@ -16,12 +16,16 @@ class FavoriteController extends Controller
      */
     public function store(Request $request, Recipe $recipe): RedirectResponse
     {
-        // Evitam errors si encara no s'ha executat la migraciÃ³ de favorits.
+        // Evitam errors si encara no s'ha executat la migració de favorits.
         if (! Schema::hasTable('favorites')) {
             return Redirect::back()->with('status', 'favorites-unavailable');
         }
 
         $request->user()->favoriteRecipes()->syncWithoutDetaching([$recipe->id]);
+
+        if ($request->input('redirect_tab') === 'favorites') {
+            return Redirect::route('profile.show', ['tab' => 'favorites']);
+        }
 
         return Redirect::back();
     }
@@ -31,12 +35,16 @@ class FavoriteController extends Controller
      */
     public function destroy(Request $request, Recipe $recipe): RedirectResponse
     {
-        // Evitam errors si encara no s'ha executat la migraciÃ³ de favorits.
+        // Evitam errors si encara no s'ha executat la migració de favorits.
         if (! Schema::hasTable('favorites')) {
             return Redirect::back()->with('status', 'favorites-unavailable');
         }
 
         $request->user()->favoriteRecipes()->detach($recipe->id);
+
+        if ($request->input('redirect_tab') === 'favorites') {
+            return Redirect::route('profile.show', ['tab' => 'favorites']);
+        }
 
         return Redirect::back();
     }

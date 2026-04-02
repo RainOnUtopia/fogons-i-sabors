@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $activeProfileTab = request('tab') === 'favorites' ? 'favorites' : 'pantry';
+    @endphp
     <div class="page-grid-bg profile-show-bg">
         <div class="container profile-show-container">
 
@@ -77,7 +80,7 @@
                             </form>
                             <div class="d-flex justify-content-between text-center mt-4">
                                 <div>
-                                    <div class="fw-bold profile-stat-value">12</div>
+                                    <div class="fw-bold profile-stat-value">{{ $userRecipes->count() }}</div>
                                     <div class="text-muted profile-stat-label">Receptes</div>
                                 </div>
                                 <div>
@@ -111,30 +114,30 @@
                     <!-- SECCIÓ 3: TABS CENTRALS -->
                     <ul class="nav nav-tabs mb-4 profile-tabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active fw-bold"
+                            <button class="nav-link {{ $activeProfileTab === 'pantry' ? 'active' : '' }} fw-bold"
                                 id="profile-pantry-tab"
                                 data-bs-toggle="tab"
                                 data-bs-target="#profile-pantry-pane"
                                 type="button"
                                 role="tab"
                                 aria-controls="profile-pantry-pane"
-                                aria-selected="true">El meu rebost</button>
+                                aria-selected="{{ $activeProfileTab === 'pantry' ? 'true' : 'false' }}">El meu rebost</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link fw-bold"
+                            <button class="nav-link {{ $activeProfileTab === 'favorites' ? 'active' : '' }} fw-bold"
                                 id="profile-favorites-tab"
                                 data-bs-toggle="tab"
                                 data-bs-target="#profile-favorites-pane"
                                 type="button"
                                 role="tab"
                                 aria-controls="profile-favorites-pane"
-                                aria-selected="false">Plats favorits</button>
+                                aria-selected="{{ $activeProfileTab === 'favorites' ? 'true' : 'false' }}">Plats favorits</button>
                         </li>
                     </ul>
 
                     <!-- Contingut separat per pestanyes mantenint la graella Bootstrap existent -->
                     <div class="tab-content">
-                        <div class="tab-pane fade show active"
+                        <div class="tab-pane fade {{ $activeProfileTab === 'pantry' ? 'show active' : '' }}"
                             id="profile-pantry-pane"
                             role="tabpanel"
                             aria-labelledby="profile-pantry-tab"
@@ -152,10 +155,105 @@
                                         </div>
                                     </div>
                                 @endif
+
+                                @forelse ($userRecipes as $recipe)
+                                    <!-- Recepta pròpia mostrada al rebost mantenint la targeta existent del perfil -->
+                                    <div class="col-md-4">
+                                        <div style="position: relative;">
+                                            <a href="{{ route('recipes.show', $recipe) }}" class="text-decoration-none d-block">
+                                                <div class="card h-100 profile-recipe-card">
+                                                    @if($recipe->image)
+                                                        <img src="{{ asset('storage/' . $recipe->image) }}" alt="{{ $recipe->title }}" class="card-img-top profile-recipe-image">
+                                                    @else
+                                                        <div class="card-img-top profile-recipe-image d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #e0e0e0 0%, #f3f3f3 100%); color: #999; font-size: 2rem;">
+                                                            <i class="bi bi-image"></i>
+                                                        </div>
+                                                    @endif
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                                            <h6 class="fw-bold mb-0 profile-recipe-title">{{ $recipe->title }}</h6>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span class="text-muted profile-recipe-meta"><i class="bi bi-clock"></i> {{ $recipe->cooking_time }} min</span>
+                                                            <span class="text-muted profile-recipe-meta">{{ ucfirst($recipe->difficulty) }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+
+                                            @if(auth()->check() && auth()->id() === $user->id)
+                                                <!-- Accions ràpides del rebost: editar i eliminar la recepta pròpia -->
+                                                <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; z-index: 2;">
+                                                    <a href="{{ route('recipes.edit', $recipe) }}"
+                                                        title="Editar recepta"
+                                                        aria-label="Editar recepta"
+                                                        style="width: 34px; height: 34px; border-radius: 50%; background: white; color: #BE3144; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                                                        <i class="bi bi-pencil-fill"></i>
+                                                    </a>
+                                                    <button type="button"
+                                                        title="Eliminar recepta"
+                                                        aria-label="Eliminar recepta"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteRecipeModal{{ $recipe->id }}"
+                                                        style="width: 34px; height: 34px; border-radius: 50%; background: white; color: #BE3144; border: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); display: flex; align-items: center; justify-content: center;">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    @if(auth()->check() && auth()->id() === $user->id)
+                                        <!-- Confirmació abans d'eliminar una recepta del rebost -->
+                                        <div class="modal fade" id="deleteRecipeModal{{ $recipe->id }}" tabindex="-1" aria-labelledby="deleteRecipeModalLabel{{ $recipe->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content danger-modal-content">
+                                                    <form method="POST" action="{{ route('recipes.destroy', $recipe) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <div class="modal-header danger-modal-header">
+                                                            <h5 class="modal-title text-danger d-flex align-items-center gap-2" id="deleteRecipeModalLabel{{ $recipe->id }}">
+                                                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                                                Confirmar eliminació
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <p class="text-muted small mb-0">
+                                                                Vols eliminar definitivament la recepta <strong>{{ $recipe->title }}</strong>? També desapareixerà del teu rebost i del llistat general de receptes.
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="modal-footer danger-modal-footer">
+                                                            <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                                                                Cancel·lar
+                                                            </button>
+                                                            <button type="submit" class="btn btn-danger danger-btn-rounded">
+                                                                <i class="bi bi-trash3 me-1"></i>
+                                                                Eliminar recepta
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @empty
+                                    <div class="col-12">
+                                        <div class="card profile-recipe-card">
+                                            <div class="card-body text-center py-5">
+                                                <h6 class="fw-bold mb-2 profile-recipe-title">Encara no has creat cap recepta</h6>
+                                                <p class="text-muted mb-0 profile-recipe-meta">Quan publiquis una recepta, apareixerà aquí dins del teu rebost.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforelse
                             </div>
                         </div>
 
-                        <div class="tab-pane fade"
+                        <div class="tab-pane fade {{ $activeProfileTab === 'favorites' ? 'show active' : '' }}"
                             id="profile-favorites-pane"
                             role="tabpanel"
                             aria-labelledby="profile-favorites-tab"
@@ -164,34 +262,51 @@
                                 @forelse ($favoriteRecipes as $recipe)
                                     <!-- Recepta favorita real mostrada a la graella existent -->
                                     <div class="col-md-4">
-                                        <a href="{{ route('recipes.show', $recipe) }}" class="text-decoration-none">
-                                            <div class="card h-100 profile-recipe-card">
-                                                @if($recipe->image)
-                                                    <img src="{{ asset('storage/' . $recipe->image) }}" alt="{{ $recipe->title }}" class="card-img-top profile-recipe-image">
-                                                @else
-                                                    <div class="card-img-top profile-recipe-image d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #e0e0e0 0%, #f3f3f3 100%); color: #999; font-size: 2rem;">
-                                                        <i class="bi bi-image"></i>
-                                                    </div>
-                                                @endif
-                                                <div class="card-body">
-                                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                                        <h6 class="fw-bold mb-0 profile-recipe-title">{{ $recipe->title }}</h6>
-                                                        <i class="bi bi-heart-fill" style="color: #BE3144;"></i>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="text-muted profile-recipe-meta"><i class="bi bi-clock"></i> {{ $recipe->cooking_time }} min</span>
-                                                        <span class="text-muted profile-recipe-meta">{{ ucfirst($recipe->difficulty) }}</span>
+                                        <div style="position: relative;">
+                                            <a href="{{ route('recipes.show', $recipe) }}" class="text-decoration-none d-block">
+                                                <div class="card h-100 profile-recipe-card">
+                                                    @if($recipe->image)
+                                                        <img src="{{ asset('storage/' . $recipe->image) }}" alt="{{ $recipe->title }}" class="card-img-top profile-recipe-image">
+                                                    @else
+                                                        <div class="card-img-top profile-recipe-image d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #e0e0e0 0%, #f3f3f3 100%); color: #999; font-size: 2rem;">
+                                                            <i class="bi bi-image"></i>
+                                                        </div>
+                                                    @endif
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                                            <h6 class="fw-bold mb-0 profile-recipe-title">{{ $recipe->title }}</h6>
+                                                            <i class="bi bi-heart-fill" style="color: #BE3144;"></i>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span class="text-muted profile-recipe-meta"><i class="bi bi-clock"></i> {{ $recipe->cooking_time }} min</span>
+                                                            <span class="text-muted profile-recipe-meta">{{ ucfirst($recipe->difficulty) }}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </a>
+                                            </a>
+
+                                            <!-- Acció ràpida per treure la recepta dels favorits sense eliminar-la -->
+                                            <form method="POST"
+                                                action="{{ route('recipes.favorite.destroy', $recipe) }}"
+                                                style="position: absolute; top: 12px; right: 12px; z-index: 2; margin: 0;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" name="redirect_tab" value="favorites">
+                                                <button type="submit"
+                                                    title="Treure de favorits"
+                                                    aria-label="Treure de favorits"
+                                                    style="width: 34px; height: 34px; border-radius: 50%; background: white; color: #BE3144; border: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); display: flex; align-items: center; justify-content: center;">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 @empty
                                     <div class="col-12">
                                         <div class="card profile-recipe-card">
                                             <div class="card-body text-center py-5">
                                                 <h6 class="fw-bold mb-2 profile-recipe-title">Encara no tens plats favorits</h6>
-                                                <p class="text-muted mb-0 profile-recipe-meta">Quan marquis receptes amb el cor, apareixeran ací.</p>
+                                                <p class="text-muted mb-0 profile-recipe-meta">Quan marquis receptes amb el cor, apareixeran aquí.</p>
                                             </div>
                                         </div>
                                     </div>
@@ -202,6 +317,5 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection

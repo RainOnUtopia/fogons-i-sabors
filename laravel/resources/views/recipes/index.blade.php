@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    // Conservam la resta de paràmetres GET quan l'usuari cerca o canvia la dificultat.
+    $searchFormParams = request()->except('search', 'page');
+    $difficultyFilterParams = request()->except('difficulty', 'page');
+@endphp
 <div style="width: 100vw; min-height: 100vh; background-color: #f4efea; background-image: linear-gradient(0deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(200, 200, 200, 0.05) 25%, rgba(200, 200, 200, 0.05) 26%, transparent 27%, transparent 74%, rgba(200, 200, 200, 0.05) 75%, rgba(200, 200, 200, 0.05) 76%, transparent 77%, transparent); background-size: 50px 50px; padding: 40px 20px; margin: 0; margin-left: calc(-50vw + 50%); display: flex; flex-direction: column;">
 
     <!-- HEADER -->
@@ -25,7 +30,11 @@
 
             <!-- BUSCADOR -->
             <form method="GET" style="flex: 1; min-width: 300px;">
-                <input type="hidden" name="difficulty" value="{{ $currentDifficulty }}">
+                @foreach($searchFormParams as $paramName => $paramValue)
+                    @if(!is_array($paramValue))
+                        <input type="hidden" name="{{ $paramName }}" value="{{ $paramValue }}">
+                    @endif
+                @endforeach
                 <div style="position: relative; display: flex; align-items: center;">
                     <i class="bi bi-search" style="position: absolute; left: 16px; font-size: 16px; color: #9a9a9a; pointer-events: none; z-index: 1;"></i>
                     <input
@@ -38,31 +47,33 @@
                 </div>
             </form>
 
-            <!-- SELECTOR GRID/LISTA (SOLO UI) -->
+            <!-- Controls visuals: vista actual i accés als filtres -->
             <div style="display: flex; align-items: center; gap: 8px;">
-                <button title="Vista grid" style="width: 40px; height: 40px; padding: 0; background-color: #be3144; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <button type="button" title="Vista grid" aria-label="Vista grid activa" style="width: 40px; height: 40px; padding: 0; background-color: #be3144; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: default; display: flex; align-items: center; justify-content: center;">
                     <i class="bi bi-grid-3x3-gap"></i>
                 </button>
-                <button title="Vista lista" style="width: 40px; height: 40px; padding: 0; background-color: transparent; color: #7a7a7a; border: 1px solid #e8e8e8; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;">
-                    <i class="bi bi-list-ul"></i>
+                <button type="button" title="Filtres" aria-label="Mostrar o amagar filtres" data-bs-toggle="collapse" data-bs-target="#recipesFiltersCollapse" aria-expanded="true" aria-controls="recipesFiltersCollapse" style="width: 40px; height: 40px; padding: 0; background-color: transparent; color: #7a7a7a; border: 1px solid #e8e8e8; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;">
+                    <i class="bi bi-funnel"></i>
                 </button>
             </div>
         </div>
 
         <!-- FILTROS -->
-        <div style="padding: 20px 36px; border-bottom: 1px solid #e8e8e8; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-            <a href="{{ route('recipes.index') }}" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; background-color: {{ $currentDifficulty === 'tots' ? '#be3144' : '#f3f3f3' }}; color: {{ $currentDifficulty === 'tots' ? 'white' : '#7a7a7a' }}; text-transform: uppercase; letter-spacing: 0.4px;">
-                TOTS
-            </a>
-            <a href="{{ route('recipes.index', ['difficulty' => 'fàcil']) }}" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; background-color: {{ $currentDifficulty === 'fàcil' ? '#be3144' : '#f3f3f3' }}; color: {{ $currentDifficulty === 'fàcil' ? 'white' : '#7a7a7a' }}; text-transform: uppercase; letter-spacing: 0.4px;">
-                FÀCIL
-            </a>
-            <a href="{{ route('recipes.index', ['difficulty' => 'mitjà']) }}" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; background-color: {{ $currentDifficulty === 'mitjà' ? '#be3144' : '#f3f3f3' }}; color: {{ $currentDifficulty === 'mitjà' ? 'white' : '#7a7a7a' }}; text-transform: uppercase; letter-spacing: 0.4px;">
-                MITJÀ
-            </a>
-            <a href="{{ route('recipes.index', ['difficulty' => 'difícil']) }}" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; background-color: {{ $currentDifficulty === 'difícil' ? '#be3144' : '#f3f3f3' }}; color: {{ $currentDifficulty === 'difícil' ? 'white' : '#7a7a7a' }}; text-transform: uppercase; letter-spacing: 0.4px;">
-                DIFÍCIL
-            </a>
+        <div id="recipesFiltersCollapse" class="collapse show">
+            <div style="padding: 20px 36px; border-bottom: 1px solid #e8e8e8; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                <a href="{{ route('recipes.index', $difficultyFilterParams) }}" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; background-color: {{ $currentDifficulty === 'tots' ? '#be3144' : '#f3f3f3' }}; color: {{ $currentDifficulty === 'tots' ? 'white' : '#7a7a7a' }}; text-transform: uppercase; letter-spacing: 0.4px;">
+                    TOTS
+                </a>
+                <a href="{{ route('recipes.index', array_merge($difficultyFilterParams, ['difficulty' => 'fàcil'])) }}" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; background-color: {{ $currentDifficulty === 'fàcil' ? '#be3144' : '#f3f3f3' }}; color: {{ $currentDifficulty === 'fàcil' ? 'white' : '#7a7a7a' }}; text-transform: uppercase; letter-spacing: 0.4px;">
+                    FÀCIL
+                </a>
+                <a href="{{ route('recipes.index', array_merge($difficultyFilterParams, ['difficulty' => 'mitjà'])) }}" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; background-color: {{ $currentDifficulty === 'mitjà' ? '#be3144' : '#f3f3f3' }}; color: {{ $currentDifficulty === 'mitjà' ? 'white' : '#7a7a7a' }}; text-transform: uppercase; letter-spacing: 0.4px;">
+                    MITJÀ
+                </a>
+                <a href="{{ route('recipes.index', array_merge($difficultyFilterParams, ['difficulty' => 'difícil'])) }}" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; background-color: {{ $currentDifficulty === 'difícil' ? '#be3144' : '#f3f3f3' }}; color: {{ $currentDifficulty === 'difícil' ? 'white' : '#7a7a7a' }}; text-transform: uppercase; letter-spacing: 0.4px;">
+                    DIFÍCIL
+                </a>
+            </div>
         </div>
 
         <!-- GRILL DE RECEPTES -->
@@ -110,6 +121,7 @@
                                             @method('DELETE')
                                         @endif
                                         <button type="submit"
+                                            class="favorite-toggle-btn favorite-toggle-btn-floating"
                                             aria-label="{{ $isFavorite ? 'Treure de favorits' : 'Afegir a favorits' }}"
                                             style="width: 40px; height: 40px; border-radius: 50%; background: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); transition: all 0.2s ease; font-size: 18px; color: {{ $isFavorite ? '#BE3144' : '#ccc' }};">
                                             <i class="bi {{ $isFavorite ? 'bi-heart-fill' : 'bi-heart' }}"></i>
@@ -158,7 +170,7 @@
 
                                 <!-- BOTÓN VEURE DETALLS -->
                                 <button onclick="event.preventDefault(); window.location.href = '{{ route('recipes.show', $recipe) }}';" style="width: 100%; padding: 12px; background: transparent; color: #be3144; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; text-align: center;">
-                                    Veure detalls →
+                                    Veure detalls &rarr;
                                 </button>
                             </div>
                         </div>

@@ -43,6 +43,7 @@
                                 @method('DELETE')
                             @endif
                             <button type="submit"
+                                class="favorite-toggle-btn favorite-toggle-btn-primary"
                                 style="width: 100%; height: 44px; background-color: #be3144; color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
                                 <i class="bi {{ $isFavorite ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                                 <span>{{ $isFavorite ? 'Treure de Favorits' : 'Desar a Preferits' }}</span>

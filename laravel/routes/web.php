@@ -21,7 +21,10 @@ Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index'
 
 Route::middleware('auth')->group(function () {
     Route::get('/recipes/create', [RecipeController::class, 'create'])->name('recipes.create');
+    Route::get('/recipes/{recipe}/edit', [RecipeController::class, 'edit'])->name('recipes.edit');
     Route::post('/recipes', [RecipeController::class, 'store'])->name('recipes.store');
+    Route::patch('/recipes/{recipe}', [RecipeController::class, 'update'])->name('recipes.update');
+    Route::delete('/recipes/{recipe}', [RecipeController::class, 'destroy'])->name('recipes.destroy');
     Route::post('/recipes/{recipe}/favorite', [FavoriteController::class, 'store'])->name('recipes.favorite.store');
     Route::delete('/recipes/{recipe}/favorite', [FavoriteController::class, 'destroy'])->name('recipes.favorite.destroy');
 

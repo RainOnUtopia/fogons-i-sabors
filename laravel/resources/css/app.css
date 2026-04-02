@@ -2928,17 +2928,21 @@ body.bg-light .edit-container {
     border-bottom: 2px solid #f3f3f3;
 }
 
-.profile-tab-active-custom {
+.profile-tabs .nav-link {
+    border: none;
+    background: transparent;
+}
+
+/* Estat visual actiu/inactiu de les pestanyes del perfil */
+.profile-tabs .nav-link.active {
     border: none;
     border-bottom: 3px solid var(--primary);
     color: var(--primary);
     background: transparent;
 }
 
-.profile-tab-inactive-custom {
-    border: none;
+.profile-tabs .nav-link:not(.active) {
     color: var(--text-main);
-    background: transparent;
 }
 
 .profile-create-card-custom {

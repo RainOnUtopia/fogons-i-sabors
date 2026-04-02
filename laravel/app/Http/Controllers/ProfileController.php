@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -21,8 +22,18 @@ class ProfileController extends Controller
      */
     public function show(Request $request): View
     {
+        $user = $request->user();
+        $favoriteRecipes = collect();
+
+        // Carregam els plats favorits sense N+1 i nomÃ©s si la taula pivot existeix.
+        if (Schema::hasTable('favorites')) {
+            $user->load('favoriteRecipes');
+            $favoriteRecipes = $user->favoriteRecipes;
+        }
+
         return view('profile.show', [
-            'user' => $request->user(),
+            'user' => $user,
+            'favoriteRecipes' => $favoriteRecipes,
         ]);
     }
 
@@ -78,7 +89,20 @@ class ProfileController extends Controller
     }
 
     /**
-     * Elimina el compte de l'usuari autenticat del sistema.
+     * Actualitza la descripció personal de l'usuari (Sobre mi).
+     */
+    public function updateAbout(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'about_me' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $request->user()->update(['about_me' => $request->about_me]);
+
+        return Redirect::route('profile.show')->with('status', 'about-updated');
+    }
+
+    /**
      */
     public function destroy(Request $request): RedirectResponse
     {

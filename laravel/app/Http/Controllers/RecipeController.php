@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class RecipeController extends Controller
@@ -16,23 +17,23 @@ class RecipeController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Recipe::query();
+        $search = trim((string) $request->input('search', ''));
+        $currentDifficulty = $request->input('difficulty', 'tots');
         $favoriteRecipeIds = [];
 
-        // BÚSQUEDA por título, chef o ingredientes
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('chef_name', 'like', "%{$search}%")
-                  ->orWhereJsonContains('tags', $search);
+        // Aplicam els filtres només quan existeixen per mantenir la consulta clara i incremental.
+        $query = Recipe::query()
+            ->when($search !== '', function ($recipeQuery) use ($search) {
+                $recipeQuery->where(function ($searchQuery) use ($search) {
+                    $searchQuery->where('title', 'like', "%{$search}%")
+                        ->orWhere('chef_name', 'like', "%{$search}%")
+                        ->orWhereJsonContains('tags', $search)
+                        ->orWhereJsonContains('ingredients', $search);
+                });
+            })
+            ->when($currentDifficulty !== 'tots', function ($recipeQuery) use ($currentDifficulty) {
+                $recipeQuery->where('difficulty', $currentDifficulty);
             });
-        }
-
-        // FILTRO por dificultad
-        if ($request->filled('difficulty') && $request->difficulty !== 'tots') {
-            $query->where('difficulty', $request->difficulty);
-        }
 
         // ORDENAMIENTO
         $sortBy = $request->input('sort', 'created_at');
@@ -48,10 +49,7 @@ class RecipeController extends Controller
         // PAGINACIÓN (12 items para grid 3 columnas)
         $recipes = $query->paginate(12)->withQueryString();
 
-        // Parámetros actuales para filtros
-        $currentDifficulty = $request->input('difficulty', 'tots');
-
-        // Carregam els IDs favorits una sola vegada i nomÃ©s si la taula pivot ja existeix.
+        // Carregam els IDs favorits una sola vegada i només si la taula pivot ja existeix.
         if ($request->user() && Schema::hasTable('favorites')) {
             $favoriteRecipeIds = $request->user()
                 ->favoriteRecipes()
@@ -71,39 +69,25 @@ class RecipeController extends Controller
     }
 
     /**
+     * Mostrar el formulari d'edició només al propietari de la recepta.
+     */
+    public function edit(Request $request, Recipe $recipe): View
+    {
+        $this->ensureRecipeOwner($request, $recipe);
+
+        return view('recipes.create', [
+            'recipe' => $recipe,
+        ]);
+    }
+
+    /**
      * Guardar receta nueva (POST)
      */
     public function store(Request $request): RedirectResponse
     {
-        // VALIDACIÓN
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'difficulty' => ['required', 'string', 'in:fàcil,mitjà,difícil'],
-            'cooking_time' => ['required', 'integer', 'min:1', 'max:1000'],
-            'tags' => ['nullable', 'string'],
-            'description' => ['nullable', 'string', 'max:1000'],
-            'ingredients' => ['nullable', 'string'],
-            'chef_notes' => ['nullable', 'string', 'max:500'],
-        ]);
+        $validated = $this->prepareRecipePayload($request);
 
-        // Procesar tags (convertir string a array)
-        $tags = [];
-        if ($validated['tags'] ?? null) {
-            $tags = array_map('trim', explode(',', $validated['tags']));
-            $tags = array_filter($tags);
-            $tags = array_map('strtoupper', $tags);
-        }
-        $validated['tags'] = $tags;
-
-        // Procesar ingredientes (convertir string a array)
-        $ingredients = [];
-        if ($validated['ingredients'] ?? null) {
-            $ingredients = array_map('trim', explode("\n", $validated['ingredients']));
-            $ingredients = array_filter($ingredients);
-        }
-        $validated['ingredients'] = $ingredients;
-
-        // Nom del chef: usuari autenticat o anònim
+        // Nom del xef: usuari autenticat o anònim
         if ($request->user()) {
             $validated['chef_name'] = $request->user()->name;
             $validated['chef_avatar'] = $request->user()->avatar ?? null;
@@ -116,10 +100,42 @@ class RecipeController extends Controller
         // Default rating
         $validated['rating'] = 0;
 
-        // Crear la receta
+        // Crear la recepta
         $recipe = Recipe::create($validated);
 
         return Redirect::route('recipes.show', $recipe)->with('status', 'recipe-created');
+    }
+
+    /**
+     * Actualitzar una recepta existent del mateix autor.
+     */
+    public function update(Request $request, Recipe $recipe): RedirectResponse
+    {
+        $this->ensureRecipeOwner($request, $recipe);
+
+        $validated = $this->prepareRecipePayload($request, $recipe);
+        $validated['chef_name'] = $request->user()->name;
+        $validated['chef_avatar'] = $request->user()->avatar ?? null;
+
+        $recipe->update($validated);
+
+        return Redirect::route('recipes.show', $recipe)->with('status', 'recipe-updated');
+    }
+
+    /**
+     * Eliminar una recepta pròpia i netejar la seva imatge del storage.
+     */
+    public function destroy(Request $request, Recipe $recipe): RedirectResponse
+    {
+        $this->ensureRecipeOwner($request, $recipe);
+
+        if ($recipe->image && Storage::disk('public')->exists($recipe->image)) {
+            Storage::disk('public')->delete($recipe->image);
+        }
+
+        $recipe->delete();
+
+        return Redirect::route('profile.show')->with('status', 'recipe-deleted');
     }
 
     /**
@@ -127,7 +143,7 @@ class RecipeController extends Controller
      */
     public function show(Request $request, Recipe $recipe): View
     {
-        // Consultam l'estat actual del favorit nomÃ©s si la infraestructura ja estÃ  migrada.
+        // Consultam l'estat actual del favorit només si la infraestructura ja està migrada.
         $isFavorite = false;
 
         if ($request->user() && Schema::hasTable('favorites')) {
@@ -138,5 +154,56 @@ class RecipeController extends Controller
         }
 
         return view('recipes.show', compact('recipe', 'isFavorite'));
+    }
+
+    /**
+     * Validam i preparam les dades comunes del formulari de receptes.
+     */
+    private function prepareRecipePayload(Request $request, ?Recipe $recipe = null): array
+    {
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'difficulty' => ['required', 'string', 'in:fàcil,mitjà,difícil'],
+            'cooking_time' => ['required', 'integer', 'min:1', 'max:1000'],
+            'tags' => ['nullable', 'string'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'ingredients' => ['nullable', 'string'],
+            'chef_notes' => ['nullable', 'string', 'max:500'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+        ]);
+
+        // Convertim les etiquetes de text a array JSON.
+        $validated['tags'] = ($validated['tags'] ?? null)
+            ? array_values(array_map('strtoupper', array_filter(array_map('trim', explode(',', $validated['tags'])))))
+            : [];
+
+        // Convertim els ingredients de text a array JSON.
+        $validated['ingredients'] = ($validated['ingredients'] ?? null)
+            ? array_values(array_filter(array_map('trim', explode("\n", $validated['ingredients']))))
+            : [];
+
+        // Substituïm la imatge antiga només si l'usuari n'ha pujat una de nova.
+        if ($request->hasFile('image')) {
+            if ($recipe?->image && Storage::disk('public')->exists($recipe->image)) {
+                Storage::disk('public')->delete($recipe->image);
+            }
+
+            $validated['image'] = $request->file('image')->store('recipes', 'public');
+        } else {
+            unset($validated['image']);
+        }
+
+        return $validated;
+    }
+
+    /**
+     * Restringim l'edició a l'autor original de la recepta.
+     */
+    private function ensureRecipeOwner(Request $request, Recipe $recipe): void
+    {
+        abort_unless(
+            $request->user() && (int) $recipe->user_id === (int) $request->user()->id,
+            403
+        );
     }
 }

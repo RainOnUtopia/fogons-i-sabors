@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -59,5 +60,13 @@ class User extends Authenticatable
     public function favoriteRecipes(): BelongsToMany
     {
         return $this->belongsToMany(Recipe::class, 'favorites')->withTimestamps();
+    }
+
+    /**
+     * Receptes creades per l'usuari.
+     */
+    public function recipes(): HasMany
+    {
+        return $this->hasMany(Recipe::class);
     }
 }

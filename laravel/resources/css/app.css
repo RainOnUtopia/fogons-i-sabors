@@ -2892,9 +2892,12 @@ body.bg-light .edit-container {
 }
 
 .profile-card-title,
-.profile-stat-value,
-.profile-create-link {
+.profile-stat-value {
     color: var(--primary);
+}
+
+.profile-create-link {
+    color: var(--text-main);
 }
 
 .profile-sidebar-card,
@@ -2931,6 +2934,12 @@ body.bg-light .edit-container {
 .profile-tabs .nav-link {
     border: none;
     background: transparent;
+    color: var(--primary);
+    font-weight: 600;
+    padding: 0.85rem 0.25rem;
+    margin-right: 1.5rem;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 /* Estat visual actiu/inactiu de les pestanyes del perfil */
@@ -2939,10 +2948,24 @@ body.bg-light .edit-container {
     border-bottom: 3px solid var(--primary);
     color: var(--primary);
     background: transparent;
+    font-weight: 700;
 }
 
 .profile-tabs .nav-link:not(.active) {
-    color: var(--text-main);
+    color: var(--primary);
+}
+
+.profile-tabs .nav-link:hover {
+    color: var(--primary-hover);
+    border-bottom-color: var(--primary-hover);
+}
+
+/* Color específic de la pestanya de plats favorits per diferenciar-la del rebost */
+#profile-favorites-tab,
+#profile-favorites-tab:not(.active),
+#profile-favorites-tab.active,
+#profile-favorites-tab:hover {
+    color: #4f646f;
 }
 
 .profile-create-card-custom {
@@ -2951,6 +2974,42 @@ body.bg-light .edit-container {
     min-height: 180px;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Hover reutilitzable dels botons de favorits */
+.favorite-toggle-btn {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.favorite-toggle-btn:hover {
+    transform: translateY(-2px);
+}
+
+.favorite-toggle-btn:active {
+    transform: translateY(0);
+}
+
+.favorite-toggle-btn-floating:hover {
+    color: var(--primary) !important;
+    background-color: #fff5f5 !important;
+    box-shadow: var(--shadow-primary-hover) !important;
+}
+
+.favorite-toggle-btn-floating:active {
+    box-shadow: var(--shadow-primary-active) !important;
+}
+
+.favorite-toggle-btn-primary:hover {
+    background-color: var(--primary-hover) !important;
+    box-shadow: var(--shadow-primary-hover) !important;
+}
+
+.favorite-toggle-btn-primary:active {
+    box-shadow: var(--shadow-primary-active) !important;
 }
 
 .profile-create-link {

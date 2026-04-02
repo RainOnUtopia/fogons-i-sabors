@@ -23,9 +23,16 @@ class ProfileController extends Controller
     public function show(Request $request): View
     {
         $user = $request->user();
+
+        // Carregam les receptes pròpies del rebost en una sola consulta ordenades per novetat.
+        $user->load([
+            'recipes' => fn ($query) => $query->latest(),
+        ]);
+
+        $userRecipes = $user->recipes;
         $favoriteRecipes = collect();
 
-        // Carregam els plats favorits sense N+1 i nomÃ©s si la taula pivot existeix.
+        // Carregam els plats favorits sense N+1 i només si la taula pivot existeix.
         if (Schema::hasTable('favorites')) {
             $user->load('favoriteRecipes');
             $favoriteRecipes = $user->favoriteRecipes;
@@ -33,6 +40,7 @@ class ProfileController extends Controller
 
         return view('profile.show', [
             'user' => $user,
+            'userRecipes' => $userRecipes,
             'favoriteRecipes' => $favoriteRecipes,
         ]);
     }

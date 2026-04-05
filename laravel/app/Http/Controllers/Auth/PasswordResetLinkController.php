@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class PasswordResetLinkController extends Controller
 {
     /**
-     * Display the password reset link request view.
+     * Mostra la vista de sol·licitud d'enllaç de reinici de contrasenya.
      */
     public function create(): View
     {
@@ -20,7 +20,7 @@ class PasswordResetLinkController extends Controller
     }
 
     /**
-     * Handle an incoming password reset link request.
+     * Gestiona la petició d'enllaç de reinici de contrasenya.
      *
      * @throws ValidationException
      */
@@ -35,9 +35,9 @@ class PasswordResetLinkController extends Controller
             'email' => 'correu electrònic',
         ]);
 
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
+        // Enviarem l'enllaç de reinici de contrasenya a aquest usuari. Un cop hàgim
+        // intentat enviar l'enllaç, examinarem la resposta i veurem el missatge que
+        // hem de mostrar a l'usuari. Finalment, enviarem una resposta adequada.
         $status = Password::sendResetLink(
             $request->only('email')
         );
@@ -51,7 +51,7 @@ class PasswordResetLinkController extends Controller
                 ->withErrors(['email' => 'No hem trobat cap usuari amb aquest correu electrònic.']);
         }
 
-        if (defined(Password::class.'::RESET_THROTTLED') && $status === Password::RESET_THROTTLED) {
+        if (defined(Password::class . '::RESET_THROTTLED') && $status === Password::RESET_THROTTLED) {
             return back()->withInput($request->only('email'))
                 ->withErrors(['email' => 'Has demanat massa enllaços en poc temps. Espera uns minuts i torna-ho a provar.']);
         }

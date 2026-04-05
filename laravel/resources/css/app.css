@@ -3021,3 +3021,8 @@ body.bg-light .edit-container {
     object-fit: cover;
     height: 120px;
 }
+.profile-tab-inactive-custom {
+    border: none;
+    color: var(--text-main);
+    background: transparent;
+}

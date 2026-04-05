@@ -16,7 +16,7 @@ use Illuminate\View\View;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Mostra la vista de registre.
      */
     public function create(): View
     {
@@ -24,7 +24,7 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
+     * Gestiona la petició de registre.
      *
      * @throws ValidationException
      */
@@ -32,8 +32,11 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'confirmed', Rules\Password::min(8)->numbers()],
+            'city' => ['nullable', 'string', 'max:255'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'about_me' => ['nullable', 'string'],
         ], [
             'name.required' => 'El nom és obligatori.',
             'name.string' => 'El nom no té un format vàlid.',
@@ -65,6 +68,9 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'city' => $request->city,
+            'country' => $request->country,
+            'about_me' => $request->about_me,
         ]);
 
         event(new Registered($user));

@@ -1,10 +1,6 @@
 <section>
 
-    {{-- Danger Zone banner --}}
-    <div class="d-flex align-items-center gap-2 mb-4 p-3 danger-zone-banner">
-        <i class="bi bi-exclamation-triangle-fill text-danger danger-zone-icon"></i>
-        <span class="fw-bold text-danger danger-zone-label">Danger Zone</span>
-    </div>
+
 
     <button type="button"
         class="btn btn-danger danger-btn-rounded"

@@ -97,20 +97,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Actualitza la descripció personal de l'usuari (Sobre mi).
-     */
-    public function updateAbout(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'about_me' => ['nullable', 'string', 'max:500'],
-        ]);
-
-        $request->user()->update(['about_me' => $request->about_me]);
-
-        return Redirect::route('profile.show')->with('status', 'about-updated');
-    }
-
-    /**
+	* Elimina el compte de l'usuari autenticat del sistema.
      */
     public function destroy(Request $request): RedirectResponse
     {

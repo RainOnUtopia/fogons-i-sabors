@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 class ProfileUpdateRequest extends FormRequest
 {
     /**
-     * Get the validation rules that apply to the request.
+     * Obté les regles de validació que s'apliquen a la petició.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -26,6 +26,9 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'city' => ['nullable', 'string', 'max:255'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'about_me' => ['nullable', 'string'],
         ];
     }
 }

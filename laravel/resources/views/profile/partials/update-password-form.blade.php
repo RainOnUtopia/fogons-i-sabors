@@ -18,7 +18,7 @@
             <label for="update_password_password" class="edit-form-label">{{ __('profile.new_password') }}</label>
             <input id="update_password_password" name="password" type="password"
                 class="input-ui @if($errors->updatePassword->has('password')) is-invalid @endif"
-                autocomplete="new-password">
+                autocomplete="new-password" minlength="8" pattern="(?=.*\d).{8,}" title="La contrasenya ha de tenir mínim 8 caràcters i incloure almenys un número">
             @if($errors->updatePassword->has('password'))
                 <div class="edit-form-error">{{ $errors->updatePassword->first('password') }}</div>
             @endif

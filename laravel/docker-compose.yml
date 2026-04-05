@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
     ports:
       # Exposem el port a l'amfitrió, canviat a 33060 per evitar conflictes amb el MySQL local
-      - "33061:3306"
+      - "33060:3306"
     environment:
       MYSQL_DATABASE: ${DB_DATABASE:-fogonsisabors}
       MYSQL_USER: ${DB_USERNAME:-fogonsisabors}
@@ -49,6 +49,31 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-fogonsisabors}
     volumes:
       - dbdata:/var/lib/mysql
+    networks:
+      - laravel
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: fogonsisabors_phpmyadmin
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_USER=${DB_USERNAME:-fogonsisabors}
+      - PMA_PASSWORD=${DB_PASSWORD:-fogonsisabors}
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - laravel
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: fogonsisabors_mailpit
+    ports:
+      - "8025:8025" # interfaz web
+      - "1025:1025" # SMTP
     networks:
       - laravel
 

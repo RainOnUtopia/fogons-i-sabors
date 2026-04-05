@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CheckAdminRole
 {
     /**
-     * Handle an incoming request.
+     * Gestiona una petició entrant.
      *
      * @param  Closure(Request): (Response)  $next
      */

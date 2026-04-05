@@ -13,7 +13,7 @@ use Illuminate\Validation\ValidationException;
 class LoginRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determina si l'usuari esta autoritzat a fer aquesta petició.
      */
     public function authorize(): bool
     {
@@ -21,7 +21,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Obté les regles de validació que s'apliquen a la petició.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -34,7 +34,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validation messages for the defined rules.
+     * Obté els missatges de validació per a les regles definides.
      */
     public function messages(): array
     {
@@ -48,7 +48,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get custom attributes for validator errors.
+     * Obté els atributs personalitzats per als errors del validació.
      */
     public function attributes(): array
     {
@@ -59,7 +59,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Intenta autenticar les credencials de la petició.
      *
      * @throws ValidationException
      */
@@ -67,7 +67,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -75,9 +75,9 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        if (! Auth::user()->is_active) {
+        if (!Auth::user()->is_active) {
             Auth::logout();
-            
+
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -89,13 +89,13 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Ensure the login request is not rate limited.
+     * Assegura que la petició d'inici de sessió no estigui subjecta a limitació de taxa.
      *
      * @throws ValidationException
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -104,15 +104,15 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => 'Has superat el nombre màxim d\'intents. Torna-ho a provar d\'aquí a '.$seconds.' segons.',
+            'email' => 'Has superat el nombre màxim d\'intents. Torna-ho a provar d\'aquí a ' . $seconds . ' segons.',
         ]);
     }
 
     /**
-     * Get the rate limiting throttle key for the request.
+     * Obté la clau de limitació de taxa per a la petició.
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

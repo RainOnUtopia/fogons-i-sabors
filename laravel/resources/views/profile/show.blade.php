@@ -40,72 +40,47 @@
 
                 <h2 class="fw-bold mb-1 profile-user-name">{{ $user->name }}</h2>
                 <div class="d-flex flex-wrap gap-3 justify-content-center align-items-center mt-2 profile-user-meta">
-                    <span><i class="bi bi-geo-alt"></i> Barcelona, Espanya</span>
+                       @if($user->city || $user->country)
+                        <span><i class="bi bi-geo-alt"></i> {{ collect([$user->city, $user->country])->filter()->join(', ') }}</span>
+                    @endif    
                     <span><i class="bi bi-calendar"></i> Membre des de {{ $user->created_at->format('d/m/Y') }}</span>
                 </div>
             </div>
 
-            <div class="row g-4">
+            @if(auth()->check() && auth()->user()->role === 'admin')
+            <div class="d-flex justify-content-center mb-4">
+                <a href="{{ url('admin/dashboard') }}" class="btn-primary-ui shadow-sm">Panell d'Administració</a>
+            </div>
+            @endif
 
+            @if($user->role !== 'admin')
+            <div class="row g-4" >
+            
                 <!-- SECCIÓ 2: TARGETA SOBRE MI -->
                 <div class="col-lg-4">
                     <div class="card mb-4 profile-sidebar-card">
                         <div class="card-body">
-                            <h5 class="fw-bold mb-3 profile-card-title">Sobre mi</h5>
-
-                            @if(session('status') === 'about-updated')
-                                <div class="alert alert-success py-2 px-3 mb-3 small">
-                                    Descripció actualitzada correctament.
-                                </div>
-                            @endif
-
-                            <form method="POST" action="{{ route('profile.about.update') }}">
-                                @csrf
-                                @method('PATCH')
-                                <textarea
-                                    name="about_me"
-                                    rows="4"
-                                    placeholder="Explica qui ets, la teva passió per la cuina..."
-                                    style="width: 100%; padding: 10px 12px; background-color: #f3f3f3; border: none; border-radius: 12px; font-size: 14px; color: #2d2d2d; font-family: inherit; resize: none; transition: background 0.2s;"
-                                    onfocus="this.style.backgroundColor='#fff';this.style.outline='2px solid #be3144'"
-                                    onblur="this.style.backgroundColor='#f3f3f3';this.style.outline='none'"
-                                >{{ old('about_me', $user->about_me) }}</textarea>
-                                @error('about_me')
-                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                @enderror
-                                <button type="submit"
-                                    style="margin-top: 10px; height: 36px; padding: 0 16px; background-color: #be3144; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                                    Desar
-                                </button>
-                            </form>
+                            <h5 class="fw-bold mb-3 profile-card-title">Sobre mí</h5>
+                            <p class="mb-4 profile-about-text">
+                                {{ $user->about_me ?? 'Sense descripció.' }}</p>
                             <div class="d-flex justify-content-between text-center mt-4">
                                 <div>
                                     <div class="fw-bold profile-stat-value">{{ $userRecipes->count() }}</div>
                                     <div class="text-muted profile-stat-label">Receptes</div>
                                 </div>
-                                <div>
-                                    <div class="fw-bold profile-stat-value">340</div>
-                                    <div class="text-muted profile-stat-label">Seguidors</div>
+                    			 <div>
+                                    <div class="fw-bold profile-stat-value">0</div>
+                                    <div class="text-muted profile-stat-label">Victòries</div>
                                 </div>
                                 <div>
                                     <div class="fw-bold profile-stat-value">4.8</div>
-                                    <div class="text-muted profile-stat-label">Estrelles</div>
+                                    <div class="text-muted profile-stat-label">Mitjana</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- SECCIÓ 5: TARGETA ASSOLIMENTS -->
-                    <div class="card mt-4 profile-achievements-card-custom">
-                        <div class="card-body">
-                            <h6 class="fw-bold mb-3">Assoliments</h6>
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2"><i class="bi bi-award me-2"></i>Master of Saffron</li>
-                                <li class="mb-2"><i class="bi bi-trophy me-2"></i>Duel Champion</li>
-                                <li><i class="bi bi-star me-2"></i>Community Star</li>
-                            </ul>
-                        </div>
-                    </div>
+           
                 </div>
 
                 <!-- SECCIÓ CENTRAL: TABS I GRID -->
@@ -316,6 +291,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 @endsection

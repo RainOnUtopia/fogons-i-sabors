@@ -24,9 +24,9 @@ class UserController extends Controller
         // Cerca per nom o correu electrònic
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function(\Illuminate\Database\Eloquent\Builder $q) use ($search) {
+            $query->where(function (\Illuminate\Database\Eloquent\Builder $q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -41,7 +41,7 @@ class UserController extends Controller
         }
 
         // Ordenació — columnes permeses per evitar injecció SQL
-        $sortColumn    = $request->input('sort', 'name');
+        $sortColumn = $request->input('sort', 'name');
         $sortDirection = $request->input('direction', 'asc');
         $allowedSortColumns = ['id', 'name', 'email', 'role', 'is_active'];
 
@@ -56,7 +56,7 @@ class UserController extends Controller
         foreach ($allowedSortColumns as $col) {
             $newDirection = ($sortColumn === $col && $sortDirection === 'asc') ? 'desc' : 'asc';
             $sortData[$col] = [
-                'url'       => $request->fullUrlWithQuery(['sort' => $col, 'direction' => $newDirection]),
+                'url' => $request->fullUrlWithQuery(['sort' => $col, 'direction' => $newDirection]),
                 'indicator' => ($sortColumn === $col) ? ($sortDirection === 'asc' ? '↑' : '↓') : '',
             ];
         }
@@ -65,7 +65,7 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified user.
+     * Mostrar el formulari per editar el rol i l'estat de l'usuari.
      */
     public function edit(User $user)
     {
@@ -73,7 +73,7 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified user in storage.
+     * Actualitza el rol i l'estat de l'usuari.
      */
     public function update(Request $request, User $user)
     {

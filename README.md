@@ -1,31 +1,40 @@
 # Fogons i Sabors
 
-Aquest és el repositori del projecte **Fogons i Sabors**, una aplicació web desenvolupada amb Laravel i dissenyada per gestionar de manera eficient usuaris i un panell d'administració.
+Aquest Ã©s el repositori del projecte **Fogons i Sabors**, una aplicaciÃ³ web desenvolupada amb Laravel i dissenyada per gestionar de manera eficient usuaris i un panell d'administraciÃ³.
 
 ## ?? Tecnologies Utilitzades
 
-El projecte utilitza un entorn modern basat en les següents tecnologies i eines:
+El projecte utilitza un entorn modern basat en les segÃ¼ents tecnologies i eines:
 
 - **Backend:** PHP 8.2, Laravel 12.x
 - **Frontend:** Node.js 20, Vite, Bootstrap 5
 - **Base de Dades:** MySQL 8.0
-- **Eines Locals / Testing:** phpMyAdmin (Gestió de DB), Mailpit (Testing de correus)
+- **Eines Locals / Testing:** phpMyAdmin (GestiÃ³ de DB), Mailpit (Testing de correus)
 - **Contenidors:** Docker, Docker Compose
 - **Icones:** Bootstrap Icons
 
 ---
 
+## ?? VPS
+
+El projecte utilitza un VPS amb Ububtu Desktop 24.04.4:
+
+- **Usuari:** iocuser
+- **Password:** iocuser
+
+---
+
 ## ?? Com Muntar l'Entorn amb Docker
 
-El projecte està totalment preparat per ser executat en contenidors Docker, la qual cosa facilita molt la configuració de l'entorn de desenvolupament sense haver d'instal·lar manualment les dependències (PHP, MySQL, Node.js) al teu sistema.
+El projecte estÃ  totalment preparat per ser executat en contenidors Docker, la qual cosa facilita molt la configuraciÃ³ de l'entorn de desenvolupament sense haver d'instalÂ·lar manualment les dependÃ¨ncies (PHP, MySQL, Node.js) al teu sistema.
 
 ### Estructura dels Serveis Docker
-L'arxiu `docker-compose.yml` defineix els següents serveis:
-- **`app`**: L'aplicació Laravel corrent sobre una imatge personalitzada (`Dockerfile`) amb PHP 8.2 i totes les extensions necessàries. S'encarrega d'instal·lar dependències de Composer, executar migracions, seeders i aixecar el servidor a `http://localhost:8000`.
-- **`node`**: Contenidor amb Node 20 basat en Alpine. Aquest servei instal·la els paquets npm i inicia el servidor de Vite (`npm run dev`) per compilar els assets del frontend a `http://localhost:5173`.
-- **`db`**: Base de dades MySQL 8.0 accessible externament des de l'amfitrió pel port `33060` (per evitar conflictes amb un MySQL local).
+L'arxiu `docker-compose.yml` defineix els segÃ¼ents serveis:
+- **`app`**: L'aplicaciÃ³ Laravel corrent sobre una imatge personalitzada (`Dockerfile`) amb PHP 8.2 i totes les extensions necessÃ ries. S'encarrega d'instalÂ·lar dependÃ¨ncies de Composer, executar migracions, seeders i aixecar el servidor a `http://localhost:8000`.
+- **`node`**: Contenidor amb Node 20 basat en Alpine. Aquest servei instalÂ·la els paquets npm i inicia el servidor de Vite (`npm run dev`) per compilar els assets del frontend a `http://localhost:5173`.
+- **`db`**: Base de dades MySQL 8.0 accessible externament des de l'amfitriÃ³ pel port `33060` (per evitar conflictes amb un MySQL local).
 - **`phpmyadmin`**: Panell web per gestionar la base de dades disponible a `http://localhost:8080`.
-- **`mailpit`**: Eina per capturar l'enviament de correus en local. Interfície web disponible a `http://localhost:8025`.
+- **`mailpit`**: Eina per capturar l'enviament de correus en local. InterfÃ­cie web disponible a `http://localhost:8025`.
 
 ### Passos per Posar-ho en Marxa
 
@@ -36,52 +45,52 @@ L'arxiu `docker-compose.yml` defineix els següents serveis:
    ```
 
 2. **Configurar les variables d'entorn**
-   Assegura't de copiar l'arxiu d'exemple de Laravel (`.env.example`) a `.env` si no s'ha fet automàticament i ajustar els paràmetres de base de dades.
+   Assegura't de copiar l'arxiu d'exemple de Laravel (`.env.example`) a `.env` si no s'ha fet automÃ ticament i ajustar els parÃ metres de base de dades.
    ```bash
    cp laravel/.env.example laravel/.env
    ```
 
 3. **Inici del sistema amb Docker**
-   Pots utilitzar els scripts proporcionats o llançar l'ordre de Docker manualment des de la carpeta de l'aplicació (`laravel`):
+   Pots utilitzar els scripts proporcionats o llanÃ§ar l'ordre de Docker manualment des de la carpeta de l'aplicaciÃ³ (`laravel`):
    ```bash
    cd laravel
    docker compose up -d
    ```
-   Això ho automatitzarà pràcticament tot en el primer inici: s'instal·laran els paquets de Composer i de Node, s'executaran les migracions de test i s'aixecarà l'entorn.
+   AixÃ² ho automatitzarÃ  prÃ cticament tot en el primer inici: s'instalÂ·laran els paquets de Composer i de Node, s'executaran les migracions de test i s'aixecarÃ  l'entorn.
 
 ---
 
 ## ?? Usuaris per Defecte
 
-En executar les migracions i els *seeders* (que ja s'executen automàticament en iniciar amb Docker), es creen els següents usuaris per defecte perquè puguis provar l'aplicació des d'un inici:
+En executar les migracions i els *seeders* (que ja s'executen automÃ ticament en iniciar amb Docker), es creen els segÃ¼ents usuaris per defecte perquÃ¨ puguis provar l'aplicaciÃ³ des d'un inici:
 
 - **Compte d'Administrador:**
   - **Correu:** `admin@admin.com`
   - **Contrasenya:** `12345678`
-  - *Amb accés complet al panell d'administració per gestionar la plataforma i els usuaris.*
+  - *Amb accÃ©s complet al panell d'administraciÃ³ per gestionar la plataforma i els usuaris.*
 
 - **Compte de Prova:**
   - **Correu:** `test@example.com`
   - **Contrasenya:** `password`
-  - *Usuari regular per verificar el funcionament des de la perspectiva d'un usuari estàndard.*
+  - *Usuari regular per verificar el funcionament des de la perspectiva d'un usuari estÃ ndard.*
 
 ---
 
 ## ?? Scripts Administratius i de Desenvolupament
 
-El directori `laravel/scripts/` conté diversos arxius d'scripting `.bat` (Windows) per facilitar el flux de treball del desenvolupador:
+El directori `laravel/scripts/` contÃ© diversos arxius d'scripting `.bat` (Windows) per facilitar el flux de treball del desenvolupador:
 
 ### Scripts per a l'Entorn Docker
 Si has decidit apostar exclusivament per l'entorn amb Docker, asssignant tasques als contenidors interns:
-- **`Init-docker.bat`**: Alça i posa en marxa la xarxa de contenidors en segon pla executant l'ordre `docker compose up -d`.
-- **`migrate-docker.bat`**: Executa de forma segura les migracions de la base de dades de Laravel (`php artisan migrate`) des de dins del contenidor de l'aplicació en un sol simple doble clic.
-- **`clear-cache-docker.bat`**: Neteja pràcticament tota la memòria cau de l'aplicació (caché, de sessions, config, rutes i vistes optimitzades) directament desaltant a l'interior del contenidor de l'apliació. Estalvia haver d'introduir instruccions per consola.
+- **`Init-docker.bat`**: AlÃ§a i posa en marxa la xarxa de contenidors en segon pla executant l'ordre `docker compose up -d`.
+- **`migrate-docker.bat`**: Executa de forma segura les migracions de la base de dades de Laravel (`php artisan migrate`) des de dins del contenidor de l'aplicaciÃ³ en un sol simple doble clic.
+- **`clear-cache-docker.bat`**: Neteja prÃ cticament tota la memÃ²ria cau de l'aplicaciÃ³ (cachÃ©, de sessions, config, rutes i vistes optimitzades) directament desaltant a l'interior del contenidor de l'apliaciÃ³. Estalvia haver d'introduir instruccions per consola.
 
 ### Scripts per a l'Entorn Local (Sense Dependre de Docker)
-Si estàs desenvolupant sota un entorn nadiu amb PHP i Node.js/NPM instal·lats localment al teu Windows (com XAMPP/Laragon, etc.):
-- **`install.bat`**: Soluciona l'arrencada automatitzant l'ordre `composer install` i `npm install` tot seguits en un únic fitxer interactiu.
-- **`start-dev-servers.bat`**: Llança i manté en paral·lel de forma totalment automàtica dues consoles: una executant Vite (`npm run dev`) i l'altra el servidor de prova (`php artisan serve`). 
-- L'aplicació també allotja d'altres scripts de tasca individualitzats i atòmics com **`dev.bat`**, **`serve.bat`**, **`migrate.bat`** i **`clear-cache.bat`**, que permeten executar aïlladament procediments ràpids.
+Si estÃ s desenvolupant sota un entorn nadiu amb PHP i Node.js/NPM instalÂ·lats localment al teu Windows (com XAMPP/Laragon, etc.):
+- **`install.bat`**: Soluciona l'arrencada automatitzant l'ordre `composer install` i `npm install` tot seguits en un Ãºnic fitxer interactiu.
+- **`start-dev-servers.bat`**: LlanÃ§a i mantÃ© en paralÂ·lel de forma totalment automÃ tica dues consoles: una executant Vite (`npm run dev`) i l'altra el servidor de prova (`php artisan serve`). 
+- L'aplicaciÃ³ tambÃ© allotja d'altres scripts de tasca individualitzats i atÃ²mics com **`dev.bat`**, **`serve.bat`**, **`migrate.bat`** i **`clear-cache.bat`**, que permeten executar aÃ¯lladament procediments rÃ pids.
 
 ---
-?? *Projecte construït per a l'assignatura M12.*
+?? *Projecte construÃ¯t per a l'assignatura M12.*

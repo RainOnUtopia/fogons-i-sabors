@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class AdminUserSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Afegeix l'administrador per defecte si no existeix.
      */
     public function run(): void
     {

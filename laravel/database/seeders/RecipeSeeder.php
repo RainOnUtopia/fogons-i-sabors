@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 class RecipeSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Afegeix receptes de demostració.
      */
     public function run(): void
     {

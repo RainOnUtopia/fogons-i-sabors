@@ -51,7 +51,7 @@
         </div>
 
         <div class="edit-form-group">
-            <label for="country" class="edit-form-label">Pa�s</label>
+            <label for="country" class="edit-form-label">País</label>
             <input id="country" name="country" type="text" class="input-ui @error('country') is-invalid @enderror"
                 value="{{ old('country', $user->country) }}" autocomplete="country-name">
             @error('country')
@@ -60,7 +60,7 @@
         </div>
 
         <div class="edit-form-group">
-            <label for="about_me" class="edit-form-label">Descripci�</label>
+            <label for="about_me" class="edit-form-label">Descripció</label>
             <textarea id="about_me" name="about_me" class="input-ui @error('about_me') is-invalid @enderror"
                 rows="3">{{ old('about_me', $user->about_me) }}</textarea>
             @error('about_me')

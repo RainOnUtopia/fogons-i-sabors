@@ -45,7 +45,7 @@
         </div>
         <div class="d-flex flex-column flex-md-row align-items-center justify-content-center home-card home-recipe-card p-4 gap-4 mx-auto">
             @if($featuredRecipe->image)
-                <img src="{{ asset(‘storage/’ . $featuredRecipe->image) }}" alt="{{ $featuredRecipe->title }}" class="rounded-4 home-recipe-img">
+                <img src="{{ asset('storage/' . $featuredRecipe->image) }}" alt="{{ $featuredRecipe->title }}" class="rounded-4 home-recipe-img">
             @else
                 <div class="rounded-4 home-recipe-img d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #e0e0e0 0%, #f3f3f3 100%); font-size: 48px; color: #999;">
                     <i class="bi bi-image"></i>

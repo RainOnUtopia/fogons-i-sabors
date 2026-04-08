@@ -13,7 +13,7 @@ class RecipeFactory extends Factory
     protected $model = Recipe::class;
 
     /**
-     * Define the model's default state.
+     * Defineix l'estat per defecte del model.
      *
      * @return array<string, mixed>
      */

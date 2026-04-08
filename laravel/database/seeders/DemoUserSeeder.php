@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class DemoUserSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Afegeix usuaris de demostració.
      */
     public function run(): void
     {
@@ -22,6 +22,8 @@ class DemoUserSeeder extends Seeder
                 'is_active' => true,
                 'avatar' => null,
                 'about_me' => 'M\'agrada compartir receptes tradicionals i provar nous sabors.',
+                'city' => 'Barcelona',
+                'country' => 'Espanya',
                 'email_verified_at' => now(),
             ],
             [
@@ -32,6 +34,8 @@ class DemoUserSeeder extends Seeder
                 'is_active' => true,
                 'avatar' => null,
                 'about_me' => 'Cuina mediterrania, arrosos i plats per compartir.',
+                'city' => 'Girona',
+                'country' => 'Espanya',
                 'email_verified_at' => now(),
             ],
             [
@@ -42,6 +46,8 @@ class DemoUserSeeder extends Seeder
                 'is_active' => true,
                 'avatar' => null,
                 'about_me' => 'Apassionat pels sabors intensos i la cuina d\'autor.',
+                'city' => 'Tarragona',
+                'country' => 'Espanya',
                 'email_verified_at' => now(),
             ],
             [
@@ -52,6 +58,8 @@ class DemoUserSeeder extends Seeder
                 'is_active' => true,
                 'avatar' => null,
                 'about_me' => 'Especialista en postres i en receptes elegants per celebracions.',
+                'city' => 'Lleida',
+                'country' => 'Espanya',
                 'email_verified_at' => now(),
             ],
         ];

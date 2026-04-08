@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 class FavoriteSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Afegeix receptes favorites als usuaris.
      */
     public function run(): void
     {
@@ -36,7 +36,7 @@ class FavoriteSeeder extends Seeder
         foreach ($favoritesMap as $userEmail => $recipeTitles) {
             $user = User::where('email', $userEmail)->first();
 
-            if (! $user) {
+            if (!$user) {
                 continue;
             }
 

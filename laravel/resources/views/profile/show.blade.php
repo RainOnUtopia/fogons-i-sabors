@@ -12,7 +12,7 @@
                 <div class="position-absolute top-0 end-0 m-3">
                     <a href="{{ route('profile.edit') }}" class="btn btn-primary p-2 fw-bold profile-edit-btn"
                         title="Edita el perfil">
-                        <i class="bi bi-wrench profile-edit-icon"></i>
+                        <i class="bi bi-pencil profile-edit-icon"></i>
                     </a>
                 </div>
                 @if (session('status') === 'avatar-updated')

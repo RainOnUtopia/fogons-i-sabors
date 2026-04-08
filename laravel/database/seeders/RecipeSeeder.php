@@ -29,7 +29,7 @@ class RecipeSeeder extends Seeder
                 'description' => 'Un risotto cremos infusionat amb safran, pa d\'or cruixent i lamines de tofona fresca.',
                 'cooking_time' => 45,
                 'difficulty' => 'difícil',
-                'image' => null,
+                'image' => 'recipes/demo/risotto.jpg',
                 'tags' => ['ITALIA', 'LUXE', 'SOFISTICAT'],
                 'ingredients' => [
                     '320g d\'arros Carnaroli',
@@ -48,7 +48,7 @@ class RecipeSeeder extends Seeder
                 'description' => 'Carn de Wagyu cuita a baixa temperatura i acabada amb aromes de tofona negra.',
                 'cooking_time' => 30,
                 'difficulty' => 'mitjà',
-                'image' => null,
+                'image' => 'recipes/demo/wagyu.jpg',
                 'tags' => ['SOFISTICAT', 'CARN', 'LUXE'],
                 'ingredients' => [
                     '250g de wagyu',
@@ -65,7 +65,7 @@ class RecipeSeeder extends Seeder
                 'description' => 'Una versio moderna del classic pastis de llimona, amb textures contrastades.',
                 'cooking_time' => 60,
                 'difficulty' => 'difícil',
-                'image' => null,
+                'image' => 'recipes/demo/pastis.jpg',
                 'tags' => ['POSTRES', 'CITRIC', 'SOFISTICAT'],
                 'ingredients' => [
                     '200g de farina',
@@ -83,7 +83,7 @@ class RecipeSeeder extends Seeder
                 'description' => 'Un consomme aromatic i transparent fet amb bolets salvatges i fons suau.',
                 'cooking_time' => 90,
                 'difficulty' => 'difícil',
-                'image' => null,
+                'image' => 'recipes/demo/consome.jpg',
                 'tags' => ['SOPES', 'BOLETS', 'SOFISTICAT'],
                 'ingredients' => [
                     '1.5kg de bolets salvatges',
@@ -100,7 +100,7 @@ class RecipeSeeder extends Seeder
                 'description' => 'Estofat aromatic de xai amb comi, canyella i fruita seca.',
                 'cooking_time' => 120,
                 'difficulty' => 'mitjà',
-                'image' => null,
+                'image' => 'recipes/demo/tagine.jpg',
                 'tags' => ['MARROQUI', 'ESPECIAT', 'CARN'],
                 'ingredients' => [
                     '800g de xai',
@@ -118,7 +118,7 @@ class RecipeSeeder extends Seeder
                 'description' => 'Bacalla melos amb un glacejat suau de miso, gingebre i toc citric.',
                 'cooking_time' => 25,
                 'difficulty' => 'fàcil',
-                'image' => null,
+                'image' => 'recipes/demo/bacalla.jpg',
                 'tags' => ['PEIX', 'JAPONES', 'SOFISTICAT'],
                 'ingredients' => [
                     '2 talls de bacalla negre',

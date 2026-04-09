@@ -1,0 +1,48 @@
+# Etapa 1: Compilació de Node (Assets per producció)
+FROM node:20-alpine as assets
+
+WORKDIR /app
+COPY package*.json vite.config.js ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Etapa 2: PHP-FPM i dependències base
+FROM php:8.2-fpm
+
+# Instal·lar dependències del sistema
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    default-mysql-client
+
+# Netejar cau d'apt
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Instal·lar extensions de PHP necessàries per Laravel
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# Obtenir Composer actualitzat
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+# Copiar arxius estructurals del projecte
+COPY . /var/www/html
+
+# Copiar els actius compilats per vite des de l'etapa assets
+COPY --from=assets /app/public/build /var/www/html/public/build
+
+# Instal·lar dependencies de composer, ometent les de dev (phpunit, etc)
+RUN composer install --no-dev --optimize-autoloader
+
+# Concedir els permisos necessaris perquè nginx i fpm puguin escriure a storage i cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+EXPOSE 9000
+CMD ["php-fpm"]

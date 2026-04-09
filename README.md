@@ -17,10 +17,14 @@ El projecte utilitza un entorn modern basat en les següents tecnologies i eines
 
 ## ?? VPS
 
-El projecte utilitza un VPS amb Ububtu Desktop 24.04.4:
-
+El projecte utilitza un VPS allotjat a Isard amb Ububtu Desktop 24.04.4:
+Les dades per accedir són:
 - **Usuari:** iocuser
 - **Password:** iocuser
+
+Es pot accedir a la web directament des de el propi navegador firefox amb el domini fogonsisabors.com , s'obra per defecte en el firefox.
+
+
 
 ---
 
@@ -80,7 +84,7 @@ En executar les migracions i els *seeders* (que ja s'executen automàticament en
 
 El directori `laravel/scripts/` conté diversos arxius d'scripting `.bat` (Windows) per facilitar el flux de treball del desenvolupador:
 
-### Scripts per a l'Entorn Docker
+### Scripts per a l'Entorn Docker de desenvolupament
 Si has decidit apostar exclusivament per l'entorn amb Docker, asssignant tasques als contenidors interns:
 - **`Init-docker.bat`**: Alça i posa en marxa la xarxa de contenidors en segon pla executant l'ordre `docker compose up -d`.
 - **`migrate-docker.bat`**: Executa de forma segura les migracions de la base de dades de Laravel (`php artisan migrate`) des de dins del contenidor de l'aplicació en un sol simple doble clic.
@@ -91,6 +95,118 @@ Si estàs desenvolupant sota un entorn nadiu amb PHP i Node.js/NPM instal·lats 
 - **`install.bat`**: Soluciona l'arrencada automatitzant l'ordre `composer install` i `npm install` tot seguits en un únic fitxer interactiu.
 - **`start-dev-servers.bat`**: Llança i manté en paral·lel de forma totalment automàtica dues consoles: una executant Vite (`npm run dev`) i l'altra el servidor de prova (`php artisan serve`). 
 - L'aplicació també allotja d'altres scripts de tasca individualitzats i atòmics com **`dev.bat`**, **`serve.bat`**, **`migrate.bat`** i **`clear-cache.bat`**, que permeten executar aïlladament procediments ràpids.
+
+
+
+### Desplegament a produccio
+
+## 🛠️ 1. Preparació de l'Entorn (Ubuntu)
+
+Abans de començar, hem d'assegurar-nos que el servidor té Docker i Git instal·lats. Utilitzarem l'script `setup_ubuntu.sh`.
+
+```bash
+# Executa l'script de configuració inicial
+bash setup_ubuntu.sh
+```
+
+> [!IMPORTANT]
+> Després de l'execució, és necessari tancar la sessió i tornar a entrar (o executar `su - $USER`) perquè els permisos de Docker s'apliquin correctament al teu usuari.
+
+---
+
+## 🔑 2. Configuració de Variables de producció
+
+Abans d'aixecar els serveis, hem de configurar les claus i contrasenyes reals. El fitxer `variables_produccio.sh` és el lloc on definirem aquests valors sensibles.
+
+```bash
+# Edita el fitxer i posa les teves claus reals
+# - DB_PASSWORD: Contrasenya per MySQL.
+# - MAIL_PASSWORD: Contrasenya d'aplicació de Gmail.
+nano variables_produccio.sh
+```
+
+Aquestes variables s'injectaran automàticament als contenidors durant el desplegament.
+
+---
+
+## 🚢 3. Desplegament Inicial
+
+L'script `deploy.sh` realitza totes les passes complexes de forma automàtica:
+- Clona o actualitza el repositori.
+- Configura el domini `fogonsisabors.com` al fitxer `/etc/hosts` local.
+- Genera certificats SSL autosignats per poder entrar via **HTTPS**.
+- Construeix les imatges de Docker (`Dockerfile.prod`).
+- Executa migracions, seeders i optimitzacions de Laravel.
+- Repara els permisos de les carpetes `storage` i `cache`.
+
+**Per executar-lo:**
+```bash
+./deploy.sh
+```
+
+Un cop finalitzat, podràs accedir a: `https://fogonsisabors.com`
+
+---
+
+## 🔄 4. Com Actualitzar la Producció
+
+Quan facis canvis al codi i els pugis al repositori Git, no cal tornar a fer tot el deploy. Utilitza l'script `update_prod.sh`:
+
+```bash
+./update_prod.sh
+```
+
+Aquest script:
+1. Sincronitza el teu `.env` amb les possibles novetats de `.env.prod` (sense perdre la teva `APP_KEY`).
+2. Re-construeix els contenidors per agafar el codi nou.
+3. Executa les noves migracions de base de dades.
+4. Neteja la memòria cau per aplicar els canvis.
+
+---
+
+## 📁 Scripts Disponibles i la seva funció
+
+| Script | Propòsit |
+| :--- | :--- |
+| `setup_ubuntu.sh` | Installa Docker, Git i configura els permisos de l'usuari. |
+| `variables_produccio.sh` | Magatzem de variables sensibles (no es puja al git amb claus reals). |
+| `deploy.sh` | Procés complet de posada en marxa des de zero. |
+| `update_prod.sh` | Actualització ràpida del codi i la configuració. |
+
+---
+
+## ⚠️ Resolució de Problemes Freqüents (Troubleshooting)
+
+### 1. El domini no carrega al navegador
+Assegura't que el fitxer `/etc/hosts` té la línia:
+`127.0.0.1 fogonsisabors.com`
+L'script `deploy.sh` ho fa sol, però pots comprovar-ho amb `cat /etc/hosts`.
+
+### 2. Error de permisos (Permission Denied) a logs o cache
+Si l'aplicació dóna un error de "The stream or file could not be opened in append mode", és un problema de permisos. Pots forçar-los de nou dins del contenidor:
+```bash
+docker exec -it fogonsisabors_prod_app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+```
+
+### 3. Error SSL "La connexió no és privada"
+Com que utilitzem certificats autosignats (generats localment), el navegador et donarà un avís de seguretat. Prem a **"Avançat"** i **"Continua cap a fogonsisabors.com (no segur)"**. És perfectament normal per a aquest entorn.
+
+### 4. Els correus no s'envien
+Comprova que la contrasenya a `variables_produccio.sh` sigui una **Contrasenya d'Aplicació de Gmail**, no la teva contrasenya normal del compte.
+
+### 5. Reiniciar des de zero
+Si vols esborrar-ho tot i tornar a començar (Compte: s'esborrarà la base de dades!):
+```bash
+docker compose -f docker-compose.prod.yml down -v
+./deploy.sh
+```
+
+### 6. Accés a la Base de Dades (phpMyAdmin)
+Per defecte, phpMyAdmin està desactivat per seguretat. Per activar-lo temporalment per debug:
+```bash
+docker compose -f docker-compose.prod.yml --profile debug up -d
+```
+Estarà disponible a: `http://localhost:8080`
 
 ---
 ?? *Projecte construït per a l'assignatura M12.*

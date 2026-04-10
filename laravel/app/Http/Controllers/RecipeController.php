@@ -28,7 +28,9 @@ class RecipeController extends Controller
                     $searchQuery->where('title', 'like', "%{$search}%")
                         ->orWhere('chef_name', 'like', "%{$search}%")
                         ->orWhereJsonContains('tags', $search)
-                        ->orWhereJsonContains('ingredients', $search);
+                        //->orWhereJsonContains('ingredients', $search);
+                        //plantejar si val la pena separar ingredients en taula relacional
+                        ->orWhereRaw("JSON_SEARCH(ingredients, 'one', ?) IS NOT NULL", ["%{$search}%"]);
                 });
             })
             ->when($currentDifficulty !== 'tots', function ($recipeQuery) use ($currentDifficulty) {
@@ -38,7 +40,7 @@ class RecipeController extends Controller
         // ORDENAMIENTO
         $sortBy = $request->input('sort', 'created_at');
         $sortDirection = $request->input('direction', 'desc');
-        $allowedSorts = ['created_at', 'rating', 'title'];
+        $allowedSorts = ['created_at', 'average_rating', 'title'];
 
         if (in_array($sortBy, $allowedSorts)) {
             $query->orderBy($sortBy, $sortDirection === 'asc' ? 'asc' : 'desc');
@@ -97,8 +99,7 @@ class RecipeController extends Controller
             $validated['chef_avatar'] = null;
         }
 
-        // Default rating
-        $validated['rating'] = 0;
+
 
         // Crear la recepta
         $recipe = Recipe::create($validated);
@@ -151,6 +152,14 @@ class RecipeController extends Controller
                 ->favoriteRecipes()
                 ->whereKey($recipe->id)
                 ->exists();
+        }
+
+        // Càrrega ansiosa (Eager Loading) de comentaris i respostes amb usuaris per evitar N+1
+        $recipe->load(['topLevelComments.user', 'topLevelComments.replies.user']);
+
+        // Carregam el vot particular de l'usuari per evitar consultes innecessàries
+        if ($request->user()) {
+            $recipe->load('userRating');
         }
 
         return view('recipes.show', compact('recipe', 'isFavorite'));

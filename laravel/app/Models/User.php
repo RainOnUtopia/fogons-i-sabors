@@ -61,7 +61,9 @@ class User extends Authenticatable
      */
     public function favoriteRecipes(): BelongsToMany
     {
-        return $this->belongsToMany(Recipe::class, 'favorites')->withTimestamps();
+        return $this->belongsToMany(Recipe::class, 'favorites')
+                    ->using(Favorite::class)
+                    ->withTimestamps();
     }
 
     /**
@@ -70,5 +72,20 @@ class User extends Authenticatable
     public function recipes(): HasMany
     {
         return $this->hasMany(Recipe::class);
+    }
+
+    /**
+     * Les puntuacions que l'usuari ha donat a les receptes.
+     */
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class);
+    }
+    /**
+     * Els comentaris fets per l'usuari.
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }

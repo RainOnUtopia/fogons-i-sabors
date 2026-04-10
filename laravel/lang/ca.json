@@ -62,5 +62,14 @@
     "admin.users.filter_all_statuses": "Tots els estats",
     "admin.users.filter_button": "Filtrar",
     "admin.users.reset_button": "Netejar",
-    "auth.inactive_account": "El vostre compte es troba desactivat. Si us plau, contacteu amb un administrador."
+    "auth.inactive_account": "El vostre compte es troba desactivat. Si us plau, contacteu amb un administrador.",
+    "recipe.rating_success": "Puntuació guardada correctament!",
+    "comments.created": "Comentari creat correctament.",
+    "comments.updated": "Comentari actualitzat correctament.",
+    "comments.deleted": "Comentari esborrat correctament.",
+    "comments.cannot_edit_deleted": "No pots editar un comentari esborrat.",
+    "comments.unauthorized_edit": "No tens permís per editar aquest comentari.",
+    "comments.unauthorized_delete": "No tens permís per esborrar aquest comentari.",
+    "comments.deleted_by_admin": "Comentari eliminat per un administrador",
+    "comments.deleted_by_user": "Comentari eliminat"
 }

@@ -2,7 +2,12 @@
 
 @section('content')
     @php
-        $activeProfileTab = request('tab') === 'favorites' ? 'favorites' : 'pantry';
+        // El tab actiu es detecta per PHP: paràmetre 'tab' explícit, o presència
+        // de qualsevol paràmetre de filtre/paginació de favorits (f_*) o del rebost (r_*).
+        $activeProfileTab = (
+            request('tab') === 'favorites'
+            || request()->hasAny(['f_search', 'f_difficulty', 'f_sort', 'f_direction', 'f_page'])
+        ) ? 'favorites' : 'pantry';
     @endphp
     <div class="page-grid-bg profile-show-bg">
         <div class="container profile-show-container">
@@ -12,7 +17,7 @@
                 <div class="position-absolute top-0 end-0 m-3">
                     <a href="{{ route('profile.edit') }}" class="btn btn-primary p-2 fw-bold profile-edit-btn"
                         title="Edita el perfil">
-                        <i class="bi bi-pencil profile-edit-icon"></i>
+                        <i class="bi bi-wrench profile-edit-icon"></i>
                     </a>
                 </div>
                 @if (session('status') === 'avatar-updated')
@@ -52,7 +57,6 @@
                 <a href="{{ url('admin/dashboard') }}" class="btn-primary-ui shadow-sm">Panell d'Administració</a>
             </div>
             @endif
-
             @if($user->role !== 'admin')
             <div class="row g-4" >
             
@@ -65,7 +69,7 @@
                                 {{ $user->about_me ?? 'Sense descripció.' }}</p>
                             <div class="d-flex justify-content-between text-center mt-4">
                                 <div>
-                                    <div class="fw-bold profile-stat-value">{{ $userRecipes->count() }}</div>
+                                    <div class="fw-bold profile-stat-value">{{ $userRecipes->total() }}</div>
                                     <div class="text-muted profile-stat-label">Receptes</div>
                                 </div>
                     			 <div>
@@ -117,6 +121,73 @@
                             role="tabpanel"
                             aria-labelledby="profile-pantry-tab"
                             tabindex="0">
+
+                            {{-- ── BARRA DE FILTRES DEL REBOST ────────────────────────────── --}}
+                            @php
+                                // Preservam tots els paràmetres actuals excepte el que acabem de canviar.
+                                $rExceptSearch     = request()->except(['r_search', 'r_page']);
+                                $rExceptDifficulty = request()->except(['r_difficulty', 'r_page']);
+                                $rExceptSort       = request()->except(['r_sort', 'r_direction', 'r_page']);
+                            @endphp
+
+                            <div class="mb-3">
+                                {{-- Cerca --}}
+                                <form method="GET" class="mb-2">
+                                    @foreach($rExceptSearch as $k => $v)
+                                        @if(!is_array($v))
+                                            <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                                        @endif
+                                    @endforeach
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" name="r_search" class="form-control"
+                                               placeholder="Cerca per nom o ingredient..."
+                                               value="{{ $rSearch }}">
+                                        @if($rSearch)
+                                            <a href="{{ route('profile.show', array_merge($rExceptSearch, ['tab' => 'pantry'])) }}"
+                                               class="btn btn-outline-secondary btn-sm" title="Esborra la cerca">
+                                                <i class="bi bi-x-lg"></i>
+                                            </a>
+                                        @endif
+                                        <button type="submit" class="btn btn-primary btn-sm">Cercar</button>
+                                    </div>
+                                </form>
+
+                                {{-- Dificultat + Ordenació en una mateixa fila --}}
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    {{-- Pills de dificultat --}}
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach(['tots' => 'Tots', 'fàcil' => 'Fàcil', 'mitjà' => 'Mitjà', 'difícil' => 'Difícil'] as $val => $label)
+                                            <a href="{{ route('profile.show', array_merge($rExceptDifficulty, $val !== 'tots' ? ['r_difficulty' => $val] : [], ['tab' => 'pantry'])) }}"
+                                               class="btn btn-sm rounded-pill fw-semibold px-3 py-1 text-decoration-none
+                                                      {{ $rDifficulty === $val ? 'btn-danger text-white' : 'btn-light text-secondary border' }}">
+                                                {{ strtoupper($label) }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+
+                                    {{-- Selector d'ordre --}}
+                                    <form method="GET" class="ms-auto">
+                                        @foreach($rExceptSort as $k => $v)
+                                            @if(!is_array($v))
+                                                <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                                            @endif
+                                        @endforeach
+                                        <input type="hidden" name="tab" value="pantry">
+                                        <select name="r_sort" class="form-select form-select-sm d-inline-block w-auto"
+                                                onchange="this.form.submit()">
+                                            <option value="created_at" data-dir="desc" {{ $rSort === 'created_at' && $rDirection === 'desc' ? 'selected' : '' }}>Més recents</option>
+                                            <option value="created_at" data-dir="asc"  {{ $rSort === 'created_at' && $rDirection === 'asc'  ? 'selected' : '' }}>Més antics</option>
+                                            <option value="average_rating"     data-dir="desc" {{ $rSort === 'average_rating'     ? 'selected' : '' }}>Millor valorats</option>
+                                            <option value="title"      data-dir="asc"  {{ $rSort === 'title'      ? 'selected' : '' }}>Ordre alfabètic</option>
+                                        </select>
+                                        {{-- Camp ocult actualitzat per JS quan canvia el select --}}
+                                        <input type="hidden" name="r_direction" id="r_direction_input" value="{{ $rDirection }}">
+                                    </form>
+                                </div>
+                            </div>
+                            {{-- ── FI BARRA DE FILTRES ────────────────────────────────────── --}}
+
                             <div class="row g-4">
                                 @if(auth()->check() && auth()->id() === $user->id)
                                     <!-- Targeta crear recepta visible només al rebost propi -->
@@ -226,6 +297,13 @@
                                     </div>
                                 @endforelse
                             </div>
+
+                            {{-- Paginació del rebost --}}
+                            @if($userRecipes->hasPages())
+                                <div class="d-flex justify-content-center mt-3 pagination-container">
+                                    {{ $userRecipes->links('pagination::bootstrap-5') }}
+                                </div>
+                            @endif
                         </div>
 
                         <div class="tab-pane fade {{ $activeProfileTab === 'favorites' ? 'show active' : '' }}"
@@ -233,6 +311,72 @@
                             role="tabpanel"
                             aria-labelledby="profile-favorites-tab"
                             tabindex="0">
+
+                            {{-- ── BARRA DE FILTRES DELS FAVORITS ─────────────────────────── --}}
+                            @php
+                                $fExceptSearch     = request()->except(['f_search', 'f_page']);
+                                $fExceptDifficulty = request()->except(['f_difficulty', 'f_page']);
+                                $fExceptSort       = request()->except(['f_sort', 'f_direction', 'f_page']);
+                            @endphp
+
+                            <div class="mb-3">
+                                {{-- Cerca --}}
+                                <form method="GET" class="mb-2">
+                                    @foreach($fExceptSearch as $k => $v)
+                                        @if(!is_array($v))
+                                            <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                                        @endif
+                                    @endforeach
+                                    <input type="hidden" name="tab" value="favorites">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" name="f_search" class="form-control"
+                                               placeholder="Cerca per nom, xef o ingredient..."
+                                               value="{{ $fSearch }}">
+                                        @if($fSearch)
+                                            <a href="{{ route('profile.show', array_merge($fExceptSearch, ['tab' => 'favorites'])) }}"
+                                               class="btn btn-outline-secondary btn-sm" title="Esborra la cerca">
+                                                <i class="bi bi-x-lg"></i>
+                                            </a>
+                                        @endif
+                                        <button type="submit" class="btn btn-primary btn-sm">Cercar</button>
+                                    </div>
+                                </form>
+
+                                {{-- Dificultat + Ordenació --}}
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    {{-- Pills de dificultat --}}
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach(['tots' => 'Tots', 'fàcil' => 'Fàcil', 'mitjà' => 'Mitjà', 'difícil' => 'Difícil'] as $val => $label)
+                                            <a href="{{ route('profile.show', array_merge($fExceptDifficulty, $val !== 'tots' ? ['f_difficulty' => $val] : [], ['tab' => 'favorites'])) }}"
+                                               class="btn btn-sm rounded-pill fw-semibold px-3 py-1 text-decoration-none
+                                                      {{ $fDifficulty === $val ? 'btn-danger text-white' : 'btn-light text-secondary border' }}">
+                                                {{ strtoupper($label) }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+
+                                    {{-- Selector d'ordre (inclou data d'afegit a favorits) --}}
+                                    <form method="GET" class="ms-auto">
+                                        @foreach($fExceptSort as $k => $v)
+                                            @if(!is_array($v))
+                                                <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                                            @endif
+                                        @endforeach
+                                        <input type="hidden" name="tab" value="favorites">
+                                        <select name="f_sort" class="form-select form-select-sm d-inline-block w-auto"
+                                                onchange="this.form.submit()">
+                                            <option value="favorites.created_at" data-dir="desc" {{ $fSort === 'favorites.created_at' && $fDirection === 'desc' ? 'selected' : '' }}>Afegits més recentment</option>
+                                            <option value="favorites.created_at" data-dir="asc"  {{ $fSort === 'favorites.created_at' && $fDirection === 'asc'  ? 'selected' : '' }}>Afegits més antigament</option>
+                                            <option value="recipes.average_rating"       data-dir="desc" {{ $fSort === 'recipes.average_rating'       ? 'selected' : '' }}>Millor valorats</option>
+                                            <option value="recipes.title"        data-dir="asc"  {{ $fSort === 'recipes.title'        ? 'selected' : '' }}>Ordre alfabètic</option>
+                                        </select>
+                                        <input type="hidden" name="f_direction" id="f_direction_input" value="{{ $fDirection }}">
+                                    </form>
+                                </div>
+                            </div>
+                            {{-- ── FI BARRA DE FILTRES FAVORITS ──────────────────────────── --}}
+
                             <div class="row g-4">
                                 @forelse ($favoriteRecipes as $recipe)
                                     <!-- Recepta favorita real mostrada a la graella existent -->
@@ -287,6 +431,13 @@
                                     </div>
                                 @endforelse
                             </div>
+
+                            {{-- Paginació dels favorits --}}
+                            @if($favoriteRecipes instanceof \Illuminate\Pagination\LengthAwarePaginator && $favoriteRecipes->hasPages())
+                                <div class="d-flex justify-content-center mt-3 pagination-container">
+                                    {{ $favoriteRecipes->links('pagination::bootstrap-5') }}
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -295,3 +446,32 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    /**
+     * Sincronitza la direcció d'ordenació (data-dir) de cada select d'ordre
+     * amb el camp hidden corresponent abans de l'enviament del formulari.
+     * Necessari perquè un sol select combina el camp (r_sort / f_sort) i
+     * la direcció (asc/desc) en una sola selecció d'usuari.
+     */
+    document.addEventListener('DOMContentLoaded', function () {
+        // Mapeja cada select de sort amb el seu input hidden de direction.
+        const sortPairs = [
+            { selectName: 'r_sort', hiddenId: 'r_direction_input' },
+            { selectName: 'f_sort', hiddenId: 'f_direction_input' },
+        ];
+
+        sortPairs.forEach(function ({ selectName, hiddenId }) {
+            const select = document.querySelector('select[name="' + selectName + '"]');
+            const hidden = document.getElementById(hiddenId);
+            if (!select || !hidden) return;
+
+            select.addEventListener('change', function () {
+                const selectedOption = this.options[this.selectedIndex];
+                hidden.value = selectedOption.dataset.dir ?? 'desc';
+            });
+        });
+    });
+</script>
+@endpush

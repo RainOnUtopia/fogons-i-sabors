@@ -27,7 +27,6 @@ class Recipe extends Model
         'chef_name',
         'chef_avatar',
         'user_id',
-        'rating',
     ];
 
     /**
@@ -39,7 +38,9 @@ class Recipe extends Model
             'tags' => 'json',
             'ingredients' => 'json',
             'cooking_time' => 'integer',
-            'rating' => 'float',
+            'average_rating' => 'float',
+            'ratings_count' => 'integer',
+            'favorites_count' => 'integer',
         ];
     }
 
@@ -56,6 +57,46 @@ class Recipe extends Model
      */
     public function favoritedByUsers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
+        return $this->belongsToMany(User::class, 'favorites')
+                    ->using(Favorite::class)
+                    ->withTimestamps();
+    }
+
+    /**
+     * Totes les puntuacions d'aquesta recepta.
+     */
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    /**
+     * Puntuacions donades per usuaris 
+     */
+    public function raters(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'ratings')->withPivot('rating')->withTimestamps();
+    }
+    /**
+     * Tots els comentaris d'aquesta recepta.
+     */
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+    /**
+     * Comentaris principals (arrel) d'aquesta recepta.
+     */
+    public function topLevelComments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class)->whereNull('parent_id');
+    }
+
+    /**
+     * Puntuació donada a aquesta recepta per l'usuari actualment autenticat
+     */
+    public function userRating(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Rating::class)->where('user_id', auth()->id());
     }
 }

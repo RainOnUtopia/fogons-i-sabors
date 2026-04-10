@@ -53,7 +53,6 @@ class RecipeFactory extends Factory
             'chef_name' => $chefName,
             'chef_avatar' => null,
             'chef_notes' => $this->faker->sentence(),
-            'rating' => $this->faker->randomFloat(1, 3, 5),
             'user_id' => null,
         ];
     }

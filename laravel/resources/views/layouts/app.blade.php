@@ -23,6 +23,7 @@
     <main class="container">
         @yield('content')
     </main>
+    @stack('scripts')
 </body>
 
 </html>

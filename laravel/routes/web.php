@@ -8,7 +8,7 @@ use App\Models\Recipe;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $featuredRecipe = Recipe::orderBy('rating', 'desc')->first();
+    $featuredRecipe = Recipe::orderBy('average_rating', 'desc')->first();
     return view('welcome', compact('featuredRecipe'));
 });
 
@@ -27,6 +27,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/recipes/{recipe}', [RecipeController::class, 'destroy'])->name('recipes.destroy');
     Route::post('/recipes/{recipe}/favorite', [FavoriteController::class, 'store'])->name('recipes.favorite.store');
     Route::delete('/recipes/{recipe}/favorite', [FavoriteController::class, 'destroy'])->name('recipes.favorite.destroy');
+    Route::post('/recipes/{recipe}/rate', [\App\Http\Controllers\RatingController::class, 'store'])->name('recipes.rate');
+
+    Route::post('/recipes/{recipe}/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('recipes.comments.store');
+    Route::put('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
 
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -37,7 +42,7 @@ Route::middleware('auth')->group(function () {
 
 // El wildcard {recipe} va ÚLTIM per no capturar /create
 Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {

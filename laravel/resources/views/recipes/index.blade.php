@@ -36,7 +36,9 @@
                         @endif
                     @endforeach
                     <div class="recipe-filter-input-wrap">
-                        <i class="bi bi-search"></i>
+                        <button   type="submit" class="btn btn-primary btn-sm bi bi-search button-search-recipies">
+                         
+                        </button>
                         <input type="text" name="search" class="form-control recipe-form-input has-icon"
                             placeholder="Cerca per nom, xef o ingredient..." value="{{ request('search') }}">
                     </div>
@@ -44,7 +46,7 @@
 
                 <!-- Controls visuals: vista actual i accés als filtres -->
                 <div class="d-flex align-items-center gap-2">
-                    <button type="button" title="Vista grid" aria-label="Vista grid activa" class="recipe-btn-icon-primary">
+                    <button type="button" title="Vista grid" aria-label="Vista grid activa" class="recipe-btn-icon-primary d-none">
                         <i class="bi bi-grid-3x3-gap"></i>
                     </button>
                     <button type="button" title="Filtres" aria-label="Mostrar o amagar filtres" data-bs-toggle="collapse"
@@ -147,8 +149,8 @@
 
                                     <!-- CHEF -->
                                     <p class="recipe-card-chef">
-                                        @if($recipe->chef_avatar)
-                                            <img src="{{ asset('storage/' . $recipe->chef_avatar) }}" alt="{{ $recipe->chef_name }}"
+                                        @if($recipe->user->avatar)
+                                            <img src="{{ asset('storage/' . $recipe->user->avatar) }}" alt="{{ $recipe->user->name ?? $recipe->chef_name }}"
                                                 class="rounded-circle object-fit-cover" style="width: 20px; height: 20px;">
                                         @else
                                             <span

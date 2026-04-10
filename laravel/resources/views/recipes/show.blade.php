@@ -50,16 +50,12 @@
                                 </button>
                             </form>
 
-                            <!-- MODE CUINA -->
-                            <button class="btn-dark-ui flex-grow-1 justify-content-center">
-                                <i class="bi bi-suit-heart-fill"></i>
-                                <span>Mode Cuina</span>
-                            </button>
+                   
                         </div>
                     @endauth
 
                     <!-- ICONES COMPARTIR I IMPRIMIR -->
-                    <div class="d-flex gap-2 mt-3">
+                    <div class="d-none gap-2 mt-3">
                         <button class="recipe-icon-btn">
                             <i class="bi bi-share"></i>
                         </button>
@@ -134,6 +130,28 @@
                         </div>
                     @endif
 
+                    <!-- SECCIÓ PASSOS A SEGUIR -->
+                    @if($recipe->steps && count($recipe->steps) > 0)
+                        <div class="mb-4 steps-card">
+                            <h3 class="recipe-show-ingredients-title">
+                                <i class="bi bi-list-ol fs-5"></i>
+                                Passos a seguir
+                            </h3>
+                            <div class="d-flex flex-column gap-3 mt-3">
+                                @foreach($recipe->steps as $index => $step)
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; font-weight: bold;">
+                                            {{ $index + 1 }}
+                                        </div>
+                                        <div class="pt-1 lh-base text-dark">
+                                            {{ $step }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- SECCIÓN NOTES DEL XEF -->
                     @if($recipe->chef_notes || $recipe->chef_name)
                         <div class="recipe-chef-notes-card">
@@ -147,8 +165,8 @@
 
                             <!-- CHEF INFO -->
                             <div class="d-flex align-items-center gap-3">
-                                @if($recipe->chef_avatar)
-                                    <img src="{{ asset('storage/' . $recipe->chef_avatar) }}" alt="{{ $recipe->chef_name }}"
+                                @if($recipe->user?->avatar)
+                                    <img src="{{ asset('storage/' . $recipe->user->avatar) }}" alt="{{ $recipe->user->name ?? $recipe->chef_name }}"
                                         class="rounded-circle object-fit-cover border border-2 border-primary"
                                         style="width: 48px; height: 48px;">
                                 @else
@@ -159,7 +177,7 @@
                                 @endif
                                 <div>
                                     <div class="fw-semibold text-dark">{{ $recipe->chef_name }}</div>
-                                    <div class="small fw-semibold text-secondary text-uppercase opacity-75">Chef Executiu</div>
+                                
                                 </div>
                             </div>
                         </div>

@@ -39,10 +39,10 @@
             </form>
 
             {{-- NOTIFICACIONS, AVATAR I ACCIONS D'USUARI --}}
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3 ">
                 @auth
                     {{-- BOTÓ DE NOTIFICACIONS --}}
-                    <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center navbar-icon-btn"
+                    <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center navbar-icon-btn d-none"
                         type="button" aria-label="Notificacions">
                         <i class="bi bi-bell navbar-bell-icon"></i>
                     </button>

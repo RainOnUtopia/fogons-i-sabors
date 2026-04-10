@@ -23,6 +23,7 @@ class Recipe extends Model
         'image',
         'tags',
         'ingredients',
+        'steps',
         'chef_notes',
         'chef_name',
         'chef_avatar',
@@ -37,6 +38,7 @@ class Recipe extends Model
         return [
             'tags' => 'json',
             'ingredients' => 'json',
+            'steps' => 'json',
             'cooking_time' => 'integer',
             'average_rating' => 'float',
             'ratings_count' => 'integer',

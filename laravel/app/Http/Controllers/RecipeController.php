@@ -177,6 +177,7 @@ class RecipeController extends Controller
             'tags' => ['nullable', 'string'],
             'description' => ['nullable', 'string', 'max:1000'],
             'ingredients' => ['nullable', 'string'],
+            'steps' => ['nullable', 'string'],
             'chef_notes' => ['nullable', 'string', 'max:500'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
@@ -189,6 +190,11 @@ class RecipeController extends Controller
         // Convertim els ingredients de text a array JSON.
         $validated['ingredients'] = ($validated['ingredients'] ?? null)
             ? array_values(array_filter(array_map('trim', explode("\n", $validated['ingredients']))))
+            : [];
+
+        // Convertim els passos de text a array JSON.
+        $validated['steps'] = ($validated['steps'] ?? null)
+            ? array_values(array_filter(array_map('trim', explode("\n", $validated['steps']))))
             : [];
 
         // Substituïm la imatge antiga només si l'usuari n'ha pujat una de nova.

@@ -14,6 +14,7 @@
     $selectedDifficulty = old('difficulty', $recipe->difficulty ?? '');
     $tagsValue = old('tags', isset($recipe) && is_array($recipe->tags) ? implode(', ', $recipe->tags) : '');
     $ingredientsValue = old('ingredients', isset($recipe) && is_array($recipe->ingredients) ? implode("\n", $recipe->ingredients) : '');
+    $stepsValue = old('steps', isset($recipe) && is_array($recipe->steps) ? implode("\n", $recipe->steps) : '');
 @endphp
 <div class="section-ui">
 
@@ -170,6 +171,22 @@
                     >{{ $ingredientsValue }}</textarea>
                     <p class="small text-secondary mt-1 mb-0">Escriu cada ingredient en una nova línia</p>
                     @error('ingredients')
+                        <div class="recipe-form-error-msg">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- PASSOS A SEGUIR -->
+                <div class="recipe-form-group">
+                    <label for="steps" class="recipe-form-label">Passos a seguir</label>
+                    <textarea
+                        id="steps"
+                        name="steps"
+                        placeholder="Escriu un pas per línia&#10;Ex: Talla les verdures a daus petits&#10;Sofregeix a foc lent durant 10 minuts"
+                        rows="6"
+                        class="recipe-form-textarea @error('steps') recipe-form-error @enderror"
+                    >{{ $stepsValue }}</textarea>
+                    <p class="small text-secondary mt-1 mb-0">Escriu cada pas en una nova línia</p>
+                    @error('steps')
                         <div class="recipe-form-error-msg">{{ $message }}</div>
                     @enderror
                 </div>

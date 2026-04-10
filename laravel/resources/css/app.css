@@ -141,6 +141,8 @@ body {
 .btn-primary:active {
     transform: translateY(0);
     box-shadow: var(--shadow-primary-active);
+    background-color: var(--primary-hover) !important;
+    box-shadow: var(--shadow-primary-hover) !important;
 }
 
 /* ----------------------------------------------------------------
@@ -3613,7 +3615,7 @@ body.bg-light .edit-container {
 }
 
 .recipe-form-input.has-icon {
-    padding-left: 48px;
+    padding-left: 68px;
 }
 
 .recipe-form-textarea {
@@ -3725,4 +3727,20 @@ body.bg-light .edit-container {
 /* Paginacio Global */
 .pagination-container .d-none {
     flex-direction: column-reverse;
+}
+/*Disseny passos a serguir recepta*/
+.steps-card{
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+.button-search-recipies{
+    position:absolute
+}
+.dificulty-tag{
+    text-transform: uppercase;
+}
+.recipe-title-container{
+    min-height: 2em;
 }

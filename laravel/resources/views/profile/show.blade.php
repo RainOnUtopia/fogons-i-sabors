@@ -159,9 +159,9 @@
                                     <div class="d-flex flex-wrap gap-1">
                                         @foreach(['tots' => 'Tots', 'fàcil' => 'Fàcil', 'mitjà' => 'Mitjà', 'difícil' => 'Difícil'] as $val => $label)
                                             <a href="{{ route('profile.show', array_merge($rExceptDifficulty, $val !== 'tots' ? ['r_difficulty' => $val] : [], ['tab' => 'pantry'])) }}"
-                                               class="btn btn-sm rounded-pill fw-semibold px-3 py-1 text-decoration-none
+                                               class="btn btn-sm rounded-pill fw-semibold px-3 py-1 text-decoration-none dificulty-tag
                                                       {{ $rDifficulty === $val ? 'btn-danger text-white' : 'btn-light text-secondary border' }}">
-                                                {{ strtoupper($label) }}
+                                                {{ $label }}
                                             </a>
                                         @endforeach
                                     </div>
@@ -216,8 +216,8 @@
                                                         </div>
                                                     @endif
                                                     <div class="card-body">
-                                                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                                            <h6 class="fw-bold mb-0 profile-recipe-title">{{ $recipe->title }}</h6>
+                                                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2 recipe-title-container">
+                                                            <h6 class="fw-bold mb-0 profile-recipe-title ">{{ $recipe->title }}</h6>
                                                         </div>
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <span class="text-muted profile-recipe-meta"><i class="bi bi-clock"></i> {{ $recipe->cooking_time }} min</span>
@@ -349,9 +349,9 @@
                                     <div class="d-flex flex-wrap gap-1">
                                         @foreach(['tots' => 'Tots', 'fàcil' => 'Fàcil', 'mitjà' => 'Mitjà', 'difícil' => 'Difícil'] as $val => $label)
                                             <a href="{{ route('profile.show', array_merge($fExceptDifficulty, $val !== 'tots' ? ['f_difficulty' => $val] : [], ['tab' => 'favorites'])) }}"
-                                               class="btn btn-sm rounded-pill fw-semibold px-3 py-1 text-decoration-none
+                                               class="btn btn-sm rounded-pill fw-semibold px-3 py-1 text-decoration-none dificulty-tag
                                                       {{ $fDifficulty === $val ? 'btn-danger text-white' : 'btn-light text-secondary border' }}">
-                                                {{ strtoupper($label) }}
+                                                {{ $label }}
                                             </a>
                                         @endforeach
                                     </div>

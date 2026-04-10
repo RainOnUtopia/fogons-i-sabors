@@ -26,6 +26,15 @@ class CommentController extends Controller
         ]);
 
         $recipe->comments()->save($comment);
+        
+        if ($request->wantsJson() || $request->ajax()) {
+            $comment->load('user');
+            return response()->json([
+                'success' => true,
+                'comment' => $comment,
+                'message' => __('comments.created')
+            ]);
+        }
 
         return back()->with('status', __('comments.created'));
     }
@@ -36,10 +45,12 @@ class CommentController extends Controller
     public function update(Request $request, Comment $comment)
     {
         if ($comment->is_deleted) {
+            if ($request->wantsJson() || $request->ajax()) return response()->json(['success' => false, 'message' => __('comments.cannot_edit_deleted')], 403);
             abort(403, __('comments.cannot_edit_deleted'));
         }
 
         if ($request->user()->id !== $comment->user_id && $request->user()->role !== 'admin') {
+            if ($request->wantsJson() || $request->ajax()) return response()->json(['success' => false, 'message' => __('comments.unauthorized_edit')], 403);
             abort(403, __('comments.unauthorized_edit'));
         }
 
@@ -50,6 +61,14 @@ class CommentController extends Controller
         $comment->update([
             'content' => $request->string('content'),
         ]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'comment' => $comment,
+                'message' => __('comments.updated')
+            ]);
+        }
 
         return back()->with('status', __('comments.updated'));
     }
@@ -62,6 +81,7 @@ class CommentController extends Controller
         $user = $request->user();
 
         if ($user->id !== $comment->user_id && $user->role !== 'admin') {
+            if ($request->wantsJson() || $request->ajax()) return response()->json(['success' => false, 'message' => __('comments.unauthorized_delete')], 403);
             abort(403, __('comments.unauthorized_delete'));
         }
 
@@ -75,6 +95,14 @@ class CommentController extends Controller
             'content' => $text,
             'is_deleted' => true,
         ]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'comment' => $comment,
+                'message' => __('comments.deleted')
+            ]);
+        }
 
         return back()->with('status', __('comments.deleted'));
     }

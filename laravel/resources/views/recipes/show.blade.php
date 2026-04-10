@@ -63,6 +63,36 @@
                             <i class="bi bi-printer"></i>
                         </button>
                     </div>
+                                 <!-- SECCIÓN NOTES DEL XEF -->
+                    @if($recipe->chef_notes || $recipe->chef_name)
+                        <div class="recipe-chef-notes-card">
+                            <h3 class="recipe-chef-notes-title">Notes del Xef</h3>
+
+                            @if($recipe->chef_notes)
+                                <blockquote class="recipe-chef-notes-blockquote">
+                                    "{{ $recipe->chef_notes }}"
+                                </blockquote>
+                            @endif
+
+                            <!-- CHEF INFO -->
+                            <div class="d-flex align-items-center gap-3">
+                                @if($recipe->user?->avatar)
+                                    <img src="{{ asset('storage/' . $recipe->user->avatar) }}" alt="{{ $recipe->user->name ?? $recipe->chef_name }}"
+                                        class="rounded-circle object-fit-cover border border-2 border-primary"
+                                        style="width: 48px; height: 48px;">
+                                @else
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-5 bg-primary"
+                                        style="width: 48px; height: 48px;">
+                                        {{ substr($recipe->chef_name, 0, 1) }}
+                                    </div>
+                                @endif
+                                <div>
+                                    <div class="fw-semibold text-dark">{{ $recipe->chef_name }}</div>
+                                
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- COLUMNA DERECHA - INFORMACIÓN -->
@@ -152,36 +182,7 @@
                         </div>
                     @endif
 
-                    <!-- SECCIÓN NOTES DEL XEF -->
-                    @if($recipe->chef_notes || $recipe->chef_name)
-                        <div class="recipe-chef-notes-card">
-                            <h3 class="recipe-chef-notes-title">Notes del Xef</h3>
-
-                            @if($recipe->chef_notes)
-                                <blockquote class="recipe-chef-notes-blockquote">
-                                    "{{ $recipe->chef_notes }}"
-                                </blockquote>
-                            @endif
-
-                            <!-- CHEF INFO -->
-                            <div class="d-flex align-items-center gap-3">
-                                @if($recipe->user?->avatar)
-                                    <img src="{{ asset('storage/' . $recipe->user->avatar) }}" alt="{{ $recipe->user->name ?? $recipe->chef_name }}"
-                                        class="rounded-circle object-fit-cover border border-2 border-primary"
-                                        style="width: 48px; height: 48px;">
-                                @else
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-5 bg-primary"
-                                        style="width: 48px; height: 48px;">
-                                        {{ substr($recipe->chef_name, 0, 1) }}
-                                    </div>
-                                @endif
-                                <div>
-                                    <div class="fw-semibold text-dark">{{ $recipe->chef_name }}</div>
-                                
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+       
                 </div>
             </div>
         </div>

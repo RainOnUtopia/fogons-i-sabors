@@ -59,6 +59,7 @@
             transparent 77%,
             transparent);
     --grid-bg-size: 50px 50px;
+    --bs-focus-ring-color:var(--bs-primary);
 }
 
 /* ================================================================
@@ -3744,4 +3745,13 @@ body.bg-light .edit-container {
 }
 .recipe-title-container{
     min-height: 2em;
+}
+.step-text{
+    text-wrap: wrap;
+
+    word-break: break-word;
+}
+.btn.btn-primary:disabled{
+    background-color: var(--bs-primary);
+    opacity: 0.5;
 }

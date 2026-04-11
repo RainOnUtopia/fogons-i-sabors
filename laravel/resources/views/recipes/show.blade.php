@@ -3,16 +3,7 @@
 @section('content')
     <div class="section-ui">
 
-        <!-- BREADCRUMB -->
-        <div class="recipe-page-container-mb">
-            <nav class="recipe-breadcrumb">
-                <a href="/">INICI</a>
-                <span class="separator">›</span>
-                <a href="{{ route('recipes.index') }}">RECEPTES</a>
-                <span class="separator">›</span>
-                <span class="active">{{ strtoupper($recipe->title) }}</span>
-            </nav>
-        </div>
+ 
 
         <!-- CONTENEDOR PRINCIPAL - LAYOUT DOS COLUMNAS -->
         <div class="recipe-page-container">
@@ -173,7 +164,7 @@
                                         <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; font-weight: bold;">
                                             {{ $index + 1 }}
                                         </div>
-                                        <div class="pt-1 lh-base text-dark">
+                                        <div class="pt-1 lh-base text-dark step-text">
                                             {{ $step }}
                                         </div>
                                     </div>
@@ -185,14 +176,13 @@
        
                 </div>
             </div>
-        </div>
-        <!-- SECCIÓ COMENTARIS -->
-        <div class="recipe-comments-section mt-5 border-top pt-4">
+            <!-- SECCIÓ COMENTARIS -->
+        <div class="recipe-comments-section mt-5 pt-4">
             <h3 class="mb-4"><i class="bi bi-chat-text"></i> Comentaris (<span id="comments-count">{{ $recipe->comments()->count() }}</span>)</h3>
 
             <!-- Comment form for Authenticated Users -->
             @auth
-            <div class="mb-4 p-3 bg-light rounded shadow-sm">
+            <div class="mb-4 p-3 bg-light rounded shadow-sm ">
                 <form id="main-comment-form">
                     @csrf
                     <div class="mb-2">
@@ -207,8 +197,8 @@
                 </form>
             </div>
             @else
-            <div class="alert alert-info shadow-sm">
-                Si us plau, <a href="{{ route('login') }}" class="fw-bold">inicia sessió</a> per deixar un comentari.
+            <div class="alert alert-info shadow-sm steps-card">
+                Si us plau, <a href="{{ route('login') }}" class="fw-bold text-primary">inicia sessió</a> per deixar un comentari.
             </div>
             @endauth
 
@@ -294,6 +284,8 @@
                 @endforeach
             </div>
         </div>
+        </div>
+        
 
         @if(session('status') === 'recipe-created')
             <div class="recipe-alert-success mt-4">

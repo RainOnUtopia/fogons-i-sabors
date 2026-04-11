@@ -40,7 +40,7 @@ class RecipeSeeder extends Seeder
                     '100g de parmigia ratllat',
                 ],
                 'chef_notes' => 'El mantecat final amb la mantega ben freda dona la textura ideal.',
-                'rating' => 4.9,
+                'average_rating' => 4.9,
                 'author_email' => 'aina@fogons.local',
             ],
             [
@@ -57,7 +57,7 @@ class RecipeSeeder extends Seeder
                     '200g de verduretes de temporada',
                 ],
                 'chef_notes' => 'Deixa reposar la carn abans de servir-la.',
-                'rating' => 4.7,
+                'average_rating' => 4.7,
                 'author_email' => 'pau@fogons.local',
             ],
             [
@@ -75,7 +75,7 @@ class RecipeSeeder extends Seeder
                     '200ml de suc de llimona',
                 ],
                 'chef_notes' => 'La pell de llimona acabada de ratllar canvia totalment el resultat.',
-                'rating' => 4.6,
+                'average_rating' => 4.6,
                 'author_email' => 'maria@fogons.local',
             ],
             [
@@ -92,7 +92,7 @@ class RecipeSeeder extends Seeder
                     '200g de verdures',
                 ],
                 'chef_notes' => 'Els moviments suaus mantenen la claredat del brou.',
-                'rating' => 4.8,
+                'average_rating' => 4.8,
                 'author_email' => 'test@example.com',
             ],
             [
@@ -110,7 +110,7 @@ class RecipeSeeder extends Seeder
                     '200ml de suc de taronja',
                 ],
                 'chef_notes' => 'Les especies s\'han de torrar lleugerament per alliberar aroma.',
-                'rating' => 4.5,
+                'average_rating' => 4.5,
                 'author_email' => 'aina@fogons.local',
             ],
             [
@@ -128,7 +128,7 @@ class RecipeSeeder extends Seeder
                     '1 llimona',
                 ],
                 'chef_notes' => 'Controla la temperatura per evitar que el miso es torri massa.',
-                'rating' => 4.7,
+                'average_rating' => 4.7,
                 'author_email' => 'pau@fogons.local',
             ],
         ];
@@ -149,7 +149,7 @@ class RecipeSeeder extends Seeder
                     'chef_name' => $author?->name ?? 'Chef Anonim',
                     'chef_avatar' => $author?->avatar,
                     'user_id' => $author?->id,
-                    'rating' => $recipeData['rating'],
+                    'average_rating' => $recipeData['average_rating'],
                 ]
             );
         }

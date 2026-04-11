@@ -33,7 +33,7 @@
             </ul>
 
             {{-- CAMP DE CERCA --}}
-            <form class="d-flex me-3" role="search">
+            <form class="d-flex me-3 d-none" role="search">
                 <input class="form-control form-control-sm rounded-pill" type="search" placeholder="Cercar"
                     aria-label="Cercar">
             </form>
@@ -58,7 +58,7 @@
                     </a>
 
                     {{-- BOTÓ DE TANCAR SESSIÓ --}}
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" class="mb-0" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
                             class="btn btn-outline-danger btn-sm d-flex align-items-center justify-content-center navbar-icon-btn"

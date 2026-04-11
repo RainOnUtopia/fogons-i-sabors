@@ -117,14 +117,39 @@
                             {{ ucfirst($recipe->difficulty) }}
                         </span>
 
-                        <!-- RATING -->
-                        @if($recipe->average_rating > 0)
-                            <div class="recipe-card-meta-item">
-                                <i class="bi bi-star-fill text-warning fs-5"></i>
-                                <span class="fw-bold text-dark">{{ number_format($recipe->average_rating, 1) }}</span>
-                            </div>
-                        @endif
+                        <!-- RATING GENERAL -->
+                        <div class="recipe-card-meta-item {{ $recipe->average_rating > 0 ? '' : 'd-none' }}" id="average-rating-container">
+                            <span class="fw-bold text-dark fs-5" id="average-rating-text">{{ $recipe->average_rating > 0 ? number_format($recipe->average_rating, 0) : '' }}</span>
+                            <span id="average-rating-hats" class="ms-1 d-flex gap-1 align-items-center">
+                                @if($recipe->average_rating > 0)
+                                    @for($i = 0; $i < round($recipe->average_rating); $i++)
+                                        <span class="fs-5" title="Mitjana">👨‍🍳</span>
+                                    @endfor
+                                @endif
+                            </span>
+                        </div>
                     </div>
+
+                    <!-- PUNTUACIO USUARI LA MEVA NOTA -->
+                    @auth
+                    <div class="mb-4 pt-2">
+                        @php $userRating = $recipe->userRating?->rating ?? 0; @endphp
+                        <div class="d-flex align-items-center gap-2" id="user-rating-container" data-url="{{ route('recipes.rate', $recipe) }}" data-rating="{{ $userRating }}">
+                            <span class="fw-medium text-secondary">La meva nota:</span>
+                            <div class="rating-hats d-flex gap-1" style="cursor: pointer;">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <span class="fs-4 hat-icon {{ $i > $userRating ? 'disabled-hat' : '' }}" data-value="{{ $i }}" style="transition: all 0.2s;">
+                                        👨‍🍳
+                                    </span>
+                                @endfor
+                            </div>
+                            <div id="rating-spinner" class="spinner-border spinner-border-sm text-primary d-none" role="status"></div>
+                        </div>
+                        <div id="rating-alert" class="text-success small fw-medium mt-1 d-none">
+                            <i class="bi bi-check-circle-fill me-1"></i> <span id="rating-alert-text">S'ha actualitzat la nota de la recepta correctament. L'estadística general s'ha actualitzat automàticament!</span>
+                        </div>
+                    </div>
+                    @endauth
 
                     <!-- DESCRIPCIÓN -->
                     @if($recipe->description)
@@ -576,6 +601,109 @@ document.addEventListener('DOMContentLoaded', function() {
         if (countSpan) {
             countSpan.innerText = parseInt(countSpan.innerText) + increment;
         }
+    }
+
+    // Rating Hats logic
+    const caps = document.querySelectorAll('.hat-icon');
+    const container = document.getElementById('user-rating-container');
+    const alertMsg = document.getElementById('rating-alert');
+    const spinner = document.getElementById('rating-spinner');
+    
+    if (caps.length > 0) {
+        
+        function drawHats(val) {
+            caps.forEach(c => {
+                const cVal = parseInt(c.dataset.value);
+                if (cVal <= val) {
+                    c.style.filter = 'none';
+                    c.style.opacity = '1';
+                    c.classList.remove('disabled-hat');
+                } else {
+                    c.style.filter = 'grayscale(100%) opacity(50%)';
+                    c.classList.add('disabled-hat');
+                }
+            });
+        }
+        
+        // initial drawing
+        const initialRating = parseInt(container.dataset.rating || 0);
+        drawHats(initialRating);
+
+        caps.forEach(cap => {
+            // Hover effect
+            cap.addEventListener('mouseenter', function() {
+                const val = parseInt(this.dataset.value);
+                drawHats(val);
+            });
+
+            // Revert state on mouseleave
+            cap.closest('.rating-hats').addEventListener('mouseleave', function() {
+                const currentRating = parseInt(container.dataset.rating || 0);
+                drawHats(currentRating);
+            });
+
+            // Click to rate
+            cap.addEventListener('click', async function() {
+                const val = parseInt(this.dataset.value);
+                const url = container.dataset.url;
+                
+                spinner.classList.remove('d-none');
+                alertMsg.classList.add('d-none');
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ rating: val })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.success) {
+                        // Update UI
+                        container.dataset.rating = val;
+                        drawHats(val);
+                        
+                        // Reset success classes
+                        alertMsg.classList.remove('d-none', 'text-danger');
+                        alertMsg.classList.add('text-success');
+                        document.getElementById('rating-alert-text').innerText = "S'ha actualitzat la nota de la recepta correctament. L'estadística general s'ha actualitzat automàticament!";
+                        
+                        // Update average rating
+                        const avgContainer = document.getElementById('average-rating-container');
+                        const avgText = document.getElementById('average-rating-text');
+                        const avgHats = document.getElementById('average-rating-hats');
+                        
+                        if (avgContainer) {
+                            avgContainer.classList.remove('d-none');
+                            const roundedAvg = Math.round(data.average_rating);
+                            avgText.innerText = roundedAvg;
+                            
+                            let hatsHtml = '';
+                            for(let i=0; i < roundedAvg; i++) {
+                                hatsHtml += '<span class="fs-5" title="Mitjana">👨‍🍳</span>';
+                            }
+                            avgHats.innerHTML = hatsHtml;
+                        }
+                        
+                        // Hide alert after 5s
+                        setTimeout(() => alertMsg.classList.add('d-none'), 5000);
+                    } else {
+                        alertMsg.classList.remove('d-none', 'text-success');
+                        alertMsg.classList.add('text-danger');
+                        document.getElementById('rating-alert-text').innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Error al guardar.';
+                    }
+                } catch (error) {
+                    console.error('Error rating:', error);
+                } finally {
+                    spinner.classList.add('d-none');
+                }
+            });
+        });
     }
 });
 </script>

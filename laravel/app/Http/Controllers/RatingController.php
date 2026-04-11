@@ -21,6 +21,15 @@ class RatingController extends Controller
             ['rating' => $validated['rating']]
         );
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('recipe.rating_success'),
+                'average_rating' => $recipe->fresh()->average_rating,
+                'user_rating' => $validated['rating']
+            ]);
+        }
+
         return back()->with('status', __('recipe.rating_success'));
     }
 }

@@ -149,7 +149,7 @@
 
                                     <!-- CHEF -->
                                     <p class="recipe-card-chef">
-                                        @if($recipe->user->avatar)
+                                        @if($recipe->user?->avatar)
                                             <img src="{{ asset('storage/' . $recipe->user->avatar) }}" alt="{{ $recipe->user->name ?? $recipe->chef_name }}"
                                                 class="rounded-circle object-fit-cover" style="width: 20px; height: 20px;">
                                         @else

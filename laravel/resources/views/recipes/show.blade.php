@@ -103,6 +103,12 @@
                     <h1 class="recipe-show-title">
                         {{ $recipe->title }}
                     </h1>
+                    <!-- DESCRIPCIÓN -->
+                    @if($recipe->description)
+                        <p class="recipe-show-desc">
+                            {{ $recipe->description }}
+                        </p>
+                    @endif
 
                     <!-- INFORMACIÓN: TIEMPO, DIFICULTAD, RATING -->
                     <div class="recipe-show-meta">
@@ -128,6 +134,12 @@
                                 @endif
                             </span>
                         </div>
+                        @if($recipe->favorites_count > 0)
+                            <span class="favorite-count">
+                                <i class="bi bi-heart-fill"></i>
+                                {{ $recipe->favorites_count }}
+                            </span>
+                        @endif
                     </div>
 
                     <!-- PUNTUACIO USUARI LA MEVA NOTA -->
@@ -144,19 +156,15 @@
                                 @endfor
                             </div>
                             <div id="rating-spinner" class="spinner-border spinner-border-sm text-primary d-none" role="status"></div>
-                        </div>
-                        <div id="rating-alert" class="text-success small fw-medium mt-1 d-none">
-                            <i class="bi bi-check-circle-fill me-1"></i> <span id="rating-alert-text">S'ha actualitzat la nota de la recepta correctament. L'estadística general s'ha actualitzat automàticament!</span>
+                        
+                        <span id="rating-alert" class="text-success small fw-medium mt-1 d-none">
+                            <i class="bi bi-check-circle-fill me-1"></i> 
+                        </span>
                         </div>
                     </div>
                     @endauth
 
-                    <!-- DESCRIPCIÓN -->
-                    @if($recipe->description)
-                        <p class="recipe-show-desc">
-                            {{ $recipe->description }}
-                        </p>
-                    @endif
+                   
 
                     <!-- SECCIÓN INGREDIENTES -->
                     @if($recipe->ingredients && count($recipe->ingredients) > 0)
@@ -671,7 +679,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Reset success classes
                         alertMsg.classList.remove('d-none', 'text-danger');
                         alertMsg.classList.add('text-success');
-                        document.getElementById('rating-alert-text').innerText = "S'ha actualitzat la nota de la recepta correctament. L'estadística general s'ha actualitzat automàticament!";
+                     
                         
                         // Update average rating
                         const avgContainer = document.getElementById('average-rating-container');
@@ -695,7 +703,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         alertMsg.classList.remove('d-none', 'text-success');
                         alertMsg.classList.add('text-danger');
-                        document.getElementById('rating-alert-text').innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Error al guardar.';
                     }
                 } catch (error) {
                     console.error('Error rating:', error);

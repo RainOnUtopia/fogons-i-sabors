@@ -15,10 +15,12 @@
                 <p class="recipe-hero-subtitle">Explora la nostra col·lecció seleccionada de receptes de classe mundial.</p>
             </div>
             @auth
+                @if(auth()->user()->role !== 'admin')
                 <a href="{{ route('recipes.create') }}" class="btn-primary-ui">
                     <i class="bi bi-plus-lg"></i>
                     <span class="fw-semibold">Compartir Recepta</span>
                 </a>
+                @endif
             @endauth
         </div>
 
@@ -170,7 +172,7 @@
                                         </span>
                                         @if($recipe->average_rating > 0)
                                             <span class="recipe-card-meta-item rating">
-                                                <i class="bi bi-star-fill"></i>
+                                                 👨‍🍳
                                                 {{ number_format($recipe->average_rating, 1) }}
                                             </span>
                                         @endif

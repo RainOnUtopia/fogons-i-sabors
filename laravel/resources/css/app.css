@@ -3754,4 +3754,29 @@ body.bg-light .edit-container {
 .btn.btn-primary:disabled{
     background-color: var(--bs-primary);
     opacity: 0.5;
+} 
+.favorite-count i{
+    color: var(--primary);
+}
+.not-filter-button{
+    display:flex;
+    align-items:center;
+}
+.search-profile-form{
+    .search-profile{
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+.profile-search-button{
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+ .form-control:focus{
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem var(--primary);
+ }
+}
+.form-select:focus{
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem var(--primary);
 }

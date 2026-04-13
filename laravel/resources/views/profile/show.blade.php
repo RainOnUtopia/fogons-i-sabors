@@ -77,8 +77,8 @@
                                     <div class="text-muted profile-stat-label">Victòries</div>
                                 </div>
                                 <div>
-                                    <div class="fw-bold profile-stat-value">{{ $commentCounts }}</div>
-                                    <div class="text-muted profile-stat-label">Comentaris</div>
+                                    <div class="fw-bold profile-stat-value">4.8</div>
+                                    <div class="text-muted profile-stat-label">Mitjana</div>
                                 </div>
                             </div>
                         </div>
@@ -132,24 +132,24 @@
 
                             <div class="mb-3">
                                 {{-- Cerca --}}
-                                <form method="GET" class="mb-2 search-profile-form">
+                                <form method="GET" class="mb-2">
                                     @foreach($rExceptSearch as $k => $v)
                                         @if(!is_array($v))
                                             <input type="hidden" name="{{ $k }}" value="{{ $v }}">
                                         @endif
                                     @endforeach
                                     <div class="input-group input-group-sm">
-                                        
-                                        <input type="text" name="r_search" class="form-control search-profile"
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" name="r_search" class="form-control"
                                                placeholder="Cerca per nom o ingredient..."
                                                value="{{ $rSearch }}">
                                         @if($rSearch)
                                             <a href="{{ route('profile.show', array_merge($rExceptSearch, ['tab' => 'pantry'])) }}"
-                                               class="btn btn-outline-secondary btn-sm not-filter-button" title="Esborra la cerca">
-                                                <i class="bi bi-x-lg "></i>
+                                               class="btn btn-outline-secondary btn-sm" title="Esborra la cerca">
+                                                <i class="bi bi-x-lg"></i>
                                             </a>
                                         @endif
-                                        <button type="submit" class="btn btn-primary btn-sm bi bi-search profile-search-button"></button>
+                                        <button type="submit" class="btn btn-primary btn-sm">Cercar</button>
                                     </div>
                                 </form>
 
@@ -321,7 +321,7 @@
 
                             <div class="mb-3">
                                 {{-- Cerca --}}
-                                <form method="GET" class="mb-2 search-profile-form">
+                                <form method="GET" class="mb-2">
                                     @foreach($fExceptSearch as $k => $v)
                                         @if(!is_array($v))
                                             <input type="hidden" name="{{ $k }}" value="{{ $v }}">
@@ -329,17 +329,17 @@
                                     @endforeach
                                     <input type="hidden" name="tab" value="favorites">
                                     <div class="input-group input-group-sm">
-                                       
-                                        <input type="text" name="f_search" class="form-control search-profile"
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" name="f_search" class="form-control"
                                                placeholder="Cerca per nom, xef o ingredient..."
                                                value="{{ $fSearch }}">
                                         @if($fSearch)
                                             <a href="{{ route('profile.show', array_merge($fExceptSearch, ['tab' => 'favorites'])) }}"
-                                               class="btn btn-outline-secondary btn-sm not-filter-button" title="Esborra la cerca">
-                                                <i class="bi bi-x-lg "></i>
+                                               class="btn btn-outline-secondary btn-sm" title="Esborra la cerca">
+                                                <i class="bi bi-x-lg"></i>
                                             </a>
                                         @endif
-                                        <button type="submit" class="btn btn-primary btn-sm profile-search-button bi bi-search"></button>
+                                        <button type="submit" class="btn btn-primary btn-sm">Cercar</button>
                                     </div>
                                 </form>
 

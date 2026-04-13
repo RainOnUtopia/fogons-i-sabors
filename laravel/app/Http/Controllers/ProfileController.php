@@ -84,7 +84,6 @@ class ProfileController extends Controller
                 ->paginate(9, ['*'], 'f_page')
                 ->withQueryString();
         }
-        $commentCounts = $user->comments()->count();
 
         return view('profile.show', [
             'user' => $user,
@@ -99,7 +98,6 @@ class ProfileController extends Controller
             'fDifficulty' => $fDifficulty,
             'fSort' => $fSort,
             'fDirection' => $fDirection,
-            'commentCounts' => $commentCounts,
         ]);
     }
 

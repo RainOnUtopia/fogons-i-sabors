@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             DemoUserSeeder::class,
             RecipeSeeder::class,
             FavoriteSeeder::class,
+            CommentSeeder::class,
+            RatingSeeder::class,
         ]);
     }
 }

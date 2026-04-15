@@ -39,10 +39,7 @@ class ProfileController extends Controller
                 // Cerca per títol, nom del xef o ingredients (JSON_SEARCH).
                 $q->where(function ($s) use ($rSearch) {
                     $s->where('title', 'like', "%{$rSearch}%")
-                        ->orWhereRaw(
-                            "JSON_SEARCH(ingredients, 'one', ?) IS NOT NULL",
-                            ["%{$rSearch}%"]
-                        );
+                        ->orWhere('ingredients', 'like', "%{$rSearch}%");
                 });
             })
             ->when($rDifficulty !== 'tots', fn($q) => $q->where('difficulty', $rDifficulty))
@@ -69,10 +66,7 @@ class ProfileController extends Controller
                     $q->where(function ($s) use ($fSearch) {
                         $s->where('recipes.title', 'like', "%{$fSearch}%")
                             ->orWhere('recipes.chef_name', 'like', "%{$fSearch}%")
-                            ->orWhereRaw(
-                                "JSON_SEARCH(recipes.ingredients, 'one', ?) IS NOT NULL",
-                                ["%{$fSearch}%"]
-                            );
+                            ->orWhere('recipes.ingredients', 'like', "%{$fSearch}%");
                     });
                 })
                 ->when($fDifficulty !== 'tots', fn($q) => $q->where('recipes.difficulty', $fDifficulty))

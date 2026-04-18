@@ -28,7 +28,13 @@ class RecipeController extends Controller
                     $searchQuery->where('title', 'like', "%{$search}%")
                         ->orWhere('chef_name', 'like', "%{$search}%")
                         ->orWhere('tags', 'like', "%{$search}%")
-                        ->orWhere('ingredients', 'like', "%{$search}%");
+                         ->orWhere(function ($q) use ($search) {
+                             if ($q->getConnection()->getDriverName() === 'sqlite') {
+                                 $q->where('ingredients', 'like', "%{$search}%");
+                             } else {
+                                 $q->whereRaw("JSON_SEARCH(ingredients, 'one', ?) IS NOT NULL", ["%{$search}%"]);
+                             }
+                         });
                 });
             })
             ->when($currentDifficulty !== 'tots', function ($recipeQuery) use ($currentDifficulty) {

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Comment;
 use App\Models\Recipe;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -33,7 +34,10 @@ class RecipeListingTest extends TestCase
             'steps' => ['Pastar', 'Enfornar'],
         ]);
 
-        $comment = Comment::factory()->for($recipe)->create([
+        $user = User::factory()->create();
+        $comment = Comment::create([
+            'recipe_id' => $recipe->id,
+            'user_id' => $user->id,
             'content' => 'Molt bona!',
         ]);
 

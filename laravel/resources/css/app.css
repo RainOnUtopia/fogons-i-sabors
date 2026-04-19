@@ -11,6 +11,9 @@
     --primary-hover: #a82838;
     --bs-primary: #be3144;
     --bs-primary-rgb: 190, 49, 68;
+    --bs-pagination-active-bg: #be3144 !important;
+    --bs-pagination-active-border-color: #be3144 !important;
+    --bs-pagination-color: #be3144 !important;
 
     /*--bs-primary-hover: #a82838;*/
     --background: #f4efea;
@@ -3779,4 +3782,13 @@ body.bg-light .edit-container {
 .form-select:focus{
     border-color: var(--primary);
     box-shadow: 0 0 0 0.2rem var(--primary);
+}
+.pagination{
+     --bs-pagination-active-bg: #be3144 !important;
+    --bs-pagination-active-border-color: #be3144 !important;
+    --bs-pagination-color: #be3144 !important;
+    --bs-pagination-hover-color: #be3144;
+}
+.pagination-container .small.text-muted{
+    display:none;
 }

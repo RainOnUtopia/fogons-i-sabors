@@ -25,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
         
         \App\Models\Rating::observe(\App\Observers\RatingObserver::class);
         \App\Models\Favorite::observe(\App\Observers\FavoriteObserver::class);
+        \App\Models\DuelVote::observe(\App\Observers\DuelVoteObserver::class);
     }
 }

@@ -101,4 +101,36 @@ class Recipe extends Model
     {
         return $this->hasOne(Rating::class)->where('user_id', auth()->id());
     }
+
+    /**
+     * Duels on la recepta és la retadora.
+     */
+    public function duelsAsChallenger(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Duel::class, 'challenger_recipe_id');
+    }
+
+    /**
+     * Duels on la recepta és la retada.
+     */
+    public function duelsAsChallenged(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Duel::class, 'challenged_recipe_id');
+    }
+
+    /**
+     * Duels on la recepta és la guanyadora.
+     */
+    public function wonDuels(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Duel::class, 'winner_recipe_id');
+    }
+
+    /**
+     * Vots de duels on la recepta ha estat votada.
+     */
+    public function duelVotes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(DuelVote::class);
+    }
 }

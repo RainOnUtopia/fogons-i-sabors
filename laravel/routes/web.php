@@ -12,6 +12,18 @@ Route::get('/', function () {
     return view('welcome', compact('featuredRecipe'));
 });
 
+Route::get('/sobre-nosaltres', function () {
+    return view('about');
+})->name('about');
+
+Route::get('/contacte', function () {
+    return view('contact');
+})->name('contact');
+
+Route::get('/politica-privacitat', function () {
+    return view('privacy');
+})->name('privacy');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

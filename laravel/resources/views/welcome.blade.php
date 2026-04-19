@@ -152,8 +152,9 @@
             <div class="text-secondary footer-copy">&copy; {{ date('Y') }} Fogons i Sabors. Tots els drets reservats.
             </div>
             <div class="d-flex gap-3">
-                <a href="#" class="text-secondary footer-link">Privacitat</a>
-                <a href="#" class="text-secondary footer-link">Contacte</a>
+                <a href="{{ route('about') }}" class="footer-link">Sobre nosaltres</a>
+                <a href="{{ route('contact') }}" class="footer-link">Contacte</a>
+                <a href="{{ route('privacy') }}" class="footer-link">Privacitat</a>
             </div>
         </div>
     </footer>

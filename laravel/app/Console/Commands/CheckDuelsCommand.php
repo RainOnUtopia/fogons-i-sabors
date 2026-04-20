@@ -8,21 +8,21 @@ use App\Services\DuelService;
 class CheckDuelsCommand extends Command
 {
     /**
-     * The name and signature of the console command.
+     * Nom i signatura de la comanda de consola.
      *
      * @var string
      */
     protected $signature = 'duels:check';
 
     /**
-     * The console command description.
+     * Descripció de la comanda de consola.
      *
      * @var string
      */
     protected $description = 'Comprova els duels vençuts i els finalitza determinant el guanyador o empat';
 
     /**
-     * Execute the console command.
+     * Executar la comanda de consola.
      */
     public function handle(DuelService $duelService)
     {

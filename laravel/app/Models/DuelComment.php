@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Comment extends Model
+class DuelComment extends Model
 {
     protected $fillable = [
         'user_id',
-        'recipe_id',
+        'duel_id',
         'parent_id',
         'content',
         'is_deleted',
@@ -28,7 +28,7 @@ class Comment extends Model
     }
 
     /**
-     * Relació amb l'usuari que ha creat el comentari.
+     * Relació amb l'usuari que ha realitzat el comentari.
      */
     public function user(): BelongsTo
     {
@@ -36,26 +36,26 @@ class Comment extends Model
     }
 
     /**
-     * Relació amb la recepta a la qual pertany el comentari.
+     * Relació amb el duel al qual pertany el comentari.
      */
-    public function recipe(): BelongsTo
+    public function duel(): BelongsTo
     {
-        return $this->belongsTo(Recipe::class);
+        return $this->belongsTo(Duel::class);
     }
 
     /**
-     * Relació amb el comentari pare (si és una resposta).
+     * Relació amb el comentari pare en cas de ser una resposta.
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Comment::class, 'parent_id');
+        return $this->belongsTo(DuelComment::class, 'parent_id');
     }
 
     /**
-     * Relació amb les respostes d'aquest comentari.
+     * Relació amb les respostes associades a aquest comentari.
      */
     public function replies(): HasMany
     {
-        return $this->hasMany(Comment::class, 'parent_id');
+        return $this->hasMany(DuelComment::class, 'parent_id');
     }
 }

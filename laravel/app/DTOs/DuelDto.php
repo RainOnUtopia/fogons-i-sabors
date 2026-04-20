@@ -24,7 +24,8 @@ class DuelDto
         public string $startDate,
         public string $endDate,
         public int $daysRemaining,
-        public int $totalVotes
+        public int $totalVotes,
+        public iterable $topLevelComments = []
     ) {}
 
     public static function fromModel(Duel $duel): self
@@ -64,7 +65,8 @@ class DuelDto
             startDate: $duel->start_date->toIso8601String(),
             endDate: $duel->end_date->toIso8601String(),
             daysRemaining: (int) $daysRemaining,
-            totalVotes: $duel->challenger_votes_count + $duel->challenged_votes_count
+            totalVotes: $duel->challenger_votes_count + $duel->challenged_votes_count,
+            topLevelComments: $duel->topLevelComments ?? []
         );
     }
 }

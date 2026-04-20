@@ -50,10 +50,18 @@ class RecipeFactory extends Factory
                 $this->faker->word() . ' ' . $this->faker->numerify('###ml'),
                 $this->faker->word() . ' ' . $this->faker->numerify('###g'),
             ],
+            'steps' => [
+                $this->faker->sentence(),
+                $this->faker->sentence(),
+                $this->faker->sentence(),
+            ],
             'chef_name' => $chefName,
             'chef_avatar' => null,
             'chef_notes' => $this->faker->sentence(),
             'user_id' => null,
+            'average_rating' => 0,
+            'ratings_count' => 0,
+            'favorites_count' => 0,
         ];
     }
 }

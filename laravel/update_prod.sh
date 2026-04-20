@@ -28,6 +28,9 @@ fi
 echo ">> 2. Desmuntant els contenidors de Docker antics..."
 docker compose -f docker-compose.prod.yml down
 
+echo ">> Esborrant el volum temporal de assets públics per forçar la seva actualització..."
+docker volume rm fogons_public_assets || true
+
 echo ">> 3. Reconstruint i iniciant els contenidors (Aplicarà els nous canvis al codi i configuració)..."
 docker compose -f docker-compose.prod.yml up -d --build
 

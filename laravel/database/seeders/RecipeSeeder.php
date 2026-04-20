@@ -39,8 +39,12 @@ class RecipeSeeder extends Seeder
                     '60g de mantega',
                     '100g de parmigia ratllat',
                 ],
+                'steps' => [
+                    'Infusiona el safran dins una mica de brou calent.',
+                    'Sofregeix l arros i mulla amb el vi blanc.',
+                    'Afegeix el brou a cullerots fins obtenir una textura cremosa.',
+                ],
                 'chef_notes' => 'El mantecat final amb la mantega ben freda dona la textura ideal.',
-                'average_rating' => 4.9,
                 'author_email' => 'aina@fogons.local',
             ],
             [
@@ -56,8 +60,12 @@ class RecipeSeeder extends Seeder
                     '50ml de salsa demiglace',
                     '200g de verduretes de temporada',
                 ],
+                'steps' => [
+                    'Marca la carn a foc viu i acaba la coccio lentament.',
+                    'Prepara la salsa amb la demiglace i la tofona.',
+                    'Serveix amb les verdures saltades.',
+                ],
                 'chef_notes' => 'Deixa reposar la carn abans de servir-la.',
-                'average_rating' => 4.7,
                 'author_email' => 'pau@fogons.local',
             ],
             [
@@ -74,8 +82,12 @@ class RecipeSeeder extends Seeder
                     '4 ous grans',
                     '200ml de suc de llimona',
                 ],
+                'steps' => [
+                    'Prepara una base cruixent amb farina i mantega.',
+                    'Cou la crema de llimona fins que espesseixi.',
+                    'Munta el postre per capes amb textures diferents.',
+                ],
                 'chef_notes' => 'La pell de llimona acabada de ratllar canvia totalment el resultat.',
-                'average_rating' => 4.6,
                 'author_email' => 'maria@fogons.local',
             ],
             [
@@ -91,8 +103,12 @@ class RecipeSeeder extends Seeder
                     '4 clares d\'ou',
                     '200g de verdures',
                 ],
+                'steps' => [
+                    'Bull els bolets amb el fons de verdures.',
+                    'Clarifica el brou amb les clares d ou.',
+                    'Cola amb suavitat abans de servir.',
+                ],
                 'chef_notes' => 'Els moviments suaus mantenen la claredat del brou.',
-                'average_rating' => 4.8,
                 'author_email' => 'test@example.com',
             ],
             [
@@ -109,8 +125,12 @@ class RecipeSeeder extends Seeder
                     '1 cullerada de comi',
                     '200ml de suc de taronja',
                 ],
+                'steps' => [
+                    'Dora el xai i reserva.',
+                    'Sofregeix la ceba amb les especies.',
+                    'Tapa i deixa coure lentament fins que sigui melos.',
+                ],
                 'chef_notes' => 'Les especies s\'han de torrar lleugerament per alliberar aroma.',
-                'average_rating' => 4.5,
                 'author_email' => 'aina@fogons.local',
             ],
             [
@@ -127,8 +147,12 @@ class RecipeSeeder extends Seeder
                     '15g de gingebre fresc',
                     '1 llimona',
                 ],
+                'steps' => [
+                    'Mescla el miso amb el mirin i el gingebre.',
+                    'Glaceja el peix i cou lo al punt.',
+                    'Acaba amb ratlladura de llimona abans de servir.',
+                ],
                 'chef_notes' => 'Controla la temperatura per evitar que el miso es torri massa.',
-                'average_rating' => 4.7,
                 'author_email' => 'pau@fogons.local',
             ],
         ];
@@ -145,11 +169,11 @@ class RecipeSeeder extends Seeder
                     'image' => $recipeData['image'],
                     'tags' => $recipeData['tags'],
                     'ingredients' => $recipeData['ingredients'],
+                    'steps' => $recipeData['steps'],
                     'chef_notes' => $recipeData['chef_notes'],
                     'chef_name' => $author?->name ?? 'Chef Anonim',
                     'chef_avatar' => $author?->avatar,
                     'user_id' => $author?->id,
-                    'average_rating' => $recipeData['average_rating'],
                 ]
             );
         }

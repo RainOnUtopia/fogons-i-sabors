@@ -39,10 +39,13 @@ class ProfileController extends Controller
                 // Cerca per títol, nom del xef o ingredients (JSON_SEARCH).
                 $q->where(function ($s) use ($rSearch) {
                     $s->where('title', 'like', "%{$rSearch}%")
-                        ->orWhereRaw(
-                            "JSON_SEARCH(ingredients, 'one', ?) IS NOT NULL",
-                            ["%{$rSearch}%"]
-                        );
+                        ->orWhere(function ($q) use ($rSearch) {
+                            if ($q->getConnection()->getDriverName() === 'sqlite') {
+                                $q->where('ingredients', 'like', "%{$rSearch}%");
+                            } else {
+                                $q->whereRaw("JSON_SEARCH(ingredients, 'one', ?) IS NOT NULL", ["%{$rSearch}%"]);
+                            }
+                        });
                 });
             })
             ->when($rDifficulty !== 'tots', fn($q) => $q->where('difficulty', $rDifficulty))
@@ -69,10 +72,13 @@ class ProfileController extends Controller
                     $q->where(function ($s) use ($fSearch) {
                         $s->where('recipes.title', 'like', "%{$fSearch}%")
                             ->orWhere('recipes.chef_name', 'like', "%{$fSearch}%")
-                            ->orWhereRaw(
-                                "JSON_SEARCH(recipes.ingredients, 'one', ?) IS NOT NULL",
-                                ["%{$fSearch}%"]
-                            );
+                            ->orWhere(function ($q) use ($fSearch) {
+                                if ($q->getConnection()->getDriverName() === 'sqlite') {
+                                    $q->where('recipes.ingredients', 'like', "%{$fSearch}%");
+                                } else {
+                                    $q->whereRaw("JSON_SEARCH(recipes.ingredients, 'one', ?) IS NOT NULL", ["%{$fSearch}%"]);
+                                }
+                            });
                     });
                 })
                 ->when($fDifficulty !== 'tots', fn($q) => $q->where('recipes.difficulty', $fDifficulty))
@@ -84,6 +90,7 @@ class ProfileController extends Controller
                 ->paginate(9, ['*'], 'f_page')
                 ->withQueryString();
         }
+        $commentCounts = $user->comments()->count();
 
         return view('profile.show', [
             'user' => $user,
@@ -98,6 +105,7 @@ class ProfileController extends Controller
             'fDifficulty' => $fDifficulty,
             'fSort' => $fSort,
             'fDirection' => $fDirection,
+            'commentCounts' => $commentCounts,
         ]);
     }
 

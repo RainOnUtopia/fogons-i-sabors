@@ -2,13 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Executa els seeders de la base de dades.
      */
@@ -19,6 +16,8 @@ class DatabaseSeeder extends Seeder
             DemoUserSeeder::class,
             RecipeSeeder::class,
             FavoriteSeeder::class,
+            CommentSeeder::class,
+            RatingSeeder::class,
         ]);
     }
 }

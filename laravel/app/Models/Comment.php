@@ -17,6 +17,9 @@ class Comment extends Model
         'is_deleted',
     ];
 
+    /**
+     * Casts de les propietats del model.
+     */
     protected function casts(): array
     {
         return [
@@ -24,21 +27,33 @@ class Comment extends Model
         ];
     }
 
+    /**
+     * Relació amb l'usuari que ha creat el comentari.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Relació amb la recepta a la qual pertany el comentari.
+     */
     public function recipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class);
     }
 
+    /**
+     * Relació amb el comentari pare (si és una resposta).
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Comment::class, 'parent_id');
     }
 
+    /**
+     * Relació amb les respostes d'aquest comentari.
+     */
     public function replies(): HasMany
     {
         return $this->hasMany(Comment::class, 'parent_id');

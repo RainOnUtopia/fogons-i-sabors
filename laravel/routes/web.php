@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\DuelController;
 use App\Models\Recipe;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,8 @@ Route::get('/contacte', function () {
     return view('contact');
 })->name('contact');
 
+Route::post('/contacte', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+
 Route::get('/politica-privacitat', function () {
     return view('privacy');
 })->name('privacy');
@@ -30,6 +33,7 @@ Route::get('/dashboard', function () {
 
 // RECEPTES: la ruta /create ha d'anar ABANS del wildcard {recipe}
 Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
+Route::get('/duels', [DuelController::class, 'index'])->name('duels.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/recipes/create', [RecipeController::class, 'create'])->name('recipes.create');
@@ -50,10 +54,23 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/duels/create', [DuelController::class, 'create'])->name('duels.create');
+    Route::get('/my-duels', [DuelController::class, 'userDuels'])->name('duels.my-duels');
+    Route::post('/duels', [DuelController::class, 'store'])->name('duels.store');
+    Route::patch('/duels/{duel}/status', [DuelController::class, 'updateStatus'])->name('duels.status.update');
+    Route::post('/duels/{duel}/vote', [DuelController::class, 'vote'])->name('duels.vote');
+
+    Route::post('/duels/{duel}/comments', [\App\Http\Controllers\DuelCommentController::class, 'store'])->name('duels.comments.store');
+    Route::put('/duel-comments/{comment}', [\App\Http\Controllers\DuelCommentController::class, 'update'])->name('duel-comments.update');
+    Route::delete('/duel-comments/{comment}', [\App\Http\Controllers\DuelCommentController::class, 'destroy'])->name('duel-comments.destroy');
+
 });
 
 // El wildcard {recipe} va ÚLTIM per no capturar /create
 Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
+Route::get('/duels/{duel}', [DuelController::class, 'show'])->name('duels.show');
+
 require __DIR__ . '/auth.php';
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {

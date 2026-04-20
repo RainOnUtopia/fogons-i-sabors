@@ -27,10 +27,14 @@ class RecipeController extends Controller
                 $recipeQuery->where(function ($searchQuery) use ($search) {
                     $searchQuery->where('title', 'like', "%{$search}%")
                         ->orWhere('chef_name', 'like', "%{$search}%")
-                        ->orWhereJsonContains('tags', $search)
-                        //->orWhereJsonContains('ingredients', $search);
-                        //plantejar si val la pena separar ingredients en taula relacional
-                        ->orWhereRaw("JSON_SEARCH(ingredients, 'one', ?) IS NOT NULL", ["%{$search}%"]);
+                        ->orWhere('tags', 'like', "%{$search}%")
+                         ->orWhere(function ($q) use ($search) {
+                             if ($q->getConnection()->getDriverName() === 'sqlite') {
+                                 $q->where('ingredients', 'like', "%{$search}%");
+                             } else {
+                                 $q->whereRaw("JSON_SEARCH(ingredients, 'one', ?) IS NOT NULL", ["%{$search}%"]);
+                             }
+                         });
                 });
             })
             ->when($currentDifficulty !== 'tots', function ($recipeQuery) use ($currentDifficulty) {

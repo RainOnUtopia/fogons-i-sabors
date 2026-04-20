@@ -30,6 +30,7 @@ class User extends Authenticatable
         'city',
         'country',
         'about_me',
+        'victories_count',
     ];
 
     /**
@@ -62,8 +63,8 @@ class User extends Authenticatable
     public function favoriteRecipes(): BelongsToMany
     {
         return $this->belongsToMany(Recipe::class, 'favorites')
-                    ->using(Favorite::class)
-                    ->withTimestamps();
+            ->using(Favorite::class)
+            ->withTimestamps();
     }
 
     /**
@@ -88,4 +89,29 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    /**
+     * Duels on l'usuari és el retador.
+     */
+    public function duelsAsChallenger(): HasMany
+    {
+        return $this->hasMany(Duel::class, 'challenger_id');
+    }
+
+    /**
+     * Duels on l'usuari és el retat.
+     */
+    public function duelsAsChallenged(): HasMany
+    {
+        return $this->hasMany(Duel::class, 'challenged_id');
+    }
+
+    /**
+     * Les votacions de l'usuari en els duels.
+     */
+    public function duelVotes(): HasMany
+    {
+        return $this->hasMany(DuelVote::class);
+    }
 }
+

@@ -21,6 +21,8 @@ Route::get('/contacte', function () {
     return view('contact');
 })->name('contact');
 
+Route::post('/contacte', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+
 Route::get('/politica-privacitat', function () {
     return view('privacy');
 })->name('privacy');
@@ -56,11 +58,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/duels', [DuelController::class, 'store'])->name('duels.store');
     Route::patch('/duels/{duel}/status', [DuelController::class, 'updateStatus'])->name('duels.status.update');
     Route::post('/duels/{duel}/vote', [DuelController::class, 'vote'])->name('duels.vote');
+
+    Route::post('/duels/{duel}/comments', [\App\Http\Controllers\DuelCommentController::class, 'store'])->name('duels.comments.store');
+    Route::put('/duel-comments/{comment}', [\App\Http\Controllers\DuelCommentController::class, 'update'])->name('duel-comments.update');
+    Route::delete('/duel-comments/{comment}', [\App\Http\Controllers\DuelCommentController::class, 'destroy'])->name('duel-comments.destroy');
+
 });
 
 // El wildcard {recipe} va ÚLTIM per no capturar /create
 Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
-
 
 require __DIR__ . '/auth.php';
 

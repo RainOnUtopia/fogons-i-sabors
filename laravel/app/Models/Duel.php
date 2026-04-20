@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\DuelComment;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Duel extends Model
 {
@@ -26,6 +29,9 @@ class Duel extends Model
         'winner_user_id',
     ];
 
+    /**
+     * Casts de les propietats del model.
+     */
     protected function casts(): array
     {
         return [
@@ -38,38 +44,75 @@ class Duel extends Model
         ];
     }
 
-    public function challenger(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    /**
+     * Relació amb l'usuari reptador.
+     */
+    public function challenger(): BelongsTo
     {
         return $this->belongsTo(User::class, 'challenger_id');
     }
 
-    public function challenged(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    /**
+     * Relació amb l'usuari reptat.
+     */
+    public function challenged(): BelongsTo
     {
         return $this->belongsTo(User::class, 'challenged_id');
     }
 
-    public function challengerRecipe(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    /**
+     * Relació amb la recepta del reptador.
+     */
+    public function challengerRecipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class, 'challenger_recipe_id');
     }
 
-    public function challengedRecipe(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    /**
+     * Relació amb la recepta del reptat.
+     */
+    public function challengedRecipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class, 'challenged_recipe_id');
     }
 
-    public function winnerUser(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    /**
+     * Relació amb l'usuari guanyador (si el duel ha finalitzat).
+     */
+    public function winnerUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'winner_user_id');
     }
 
-    public function winnerRecipe(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    /**
+     * Relació amb la recepta guanyadora del duel.
+     */
+    public function winnerRecipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class, 'winner_recipe_id');
     }
 
-    public function votes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    /**
+     * Relació amb tots els vots registrats en aquest duel.
+     */
+    public function votes(): HasMany
     {
         return $this->hasMany(DuelVote::class);
+    }
+
+    /**
+     * Relació amb tots els comentaris del duel.
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(DuelComment::class);
+    }
+
+    /**
+     * Relació amb els comentaris de primer nivell (no respostes).
+     */
+    public function topLevelComments(): HasMany
+    {
+        return $this->hasMany(DuelComment::class)->whereNull('parent_id');
     }
 }

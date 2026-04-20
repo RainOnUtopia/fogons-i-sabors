@@ -14,21 +14,31 @@ class DuelController extends Controller
 {
     private DuelService $duelService;
 
+    /**
+     * Constructor per injectar el servei de duels.
+     */
     public function __construct(DuelService $duelService)
     {
         $this->duelService = $duelService;
     }
 
+    /**
+     * Llistar tots els duels amb paginació i filtres.
+     */
     public function index(Request $request)
     {
+        // Carregam relacions per evitar el problema N+1
         $query = Duel::with(['challenger', 'challenged', 'challengerRecipe', 'challengedRecipe', 'winnerUser', 'winnerRecipe']);
 
+        // Aplicam filtre per estat si existeix
         if ($request->has('status')) {
             $query->where('status', $request->status);
         }
 
+        // Paginació de 10 elements per pàgina
         $duels = $query->orderBy('created_at', 'desc')->paginate(10);
 
+        // Transformam els models en DTOs per a la vista
         $duels->getCollection()->transform(function ($duel) {
             return DuelListDto::fromModel($duel);
         });
@@ -36,10 +46,14 @@ class DuelController extends Controller
         return view('duels.index', compact('duels'));
     }
 
+    /**
+     * Llistar els duels on participa l'usuari autenticat.
+     */
     public function userDuels()
     {
         $userId = Auth::id();
 
+        // Cerquem duels on l'usuari sigui el reptador o el reptat
         $duels = Duel::with(['challenger', 'challenged', 'challengerRecipe', 'challengedRecipe', 'winnerUser', 'winnerRecipe'])
             ->where(function ($query) use ($userId) {
                 $query->where('challenger_id', $userId)
@@ -48,6 +62,7 @@ class DuelController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        // Transformam els models en DTOs per a la vista
         $duels->getCollection()->transform(function ($duel) {
             return DuelListDto::fromModel($duel);
         });
@@ -55,14 +70,31 @@ class DuelController extends Controller
         return view('duels.index', compact('duels'));
     }
 
+    /**
+     * Mostrar els detalls d'un duel específic.
+     */
     public function show(Duel $duel)
     {
-        $duel->load(['challenger', 'challenged', 'challengerRecipe', 'challengedRecipe', 'winnerUser', 'winnerRecipe']);
+        // Càrrega ansiosa de relacions, incloent comentaris i respostes
+        $duel->load([
+            'challenger', 
+            'challenged', 
+            'challengerRecipe', 
+            'challengedRecipe', 
+            'winnerUser', 
+            'winnerRecipe',
+            'topLevelComments.user',
+            'topLevelComments.replies.user'
+        ]);
+        
         $duelDto = DuelDto::fromModel($duel);
 
-        return view('duels.show', compact('duelDto', 'duel'));
+        return view('duels.show', compact('duelDto'));
     }
 
+    /**
+     * Registrar un nou duel a la base de dades.
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -73,6 +105,7 @@ class DuelController extends Controller
         ]);
 
         try {
+            // Utilitzam el servei de duels per a la creació
             $duel = $this->duelService->createDuel($data, Auth::user());
             return redirect()->route('duels.show', $duel)->with('success', 'Duel creat amb èxit!');
         } catch (\Exception $e) {
@@ -80,12 +113,16 @@ class DuelController extends Controller
         }
     }
 
+    /**
+     * Actualitzar l'estat d'un duel (només admin o participants per cancel·lació).
+     */
     public function updateStatus(Request $request, Duel $duel)
     {
         $data = $request->validate([
             'status' => 'required|in:iniciat,finalitzat,peticio de cancelacio,cancelat'
         ]);
 
+        // Lògica de permisos segons l'estat sol·licitat
         if ($data['status'] === 'peticio de cancelacio') {
             if (Auth::id() !== $duel->challenger_id && Auth::id() !== $duel->challenged_id) {
                 abort(403, 'No autoritzat');
@@ -102,8 +139,12 @@ class DuelController extends Controller
         return back()->with('success', 'Estat actualitzat.');
     }
 
+    /**
+     * Registrar un vot per a una de les receptes del duel.
+     */
     public function vote(Request $request, Duel $duel)
     {
+        // Verificam que el duel estigui actiu
         if ($duel->status !== 'iniciat' && $duel->status !== 'peticio de cancelacio') {
             return back()->withErrors(['error' => 'No es pot votar un duel tancat o cancel·lat.']);
         }
@@ -113,6 +154,7 @@ class DuelController extends Controller
             'rating' => 'required|integer|min:1|max:5',
         ]);
 
+        // Cream o actualitzam el vot de l'usuari per a aquesta recepta en aquest duel
         DuelVote::updateOrCreate(
             ['duel_id' => $duel->id, 'user_id' => Auth::id(), 'recipe_id' => $data['recipe_id']],
             ['rating' => $data['rating']]

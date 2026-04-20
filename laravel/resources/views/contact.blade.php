@@ -41,39 +41,60 @@
                 <h2 class="login-title">Envia'ns un missatge</h2>
                 <p class="login-description">Omple el formulari i ens posarem en contacte amb tu</p>
 
-                <form>
+                {{-- MISSATGE D'ÈXIT --}}
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                <form action="{{ route('contact.store') }}" method="POST">
+                    @csrf
                     {{-- NOM --}}
                     <div class="login-form-group">
                         <label for="name" class="login-label">Nom</label>
-                        <div class="login-input-wrapper">
+                        <div class="login-input-wrapper @error('name') is-invalid @enderror">
                             <span class="login-input-icon">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <input id="name" type="text" class="login-input" placeholder="El teu nom complet">
+                            <input id="name" name="name" type="text" class="login-input @error('name') border-danger @enderror" 
+                                placeholder="El teu nom complet" value="{{ old('name') }}" required>
                         </div>
+                        @error('name')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     {{-- EMAIL --}}
                     <div class="login-form-group">
                         <label for="email" class="login-label">Email</label>
-                        <div class="login-input-wrapper">
+                        <div class="login-input-wrapper @error('email') is-invalid @enderror">
                             <span class="login-input-icon">
                                 <i class="bi bi-envelope"></i>
                             </span>
-                            <input id="email" type="email" class="login-input" placeholder="correu@exemple.com">
+                            <input id="email" name="email" type="email" class="login-input @error('email') border-danger @enderror" 
+                                placeholder="correu@exemple.com" value="{{ old('email') }}" required>
                         </div>
+                        @error('email')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     {{-- MISSATGE --}}
                     <div class="login-form-group">
                         <label for="message" class="login-label">Missatge</label>
-                        <textarea id="message" class="input-ui" rows="5"
+                        <textarea id="message" name="message" class="input-ui @error('message') border-danger @enderror" rows="5"
                             placeholder="Escriu el teu missatge aquí..."
-                            style="height: auto; min-height: 150px; resize: vertical;"></textarea>
+                            style="height: auto; min-height: 150px; resize: vertical;" required>{{ old('message') }}</textarea>
+                        @error('message')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
-                    {{-- BOTÓ ENVIAR (NOMÉS VISUAL) --}}
-                    <button type="button" class="login-btn w-100">
+                    {{-- BOTÓ ENVIAR --}}
+                    <button type="submit" class="login-btn w-100">
                         <i class="bi bi-send"></i>
                         Enviar missatge
                     </button>

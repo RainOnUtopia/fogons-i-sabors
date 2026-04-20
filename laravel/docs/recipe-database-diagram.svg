@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="820" viewBox="0 0 1480 820" role="img" aria-labelledby="title desc">
+  <title id="title">Diagrama de base de dades - Dissenys (recepta, puntuacions, favorits, comentaris)</title>
+  <desc id="desc">Diagrama entitat-relacio per a l'apartat de recepta, puntuar recepta, seccio de favorits i seccio de comentaris.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6efe6; }
+      .title { font: 700 28px Georgia, serif; fill: #2f241f; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #6f6158; }
+      .pill { fill: #ffffff; stroke: #be3144; stroke-width: 2; }
+      .pill-text { font: 700 12px Arial, sans-serif; fill: #8f2130; letter-spacing: 0.5px; }
+      .box-title { font: 700 18px Arial, sans-serif; fill: #fff; }
+      .field { font: 14px Consolas, "Courier New", monospace; fill: #2f241f; }
+      .small { font: 13px Arial, sans-serif; fill: #5b4b43; }
+      .core-head { fill: #be3144; }
+      .core-body { fill: #fffdfa; stroke: #d5b7ab; stroke-width: 2; }
+      .line-core { stroke: #be3144; stroke-width: 3; fill: none; }
+      .line-muted { stroke: #8f7f77; stroke-width: 2; fill: none; stroke-dasharray: 6 6; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1480" height="820" rx="0"/>
+
+  <text class="title" x="50" y="55">Base de dades - Receptes, favorits, comentaris i puntuacions</text>
+  <text class="subtitle" x="50" y="82">Disseny per a 4 seccions: apartat recepta, puntuar recepta, favorits, comentaris.</text>
+
+  <!-- section pills -->
+  <rect class="pill" x="50" y="98" width="190" height="28" rx="14"/>
+  <text class="pill-text" x="66" y="117">APARTAT DE LA RECEPTA</text>
+
+  <rect class="pill" x="252" y="98" width="160" height="28" rx="14"/>
+  <text class="pill-text" x="268" y="117">PUNTUAR RECEPTA</text>
+
+  <rect class="pill" x="424" y="98" width="110" height="28" rx="14"/>
+  <text class="pill-text" x="440" y="117">FAVORITS</text>
+
+  <rect class="pill" x="546" y="98" width="140" height="28" rx="14"/>
+  <text class="pill-text" x="562" y="117">COMENTARIS</text>
+
+  <!-- users -->
+  <rect x="60" y="150" width="360" height="250" rx="18" class="core-body"/>
+  <rect x="60" y="150" width="360" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="85" y="182">users</text>
+  <text class="field" x="85" y="225">PK  id : bigint</text>
+  <text class="field" x="85" y="251">UQ  email : string</text>
+  <text class="field" x="85" y="277">    name : string</text>
+  <text class="field" x="85" y="303">    role : enum</text>
+  <text class="field" x="85" y="329">    avatar : string?</text>
+  <text class="field" x="85" y="355">    ...</text>
+
+  <!-- recipes -->
+  <rect x="500" y="150" width="460" height="410" rx="18" class="core-body"/>
+  <rect x="500" y="150" width="460" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="525" y="182">recipes</text>
+  <text class="field" x="525" y="225">PK  id : bigint</text>
+  <text class="field" x="525" y="251">    title : string</text>
+  <text class="field" x="525" y="277">    description : text?</text>
+  <text class="field" x="525" y="303">    cooking_time : integer</text>
+  <text class="field" x="525" y="329">    difficulty : enum</text>
+  <text class="field" x="525" y="355">    image : string?</text>
+  <text class="field" x="525" y="381">    tags : json?</text>
+  <text class="field" x="525" y="407">    ingredients : json?</text>
+  <text class="field" x="525" y="433">    steps : json?</text>
+  <text class="field" x="525" y="459">    chef_notes : text?</text>
+  <text class="field" x="525" y="485">    chef_name : string</text>
+  <text class="field" x="525" y="511">FK  user_id : bigint?</text>
+  <text class="field" x="525" y="537">    average_rating : decimal</text>
+  <text class="field" x="525" y="563">    ratings_count : int</text>
+  <text class="field" x="525" y="589">    favorites_count : int</text>
+
+  <!-- favorites -->
+  <rect x="1040" y="170" width="360" height="210" rx="18" class="core-body"/>
+  <rect x="1040" y="170" width="360" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="1065" y="202">favorites</text>
+  <text class="field" x="1065" y="245">PK  id : bigint</text>
+  <text class="field" x="1065" y="271">FK  user_id : bigint</text>
+  <text class="field" x="1065" y="297">FK  recipe_id : bigint</text>
+  <text class="field" x="1065" y="323">UQ  (user_id, recipe_id)</text>
+  <text class="field" x="1065" y="349">    created_at : timestamp</text>
+
+  <!-- ratings -->
+  <rect x="1040" y="410" width="360" height="230" rx="18" class="core-body"/>
+  <rect x="1040" y="410" width="360" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="1065" y="442">ratings</text>
+  <text class="field" x="1065" y="485">PK  id : bigint</text>
+  <text class="field" x="1065" y="511">FK  user_id : bigint</text>
+  <text class="field" x="1065" y="537">FK  recipe_id : bigint</text>
+  <text class="field" x="1065" y="563">    rating : tinyint (1..5)</text>
+  <text class="field" x="1065" y="589">UQ  (user_id, recipe_id)</text>
+  <text class="field" x="1065" y="615">    created_at : timestamp</text>
+
+  <!-- comments -->
+  <rect x="500" y="590" width="560" height="210" rx="18" class="core-body"/>
+  <rect x="500" y="590" width="560" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="525" y="622">comments</text>
+  <text class="field" x="525" y="665">PK  id : bigint</text>
+  <text class="field" x="525" y="691">FK  user_id : bigint</text>
+  <text class="field" x="525" y="717">FK  recipe_id : bigint</text>
+  <text class="field" x="525" y="743">FK  parent_id : bigint?</text>
+  <text class="field" x="525" y="769">    content : text</text>
+  <text class="field" x="525" y="795">    is_deleted : boolean</text>
+
+  <!-- relations -->
+  <!-- users 1:N recipes -->
+  <path class="line-core" d="M420 275 C460 275, 460 275, 500 275"/>
+  <text class="small" x="450" y="262">1:N</text>
+  <text class="small" x="445" y="292">crea</text>
+
+  <!-- users N:M recipes through favorites -->
+  <path class="line-core" d="M420 335 C720 110, 940 120, 1040 260"/>
+  <text class="small" x="700" y="132">N:M via favorites</text>
+
+  <!-- recipes 1:N ratings -->
+  <path class="line-core" d="M960 360 C1010 360, 1010 540, 1040 540"/>
+  <text class="small" x="995" y="455">1:N</text>
+  <text class="small" x="985" y="475">valora</text>
+
+  <!-- recipes 1:N comments -->
+  <path class="line-core" d="M730 560 C730 575, 730 575, 730 590"/>
+  <text class="small" x="744" y="578">1:N</text>
+  <text class="small" x="744" y="598">comenta</text>
+
+  <!-- users 1:N comments -->
+  <path class="line-core" d="M240 400 C240 590, 450 700, 500 700"/>
+  <text class="small" x="305" y="590">1:N</text>
+
+  <!-- comments self 1:N replies -->
+  <path class="line-muted" d="M1060 720 C1180 720, 1180 780, 1060 780"/>
+  <text class="small" x="1125" y="752">self</text>
+
+  <!-- notes -->
+  <text class="small" x="60" y="430">Notes: comments permet respostes amb parent_id; </text>
+  <text class="small" x="60" y="452">ratings i favorites eviten duplicats amb UQ(user_id, recipe_id).</text>
+  <text class="small" x="60" y="474">Agregats a recipes (average_rating, counts)</text> 
+  <text class="small" x="60" y="496">suporten ordenacio i UI sense recomptar en cada pagina.</text>
+</svg>

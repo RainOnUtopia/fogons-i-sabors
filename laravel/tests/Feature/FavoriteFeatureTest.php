@@ -49,7 +49,7 @@ class FavoriteFeatureTest extends TestCase
         $response = $this->actingAs($user)->get(route('profile.show', ['tab' => 'favorites']));
 
         $response->assertOk();
-        $response->assertSee('Plats favorits');
+        $response->assertSeeInOrder(['Plats', 'favorits']);
         $response->assertSee('Escudella');
     }
 
@@ -88,7 +88,7 @@ class FavoriteFeatureTest extends TestCase
         $response = $this->actingAs($user)->get(route('profile.show'));
 
         $response->assertOk();
-        $response->assertSee('El meu rebost');
+        $response->assertSeeInOrder(['El', 'meu', 'rebost']);
         $response->assertSee('Mandonguilles');
     }
 

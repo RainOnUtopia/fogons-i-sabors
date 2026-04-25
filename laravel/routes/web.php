@@ -81,4 +81,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
+
+    Route::get('/duels/cancellations', [DuelController::class, 'cancellationRequests'])->name('duels.cancellations');
 });

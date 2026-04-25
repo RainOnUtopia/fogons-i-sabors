@@ -24,7 +24,8 @@
                 <div class="duel-card-entrant-top">
                     <div class="duel-card-avatar">
                         @if($duel->challengerAvatar)
-                            <img src="{{ asset('storage/' . $duel->challengerAvatar) }}" alt="{{ $duel->challengerName }}" class="avatar-ui w-100 h-100">
+                            <img src="{{ asset('storage/' . $duel->challengerAvatar) }}" alt="{{ $duel->challengerName }}"
+                                class="avatar-ui w-100 h-100">
                         @else
                             <span>{{ $challengerInitial }}</span>
                         @endif
@@ -35,9 +36,14 @@
                     </div>
                 </div>
 
-                <div class="duel-card-recipe-box">
-                    <p class="duel-card-recipe-label">Recepta</p>
-                    <p class="duel-card-recipe">{{ $duel->challengerRecipeTitle }}</p>
+                <div class="duel-card-recipe-box" @if($duel->challengerRecipeImage)
+                style="background-image: url('{{ asset('storage/' . $duel->challengerRecipeImage) }}'); " @endif>
+                    <p class="duel-card-recipe-label" @if($duel->challengerRecipeImage) style="color: #e2e8f0;" @endif>
+                        Recepta</p>
+                    <p class="duel-card-recipe" @if($duel->challengerRecipeImage)
+                    style="color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9);" @endif>
+                        {{ $duel->challengerRecipeTitle }}
+                    </p>
                 </div>
 
                 <div class="duel-card-score-chip">
@@ -54,8 +60,9 @@
                 <div class="duel-card-entrant-top">
                     <div class="duel-card-avatar duel-card-avatar--challenged">
                         @if($duel->challengedAvatar)
-                            <img src="{{ asset('storage/' . $duel->challengedAvatar) }}" alt="{{ $duel->challengedName }}" class="avatar-ui w-100 h-100">
-                        @else
+                            <img src="{{ asset('storage/' . $duel->challengedAvatar) }}" alt="{{ $duel->challengedName }}"
+                                class="avatar-ui w-100 h-100">
+                        @else.
                             <span>{{ $challengedInitial }}</span>
                         @endif
                     </div>
@@ -65,9 +72,14 @@
                     </div>
                 </div>
 
-                <div class="duel-card-recipe-box duel-card-recipe-box--challenged">
-                    <p class="duel-card-recipe-label">Recepta</p>
-                    <p class="duel-card-recipe">{{ $duel->challengedRecipeTitle }}</p>
+                <div class="duel-card-recipe-box duel-card-recipe-box--challenged" @if($duel->challengedRecipeImage)
+                style="background-image: url('{{ asset('storage/' . $duel->challengedRecipeImage) }}');" @endif>
+                    <p class="duel-card-recipe-label" @if($duel->challengedRecipeImage) style="color: #e2e8f0;" @endif>
+                        Recepta</p>
+                    <p class="duel-card-recipe" @if($duel->challengedRecipeImage)
+                    style="color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9);" @endif>
+                        {{ $duel->challengedRecipeTitle }}
+                    </p>
                 </div>
 
                 <div class="duel-card-score-chip duel-card-score-chip--challenged">
@@ -82,7 +94,8 @@
         <div class="duel-card-result">
             @include('duels.partials.duel-status-badge', ['value' => 'guanyador'])
             <p class="mb-0">
-                {{ $duel->winner['user_name'] }} s'ha endut el duel amb <strong>{{ $duel->winner['recipe_title'] }}</strong>.
+                {{ $duel->winner['user_name'] }} s'ha endut el duel amb
+                <strong>{{ $duel->winner['recipe_title'] }}</strong>.
             </p>
         </div>
     @elseif($duel->duelResult === 'empat')
@@ -113,7 +126,7 @@
                 <span class="duel-card-note">La petició ja s'ha enviat i està pendent de revisió.</span>
             @endif
         @elseif($context === 'index' && auth()->check())
-            <a href="{{ route('duels.my-duels') }}" class="duel-card-link-inline">
+            <a href="{{ route('duels.my-duels') }}" class="duel-card-link-inline d-none">
                 <i class="bi bi-arrow-right-circle"></i>
                 Veure els meus duels
             </a>

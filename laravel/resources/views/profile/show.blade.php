@@ -83,11 +83,18 @@
                                         <div class="text-muted profile-stat-label">Comentaris</div>
                                     </div>
                                 </div>
+                              
                             </div>
                         </div>
-
+                          <div class="d-flex justify-content-center duels-user-btn mt-4">
+                                    <a href="{{ route('duels.my-duels') }}" class="btn-primary-ui">
+                                        <i class="bi bi-collection"></i>
+                                        Els meus duels
+                                    </a>
+                                </div>
 
                     </div>
+                    
 
                     <!-- SECCIÓ CENTRAL: TABS I GRID -->
                     <div class="col-lg-8">

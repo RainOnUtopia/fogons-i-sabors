@@ -48,6 +48,21 @@ class DuelController extends Controller
     }
 
     /**
+     * Mostrar el llistat de peticions de cancel·lació de duels (només admin).
+     */
+    public function cancellationRequests(): View
+    {
+        $duels = $this->baseListQuery()
+            ->where('status', 'peticio de cancelacio')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
+        $this->transformPaginatorCollection($duels);
+
+        return view('admin.duels.cancellations', compact('duels'));
+    }
+
+    /**
      * Mostrar el formulari de creació d'un duel nou.
      */
     public function create(): View

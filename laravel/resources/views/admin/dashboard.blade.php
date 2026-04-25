@@ -49,15 +49,15 @@
                         <i class="bi bi-shield-check"></i>
                     </div>
                     <h2 class="admin-card-title">Moderació de duels</h2>
-                    <p class="admin-card-description">Gestionar duels publicats, reportats o pendents d'aprovació</p>
-                    <a href="#" class="admin-card-btn">
+                    <p class="admin-card-description">Gestionar duels amb petició de cancel·lació</p>
+                    <a href="{{ route('admin.duels.cancellations') }}" class="admin-card-btn">
                         Accedir a moderació
                         <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
 
                 <!-- Targeta 3: Panell d'activitat -->
-                <div class="admin-card">
+                <div class="admin-card d-none">
                     <div class="admin-card-icon">
                         <i class="bi bi-graph-up"></i>
                     </div>

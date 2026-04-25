@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\DTOs\DuelDto;
+use App\DTOs\DuelListDto;
 use App\Models\Duel;
 use App\Models\DuelVote;
+use App\Models\Recipe;
+use App\Models\User;
 use App\Services\DuelService;
-use App\DTOs\DuelListDto;
-use App\DTOs\DuelDto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class DuelController extends Controller
 {
@@ -25,71 +29,139 @@ class DuelController extends Controller
     /**
      * Llistar tots els duels amb paginació i filtres.
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        // Carregam relacions per evitar el problema N+1
-        $query = Duel::with(['challenger', 'challenged', 'challengerRecipe', 'challengedRecipe', 'winnerUser', 'winnerRecipe']);
+        $currentStatus = $request->input('status', 'tots');
+        $query = $this->baseListQuery();
 
-        // Aplicam filtre per estat si existeix
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
+        if ($currentStatus !== 'tots') {
+            $query->where('status', $currentStatus);
         }
 
-        // Paginació de 10 elements per pàgina
-        $duels = $query->orderBy('created_at', 'desc')->paginate(10);
+        $duels = $query
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+        $this->transformPaginatorCollection($duels);
 
-        // Transformam els models en DTOs per a la vista
-        $duels->getCollection()->transform(function ($duel) {
-            return DuelListDto::fromModel($duel);
-        });
+        return view('duels.index', compact('duels', 'currentStatus'));
+    }
 
-        return view('duels.index', compact('duels'));
+    /**
+     * Mostrar el llistat de peticions de cancel·lació de duels (només admin).
+     */
+    public function cancellationRequests(): View
+    {
+        $duels = $this->baseListQuery()
+            ->where('status', 'peticio de cancelacio')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
+        $this->transformPaginatorCollection($duels);
+
+        return view('admin.duels.cancellations', compact('duels'));
+    }
+
+    /**
+     * Mostrar el formulari de creació d'un duel nou.
+     */
+    public function create(): View
+    {
+        $user = Auth::user();
+
+        $myRecipes = $user->recipes()
+            ->orderBy('title')
+            ->get(['id', 'title']);
+
+        $challengedUsers = User::query()
+            ->whereKeyNot($user->id)
+            ->whereHas('recipes')
+            ->with([
+                'recipes' => fn($query) => $query
+                    ->select('id', 'user_id', 'title')
+                    ->orderBy('title'),
+            ])
+            ->orderBy('name')
+            ->get(['id', 'name', 'avatar']);
+
+        $challengedRecipesByUser = $challengedUsers
+            ->mapWithKeys(function (User $challengedUser) {
+                return [
+                    (string) $challengedUser->id => $challengedUser->recipes
+                        ->map(fn(Recipe $recipe) => [
+                            'id' => $recipe->id,
+                            'title' => $recipe->title,
+                        ])
+                        ->values()
+                        ->all(),
+                ];
+            });
+
+        $defaultEndDate = now()->addDays(14)->toDateString();
+
+        return view('duels.create', compact(
+            'myRecipes',
+            'challengedUsers',
+            'challengedRecipesByUser',
+            'defaultEndDate'
+        ));
     }
 
     /**
      * Llistar els duels on participa l'usuari autenticat.
      */
-    public function userDuels()
+    public function userDuels(Request $request): View
     {
         $userId = Auth::id();
+        $activeTab = $request->input('tab') === 'received' ? 'received' : 'created';
 
-        // Cerquem duels on l'usuari sigui el reptador o el reptat
-        $duels = Duel::with(['challenger', 'challenged', 'challengerRecipe', 'challengedRecipe', 'winnerUser', 'winnerRecipe'])
-            ->where(function ($query) use ($userId) {
-                $query->where('challenger_id', $userId)
-                    ->orWhere('challenged_id', $userId);
-            })
+        $createdDuels = $this->baseListQuery()
+            ->where('challenger_id', $userId)
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(8, ['*'], 'created_page')
+            ->withQueryString();
 
-        // Transformam els models en DTOs per a la vista
-        $duels->getCollection()->transform(function ($duel) {
-            return DuelListDto::fromModel($duel);
-        });
+        $receivedDuels = $this->baseListQuery()
+            ->where('challenged_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->paginate(8, ['*'], 'received_page')
+            ->withQueryString();
 
-        return view('duels.index', compact('duels'));
+        $this->transformPaginatorCollection($createdDuels);
+        $this->transformPaginatorCollection($receivedDuels);
+
+        return view('duels.my-duels', compact('createdDuels', 'receivedDuels', 'activeTab'));
     }
 
     /**
      * Mostrar els detalls d'un duel específic.
      */
-    public function show(Duel $duel)
+    public function show(Duel $duel): View
     {
-        // Càrrega ansiosa de relacions, incloent comentaris i respostes
         $duel->load([
-            'challenger', 
-            'challenged', 
-            'challengerRecipe', 
-            'challengedRecipe', 
-            'winnerUser', 
+            'challenger',
+            'challenged',
+            'challengerRecipe',
+            'challengedRecipe',
+            'winnerUser',
             'winnerRecipe',
             'topLevelComments.user',
-            'topLevelComments.replies.user'
+            'topLevelComments.replies.user',
         ]);
-        
-        $duelDto = DuelDto::fromModel($duel);
 
-        return view('duels.show', compact('duelDto'));
+        $duelDto = DuelDto::fromModel($duel);
+        $userVotes = [];
+
+        if (Auth::check()) {
+            $userVotes = DuelVote::query()
+                ->where('duel_id', $duel->id)
+                ->where('user_id', Auth::id())
+                ->pluck('rating', 'recipe_id')
+                ->map(fn($rating) => (int) $rating)
+                ->all();
+        }
+
+        return view('duels.show', compact('duelDto', 'userVotes'));
     }
 
     /**
@@ -98,18 +170,52 @@ class DuelController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'challenger_recipe_id' => 'required|exists:recipes,id',
+            'challenger_recipe_id' => [
+                'required',
+                Rule::exists('recipes', 'id')->where(
+                    fn($query) => $query->where('user_id', Auth::id())
+                ),
+            ],
             'challenged_id' => 'required|exists:users,id',
             'challenged_recipe_id' => 'required|exists:recipes,id',
-            'end_date' => 'nullable|date|after:today'
+            'end_date' => 'nullable|date|after:today',
         ]);
 
+        if ((int) $data['challenged_id'] === (int) Auth::id()) {
+            return back()
+                ->withErrors(['challenged_id' => 'No et pots reptar a tu mateix.'])
+                ->withInput();
+        }
+
+        $challengedRecipeBelongsToUser = Recipe::query()
+            ->whereKey($data['challenged_recipe_id'])
+            ->where('user_id', $data['challenged_id'])
+            ->exists();
+
+        if (!$challengedRecipeBelongsToUser) {
+            return back()
+                ->withErrors(['challenged_recipe_id' => 'La recepta seleccionada no pertany al rival indicat.'])
+                ->withInput();
+        }
+
+        $duelAlreadyExists = Duel::query()
+            ->where('challenger_recipe_id', $data['challenger_recipe_id'])
+            ->where('challenged_recipe_id', $data['challenged_recipe_id'])
+            ->exists();
+
+        if ($duelAlreadyExists) {
+            return back()
+                ->withErrors(['challenged_recipe_id' => 'Aquestes dues receptes ja tenen un duel registrat.'])
+                ->withInput();
+        }
+
         try {
-            // Utilitzam el servei de duels per a la creació
             $duel = $this->duelService->createDuel($data, Auth::user());
             return redirect()->route('duels.show', $duel)->with('success', 'Duel creat amb èxit!');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => $e->getMessage()]);
+            return back()
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -144,7 +250,6 @@ class DuelController extends Controller
      */
     public function vote(Request $request, Duel $duel)
     {
-        // Verificam que el duel estigui actiu
         if ($duel->status !== 'iniciat' && $duel->status !== 'peticio de cancelacio') {
             return back()->withErrors(['error' => 'No es pot votar un duel tancat o cancel·lat.']);
         }
@@ -161,5 +266,30 @@ class DuelController extends Controller
         );
 
         return back()->with('success', 'Vot guardat correctament.');
+    }
+
+    /**
+     * Query base compartida pels llistats de duels.
+     */
+    private function baseListQuery()
+    {
+        return Duel::with([
+            'challenger',
+            'challenged',
+            'challengerRecipe',
+            'challengedRecipe',
+            'winnerUser',
+            'winnerRecipe',
+        ]);
+    }
+
+    /**
+     * Transformar la col·lecció paginada a DTOs de llistat.
+     */
+    private function transformPaginatorCollection($paginator): void
+    {
+        $paginator->getCollection()->transform(
+            fn($duel) => DuelListDto::fromModel($duel)
+        );
     }
 }

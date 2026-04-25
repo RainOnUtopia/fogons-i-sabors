@@ -21,7 +21,7 @@
                     <a class="nav-link text-dark" href="{{ route('recipes.index') }}">Receptes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Duels</a>
+                    <a class="nav-link text-dark" href="{{ route('duels.index') }}">Duels</a>
                 </li>
                 @auth
                     @if(Auth::user()->role === 'admin')

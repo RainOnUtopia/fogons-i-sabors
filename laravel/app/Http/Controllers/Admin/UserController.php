@@ -9,13 +9,22 @@ use Illuminate\Support\Facades\Redirect;
 
 /**
  * Controlador responsable de la gestió d'usuaris al panell d'administració.
- * Permet llistar, editar el rol i l'estat de cada usuari del sistema.
+ * 
+ * Permet llistar els usuaris del sistema, cercar-los, filtrar per rol i estat,
+ * així com editar el seu rol (usuari/administrador) i el seu estat.
+ * 
+ * @package App\Http\Controllers
+ * @subpackage Admin
  */
 class UserController extends Controller
 {
     /**
      * Mostra la llista d'usuaris amb cerca, filtre i ordenació.
+     * 
      * La lògica de construcció d'URLs d'ordenació es calcula aquí i es passa a la vista.
+     * 
+     * @param Request $request Petició amb els paràmetres de cerca i filtratge.
+     * @return \Illuminate\View\View Vista amb la llista d'usuaris paginada.
      */
     public function index(Request $request)
     {
@@ -66,6 +75,9 @@ class UserController extends Controller
 
     /**
      * Mostrar el formulari per editar el rol i l'estat de l'usuari.
+     * 
+     * @param User $user L'usuari a editar.
+     * @return \Illuminate\View\View Vista del formulari d'edició.
      */
     public function edit(User $user)
     {
@@ -74,6 +86,10 @@ class UserController extends Controller
 
     /**
      * Actualitza el rol i l'estat de l'usuari.
+     * 
+     * @param Request $request Petició amb les dades validades.
+     * @param User $user L'usuari a actualitzar.
+     * @return \Illuminate\Http\RedirectResponse Redirecció a la llista d'usuaris amb missatge d'èxit.
      */
     public function update(Request $request, User $user)
     {

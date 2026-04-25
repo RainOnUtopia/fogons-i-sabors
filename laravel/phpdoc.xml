@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpdocumentor
+        configVersion="3"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://phpdoc.org/xsl/phpdoc.xml"
+>
+    <title>Documentació del projecte "Fogons i sabors"</title>
+    <paths>
+        <output>docs</output>
+    </paths>
+    <version number="1.0.0">
+        <api format="php">
+            <source dsn=".">
+                <path>app</path>
+                <path>routes</path>
+            </source>
+        </api>
+    </version>
+</phpdocumentor>

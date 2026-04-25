@@ -9,10 +9,21 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * Controlador per gestionar la sol·licitud d'un enllaç per restablir la contrasenya.
+ * 
+ * Gestiona el formulari on l'usuari introdueix el seu correu electrònic per rebre
+ * un correu amb un token de reinici de contrasenya segura.
+ * 
+ * @package App\Http\Controllers
+ * @subpackage Auth
+ */
 class PasswordResetLinkController extends Controller
 {
     /**
      * Mostra la vista de sol·licitud d'enllaç de reinici de contrasenya.
+     * 
+     * @return View Vista del formulari "He oblidat la contrasenya".
      */
     public function create(): View
     {
@@ -21,8 +32,10 @@ class PasswordResetLinkController extends Controller
 
     /**
      * Gestiona la petició d'enllaç de reinici de contrasenya.
-     *
-     * @throws ValidationException
+     * 
+     * @param Request $request Petició amb el correu electrònic de l'usuari.
+     * @return RedirectResponse Redirecció enrere amb el resultat de l'enviament.
+     * @throws ValidationException Si el correu electrònic no és vàlid.
      */
     public function store(Request $request): RedirectResponse
     {

@@ -8,6 +8,19 @@ use App\Http\Controllers\DuelController;
 use App\Models\Recipe;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Definició de les rutes web de l'aplicació.
+ * 
+ * Aquest fitxer conté totes les rutes accessibles via navegador, incloent
+ * rutes públiques, d'usuari i d'administració.
+ * 
+ * @package Routes
+ */
+
+/**
+ * ── RUTES PÚBLIQUES ──────────────────────────────────────────────────────────
+ * Rutes accessibles per a tots els usuaris, incloent visitants anònims.
+ */
 Route::get('/', function () {
     $featuredRecipe = Recipe::orderBy('average_rating', 'desc')->first();
     return view('welcome', compact('featuredRecipe'));
@@ -35,7 +48,13 @@ Route::get('/dashboard', function () {
 Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
 Route::get('/duels', [DuelController::class, 'index'])->name('duels.index');
 
+/**
+ * ── RUTES D'USUARI AUTENTICAT ────────────────────────────────────────────────
+ * Requereixen que l'usuari hagi iniciat sessió.
+ */
 Route::middleware('auth')->group(function () {
+    
+    /** ── Gestió de Receptes ── */
     Route::get('/recipes/create', [RecipeController::class, 'create'])->name('recipes.create');
     Route::get('/recipes/{recipe}/edit', [RecipeController::class, 'edit'])->name('recipes.edit');
     Route::post('/recipes', [RecipeController::class, 'store'])->name('recipes.store');
@@ -45,42 +64,56 @@ Route::middleware('auth')->group(function () {
     Route::delete('/recipes/{recipe}/favorite', [FavoriteController::class, 'destroy'])->name('recipes.favorite.destroy');
     Route::post('/recipes/{recipe}/rate', [\App\Http\Controllers\RatingController::class, 'store'])->name('recipes.rate');
 
+    /** ── Comentaris de Receptes ── */
     Route::post('/recipes/{recipe}/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('recipes.comments.store');
     Route::put('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
 
+    /** ── Gestió del Perfil ── */
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    /** ── Gestió de Duels ── */
     Route::get('/duels/create', [DuelController::class, 'create'])->name('duels.create');
     Route::get('/my-duels', [DuelController::class, 'userDuels'])->name('duels.my-duels');
     Route::post('/duels', [DuelController::class, 'store'])->name('duels.store');
     Route::patch('/duels/{duel}/status', [DuelController::class, 'updateStatus'])->name('duels.status.update');
     Route::post('/duels/{duel}/vote', [DuelController::class, 'vote'])->name('duels.vote');
 
+    /** ── Comentaris de Duels ── */
     Route::post('/duels/{duel}/comments', [\App\Http\Controllers\DuelCommentController::class, 'store'])->name('duels.comments.store');
     Route::put('/duel-comments/{comment}', [\App\Http\Controllers\DuelCommentController::class, 'update'])->name('duel-comments.update');
     Route::delete('/duel-comments/{comment}', [\App\Http\Controllers\DuelCommentController::class, 'destroy'])->name('duel-comments.destroy');
 
 });
 
-// El wildcard {recipe} va ÚLTIM per no capturar /create
+/**
+ * ── VISTES DE DETALL ─────────────────────────────────────────────────────────
+ * Es defineixen al final per evitar conflictes amb rutes amb prefix similar.
+ */
 Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
 Route::get('/duels/{duel}', [DuelController::class, 'show'])->name('duels.show');
 
+/** ── Rutes d'Autenticació (Breeze/Internal) ── */
 require __DIR__ . '/auth.php';
 
+/**
+ * ── RUTES D'ADMINISTRACIÓ ────────────────────────────────────────────────────
+ * Requereixen autenticació, correu verificat i rol d'administrador.
+ */
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
 
+    /** ── Gestió d'Usuaris per Admin ── */
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
+    /** ── Control de Duels per Admin ── */
     Route::get('/duels/cancellations', [DuelController::class, 'cancellationRequests'])->name('duels.cancellations');
 });

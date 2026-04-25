@@ -33,6 +33,7 @@ Route::get('/dashboard', function () {
 
 // RECEPTES: la ruta /create ha d'anar ABANS del wildcard {recipe}
 Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
+Route::get('/duels', [DuelController::class, 'index'])->name('duels.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/recipes/create', [RecipeController::class, 'create'])->name('recipes.create');
@@ -54,7 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/my-duels', [DuelController::class, 'userDuels'])->name('duels.user');
+    Route::get('/duels/create', [DuelController::class, 'create'])->name('duels.create');
+    Route::get('/my-duels', [DuelController::class, 'userDuels'])->name('duels.my-duels');
     Route::post('/duels', [DuelController::class, 'store'])->name('duels.store');
     Route::patch('/duels/{duel}/status', [DuelController::class, 'updateStatus'])->name('duels.status.update');
     Route::post('/duels/{duel}/vote', [DuelController::class, 'vote'])->name('duels.vote');
@@ -67,6 +69,7 @@ Route::middleware('auth')->group(function () {
 
 // El wildcard {recipe} va ÚLTIM per no capturar /create
 Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
+Route::get('/duels/{duel}', [DuelController::class, 'show'])->name('duels.show');
 
 require __DIR__ . '/auth.php';
 

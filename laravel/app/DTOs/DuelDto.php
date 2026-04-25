@@ -39,6 +39,7 @@ class DuelDto
             challenger: [
                 'id' => $duel->challenger->id,
                 'name' => $duel->challenger->name,
+                'avatar' => $duel->challenger->avatar,
             ],
             challengerRecipe: [
                 'id' => $duel->challengerRecipe->id,
@@ -48,6 +49,7 @@ class DuelDto
             challenged: [
                 'id' => $duel->challenged->id,
                 'name' => $duel->challenged->name,
+                'avatar' => $duel->challenged->avatar,
             ],
             challengedRecipe: [
                 'id' => $duel->challengedRecipe->id,

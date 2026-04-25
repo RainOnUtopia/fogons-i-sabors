@@ -8,11 +8,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Controlador per gestionar les receptes favorites dels usuaris.
+ * 
+ * Permet marcar receptes com a favorites i desmarcar-les, així com
+ * gestionar la redirecció segons l'origen de la petició.
+ * 
+ * @package App\Http\Controllers
+ */
 class FavoriteController extends Controller
 {
     /**
-     * Controlador responsable de gestionar els favorits de l'usuari autenticat.
-     * Afegeix una recepta als preferits evitant duplicats.
+     * Afegeix una recepta als preferits de l'usuari autenticat.
+     * 
+     * @param Request $request Petició de l'usuari.
+     * @param Recipe $recipe La recepta a afegir com a favorita.
+     * @return RedirectResponse Redirecció enrere o al perfil segons els paràmetres.
      */
     public function store(Request $request, Recipe $recipe): RedirectResponse
     {
@@ -32,6 +43,10 @@ class FavoriteController extends Controller
 
     /**
      * Elimina una recepta dels preferits de l'usuari autenticat.
+     * 
+     * @param Request $request Petició de l'usuari.
+     * @param Recipe $recipe La recepta a eliminar de favorites.
+     * @return RedirectResponse Redirecció enrere o al perfil segons els paràmetres.
      */
     public function destroy(Request $request, Recipe $recipe): RedirectResponse
     {

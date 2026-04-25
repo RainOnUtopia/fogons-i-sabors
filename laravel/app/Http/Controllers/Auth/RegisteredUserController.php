@@ -13,10 +13,21 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * Controlador per gestionar el registre de nous usuaris.
+ * 
+ * S'encarrega de mostrar el formulari de registre, validar les dades del nou usuari,
+ * crear el registre a la base de dades i iniciar la sessió automàticament.
+ * 
+ * @package App\Http\Controllers
+ * @subpackage Auth
+ */
 class RegisteredUserController extends Controller
 {
     /**
      * Mostra la vista de registre.
+     * 
+     * @return View Vista del formulari de creació de compte.
      */
     public function create(): View
     {
@@ -25,8 +36,10 @@ class RegisteredUserController extends Controller
 
     /**
      * Gestiona la petició de registre.
-     *
-     * @throws ValidationException
+     * 
+     * @param Request $request Petició amb les dades del nou usuari.
+     * @return RedirectResponse Redirecció a la pàgina d'inici després del registre correcte.
+     * @throws ValidationException Si les dades de registre no compleixen els requisits.
      */
     public function store(Request $request): RedirectResponse
     {

@@ -14,12 +14,27 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
+/**
+ * Controlador per gestionar els duels culinaris.
+ * 
+ * Aquesta classe permet crear duels entre usuaris, visualitzar el seu estat,
+ * gestionar les votacions i les peticions de cancel·lació.
+ * 
+ * @package App\Http\Controllers
+ */
 class DuelController extends Controller
 {
+    /**
+     * Instància del servei de duels.
+     * 
+     * @var DuelService
+     */
     private DuelService $duelService;
 
     /**
      * Constructor per injectar el servei de duels.
+     * 
+     * @param DuelService $duelService El servei que conté la lògica de negoci dels duels.
      */
     public function __construct(DuelService $duelService)
     {
@@ -28,6 +43,9 @@ class DuelController extends Controller
 
     /**
      * Llistar tots els duels amb paginació i filtres.
+     * 
+     * @param Request $request Petició amb els filtres d'estat.
+     * @return View Vista amb el llistat de duels filtrats.
      */
     public function index(Request $request): View
     {
@@ -49,6 +67,8 @@ class DuelController extends Controller
 
     /**
      * Mostrar el llistat de peticions de cancel·lació de duels (només admin).
+     * 
+     * @return View Vista amb les peticions de cancel·lació.
      */
     public function cancellationRequests(): View
     {
@@ -64,6 +84,10 @@ class DuelController extends Controller
 
     /**
      * Mostrar el formulari de creació d'un duel nou.
+     * 
+     * Recupera les receptes de l'usuari actual i el llistat d'altres usuaris amb receptes.
+     * 
+     * @return View Vista amb el formulari de creació.
      */
     public function create(): View
     {
@@ -109,6 +133,11 @@ class DuelController extends Controller
 
     /**
      * Llistar els duels on participa l'usuari autenticat.
+     * 
+     * Separa els duels entre creats per l'usuari i rebuts d'altres usuaris.
+     * 
+     * @param Request $request Petició amb la pestanya activa.
+     * @return View Vista amb els duels de l'usuari.
      */
     public function userDuels(Request $request): View
     {
@@ -135,6 +164,9 @@ class DuelController extends Controller
 
     /**
      * Mostrar els detalls d'un duel específic.
+     * 
+     * @param Duel $duel Instància del duel a mostrar.
+     * @return View Vista amb els detalls del duel.
      */
     public function show(Duel $duel): View
     {
@@ -166,6 +198,9 @@ class DuelController extends Controller
 
     /**
      * Registrar un nou duel a la base de dades.
+     * 
+     * @param Request $request Petició amb les dades del duel (receptes i rival).
+     * @return \Illuminate\Http\RedirectResponse Redirecció al detall del duel o enrere amb errors.
      */
     public function store(Request $request)
     {
@@ -221,6 +256,11 @@ class DuelController extends Controller
 
     /**
      * Actualitzar l'estat d'un duel (només admin o participants per cancel·lació).
+     * 
+     * @param Request $request Petició amb el nou estat.
+     * @param Duel $duel Instància del duel a actualitzar.
+     * @return \Illuminate\Http\RedirectResponse Redirecció enrere amb missatge d'èxit.
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException Si l'usuari no té premís.
      */
     public function updateStatus(Request $request, Duel $duel)
     {
@@ -247,6 +287,10 @@ class DuelController extends Controller
 
     /**
      * Registrar un vot per a una de les receptes del duel.
+     * 
+     * @param Request $request Petició amb la recepta votada i la puntuació.
+     * @param Duel $duel Instància del duel on s'emet el vot.
+     * @return \Illuminate\Http\RedirectResponse Redirecció enrere amb missatge d'èxit o error.
      */
     public function vote(Request $request, Duel $duel)
     {
@@ -270,6 +314,8 @@ class DuelController extends Controller
 
     /**
      * Query base compartida pels llistats de duels.
+     * 
+     * @return \Illuminate\Database\Eloquent\Builder Constructor de consultes per al model Duel.
      */
     private function baseListQuery()
     {
@@ -285,6 +331,9 @@ class DuelController extends Controller
 
     /**
      * Transformar la col·lecció paginada a DTOs de llistat.
+     * 
+     * @param \Illuminate\Pagination\LengthAwarePaginator $paginator Paginador a transformar.
+     * @return void
      */
     private function transformPaginatorCollection($paginator): void
     {

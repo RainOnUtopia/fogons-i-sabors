@@ -10,10 +10,21 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
+/**
+ * Controlador de receptes culinàries.
+ * 
+ * Gestiona el cicle de vida de les receptes: llistat públic, visualització de detalls,
+ * creació, edició i eliminació per part dels autors.
+ * 
+ * @package App\Http\Controllers
+ */
 class RecipeController extends Controller
 {
     /**
-     * Mostrar listado de recetas (Receptes)
+     * Mostra el llistat de receptes amb cerca i filtrat.
+     * 
+     * @param Request $request Petició amb paràmetres de cerca, dificultat i ordenació.
+     * @return View Vista amb la col·lecció paginada de receptes.
      */
     public function index(Request $request): View
     {
@@ -41,7 +52,7 @@ class RecipeController extends Controller
                 $recipeQuery->where('difficulty', $currentDifficulty);
             });
 
-        // ORDENAMIENTO
+        // ORDENACIÓ
         $sortBy = $request->input('sort', 'created_at');
         $sortDirection = $request->input('direction', 'desc');
         $allowedSorts = ['created_at', 'average_rating', 'title'];
@@ -52,7 +63,7 @@ class RecipeController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        // PAGINACIÓN (12 items para grid 3 columnas)
+        // PAGINACIÓ (12 items per a grid de 3 columnes)
         $recipes = $query->paginate(12)->withQueryString();
 
         // Carregam els IDs favorits una sola vegada i només si la taula pivot ja existeix.
@@ -67,7 +78,9 @@ class RecipeController extends Controller
     }
 
     /**
-     * Mostrar formulario de creación
+     * Mostra el formulari de creació d'una recepta.
+     * 
+     * @return View Vista del formulari de creació.
      */
     public function create(): View
     {
@@ -75,7 +88,11 @@ class RecipeController extends Controller
     }
 
     /**
-     * Mostrar el formulari d'edició només al propietari de la recepta.
+     * Mostra el formulari d'edició només al propietari de la recepta.
+     * 
+     * @param Request $request Petició de l'usuari.
+     * @param Recipe $recipe La recepta a editar.
+     * @return View Vista del formulari d'edició (reutilitza la de creació).
      */
     public function edit(Request $request, Recipe $recipe): View
     {
@@ -87,7 +104,10 @@ class RecipeController extends Controller
     }
 
     /**
-     * Guardar receta nueva (POST)
+     * Guarda una recepta nova (POST).
+     * 
+     * @param Request $request Petició amb les dades de la recepta i la imatge.
+     * @return RedirectResponse Redirecció al detall de la recepta creada.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -103,8 +123,6 @@ class RecipeController extends Controller
             $validated['chef_avatar'] = null;
         }
 
-
-
         // Crear la recepta
         $recipe = Recipe::create($validated);
 
@@ -112,7 +130,11 @@ class RecipeController extends Controller
     }
 
     /**
-     * Actualitzar una recepta existent del mateix autor.
+     * Actualitza una recepta existent del mateix autor.
+     * 
+     * @param Request $request Petició amb les dades actualitzades.
+     * @param Recipe $recipe La recepta a actualitzar.
+     * @return RedirectResponse Redirecció al detall de la recepta actualitzada.
      */
     public function update(Request $request, Recipe $recipe): RedirectResponse
     {
@@ -128,7 +150,11 @@ class RecipeController extends Controller
     }
 
     /**
-     * Eliminar una recepta pròpia i netejar la seva imatge del storage.
+     * Elimina una recepta pròpia i neteja la seva imatge del storage.
+     * 
+     * @param Request $request Petició de l'usuari.
+     * @param Recipe $recipe La recepta a eliminar.
+     * @return RedirectResponse Redirecció al perfil de l'usuari.
      */
     public function destroy(Request $request, Recipe $recipe): RedirectResponse
     {
@@ -144,7 +170,11 @@ class RecipeController extends Controller
     }
 
     /**
-     * Mostrar detalle de receta
+     * Mostra el detall d'una recepta específica.
+     * 
+     * @param Request $request Petició de l'usuari.
+     * @param Recipe $recipe La recepta a mostrar.
+     * @return View Vista amb la informació detallada de la recepta.
      */
     public function show(Request $request, Recipe $recipe): View
     {
@@ -170,7 +200,14 @@ class RecipeController extends Controller
     }
 
     /**
-     * Validam i preparam les dades comunes del formulari de receptes.
+     * Valida i prepara les dades comunes del formulari de receptes.
+     * 
+     * Converteix cadenes de text (etiquetes, ingredients, passos) en arrays JSON
+     * i gestiona la pujada d'imatges reemplaçant l'anterior si escau.
+     * 
+     * @param Request $request Petició original.
+     * @param Recipe|null $recipe Instància de la recepta en cas d'actualització.
+     * @return array Dades validades i processades.
      */
     private function prepareRecipePayload(Request $request, ?Recipe $recipe = null): array
     {
@@ -216,7 +253,12 @@ class RecipeController extends Controller
     }
 
     /**
-     * Restringim l'edició a l'autor original de la recepta.
+     * Restringeix l'accés només a l'autor original de la recepta.
+     * 
+     * @param Request $request Petició de l'usuari.
+     * @param Recipe $recipe La recepta a comprovar.
+     * @return void
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException Si l'usuari no és el propietari (403).
      */
     private function ensureRecipeOwner(Request $request, Recipe $recipe): void
     {

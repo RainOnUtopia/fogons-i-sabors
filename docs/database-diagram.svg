@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="980" viewBox="0 0 1560 980" role="img" aria-labelledby="title desc">
+  <title id="title">Diagrama de base de dades de Fogons i Sabors</title>
+  <desc id="desc">Diagrama entitat relacio amb taules funcionals i taules tecniques de Laravel.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6efe6; }
+      .title { font: 700 30px Georgia, serif; fill: #2f241f; }
+      .subtitle { font: 400 16px Arial, sans-serif; fill: #6f6158; }
+      .box-title { font: 700 18px Arial, sans-serif; fill: #fff; }
+      .field { font: 14px Consolas, "Courier New", monospace; fill: #2f241f; }
+      .small { font: 13px Arial, sans-serif; fill: #5b4b43; }
+      .legend { font: 13px Arial, sans-serif; fill: #4a3e38; }
+      .core-head { fill: #be3144; }
+      .core-body { fill: #fffdfa; stroke: #d5b7ab; stroke-width: 2; }
+      .sys-head { fill: #6c7a89; }
+      .sys-body { fill: #fbfcfe; stroke: #c7d0d9; stroke-width: 2; }
+      .line-core { stroke: #be3144; stroke-width: 3; fill: none; }
+      .line-sys { stroke: #7f8c99; stroke-width: 2; fill: none; stroke-dasharray: 8 6; }
+      .badge { fill: #f7d7dc; stroke: #be3144; stroke-width: 1; }
+      .badge-text { font: 12px Arial, sans-serif; fill: #8f2130; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1560" height="980" rx="0"/>
+
+  <text class="title" x="60" y="60">Base de Dades - Fogons i Sabors</text>
+
+  <rect class="badge" x="60" y="90" width="188" height="30" rx="15"/>
+  <text class="badge-text" x="86" y="110">MODEL FUNCIONAL PRINCIPAL</text>
+
+  <rect x="70" y="180" width="380" height="290" rx="20" class="core-body"/>
+  <rect x="70" y="180" width="380" height="52" rx="20" class="core-head"/>
+  <text class="box-title" x="95" y="212">users</text>
+  <text class="field" x="95" y="255">PK  id : bigint</text>
+  <text class="field" x="95" y="281">    name : string</text>
+  <text class="field" x="95" y="307">UQ  email : string</text>
+  <text class="field" x="95" y="333">    email_verified_at : timestamp?</text>
+  <text class="field" x="95" y="359">    password : string</text>
+  <text class="field" x="95" y="385">    avatar : string?</text>
+  <text class="field" x="95" y="411">    about_me : text?</text>
+  <text class="field" x="95" y="437">    role : enum(user, admin)</text>
+  <text class="field" x="95" y="463">    is_active : boolean</text>
+
+  <rect x="590" y="160" width="420" height="356" rx="20" class="core-body"/>
+  <rect x="590" y="160" width="420" height="52" rx="20" class="core-head"/>
+  <text class="box-title" x="615" y="192">recipes</text>
+  <text class="field" x="615" y="235">PK  id : bigint</text>
+  <text class="field" x="615" y="261">    title : string</text>
+  <text class="field" x="615" y="287">    description : text?</text>
+  <text class="field" x="615" y="313">    cooking_time : integer</text>
+  <text class="field" x="615" y="339">    difficulty : enum</text>
+  <text class="field" x="615" y="365">    image : string?</text>
+  <text class="field" x="615" y="391">    tags : json?</text>
+  <text class="field" x="615" y="417">    ingredients : json?</text>
+  <text class="field" x="615" y="443">    chef_notes : text?</text>
+  <text class="field" x="615" y="469">    chef_name : string</text>
+  <text class="field" x="615" y="495">    chef_avatar : string?</text>
+  <text class="field" x="615" y="521">FK  user_id : bigint?</text>
+
+  <rect x="1140" y="270" width="300" height="200" rx="20" class="core-body"/>
+  <rect x="1140" y="270" width="300" height="52" rx="20" class="core-head"/>
+  <text class="box-title" x="1165" y="302">favorites</text>
+  <text class="field" x="1165" y="345">PK  id : bigint</text>
+  <text class="field" x="1165" y="371">FK  user_id : bigint</text>
+  <text class="field" x="1165" y="397">FK  recipe_id : bigint</text>
+  <text class="field" x="1165" y="423">UQ  (user_id, recipe_id)</text>
+
+  <path class="line-core" d="M450 325 C520 325, 520 325, 590 325"/>
+  <text class="small" x="487" y="307">1:N</text>
+  <text class="small" x="486" y="347">crea</text>
+
+  <path class="line-core" d="M1010 340 C1070 340, 1080 340, 1140 340"/>
+  <text class="small" x="1054" y="322">1:N</text>
+  <text class="small" x="1046" y="362">marcada com a favorita</text>
+
+  <path class="line-core" d="M450 405 C760 560, 830 560, 1140 405"/>
+  <text class="small" x="770" y="592">N:M a traves de favorites</text>
+
+  <rect class="badge" x="60" y="560" width="220" height="30" rx="15"/>
+  <text class="badge-text" x="86" y="580">TAULES TECNIQUES DE LARAVEL</text>
+
+  <rect x="70" y="620" width="280" height="118" rx="18" class="sys-body"/>
+  <rect x="70" y="620" width="280" height="44" rx="18" class="sys-head"/>
+  <text class="box-title" x="92" y="648">password_reset_tokens</text>
+  <text class="field" x="92" y="690">PK  email : string</text>
+  <text class="field" x="92" y="714">    token : string</text>
+
+  <rect x="390" y="620" width="280" height="144" rx="18" class="sys-body"/>
+  <rect x="390" y="620" width="280" height="44" rx="18" class="sys-head"/>
+  <text class="box-title" x="412" y="648">sessions</text>
+  <text class="field" x="412" y="690">PK  id : string</text>
+  <text class="field" x="412" y="714">FK  user_id : bigint?</text>
+  <text class="field" x="412" y="738">    ip_address : string?</text>
+
+  <rect x="710" y="620" width="250" height="118" rx="18" class="sys-body"/>
+  <rect x="710" y="620" width="250" height="44" rx="18" class="sys-head"/>
+  <text class="box-title" x="732" y="648">cache</text>
+  <text class="field" x="732" y="690">PK  key : string</text>
+  <text class="field" x="732" y="714">    expiration : integer</text>
+
+  <rect x="990" y="620" width="250" height="118" rx="18" class="sys-body"/>
+  <rect x="990" y="620" width="250" height="44" rx="18" class="sys-head"/>
+  <text class="box-title" x="1012" y="648">cache_locks</text>
+  <text class="field" x="1012" y="690">PK  key : string</text>
+  <text class="field" x="1012" y="714">    owner : string</text>
+
+  <rect x="70" y="800" width="260" height="128" rx="18" class="sys-body"/>
+  <rect x="70" y="800" width="260" height="44" rx="18" class="sys-head"/>
+  <text class="box-title" x="92" y="828">jobs</text>
+  <text class="field" x="92" y="870">PK  id : bigint</text>
+  <text class="field" x="92" y="894">    queue : string</text>
+  <text class="field" x="92" y="918">    payload : longText</text>
+
+  <rect x="370" y="800" width="300" height="128" rx="18" class="sys-body"/>
+  <rect x="370" y="800" width="300" height="44" rx="18" class="sys-head"/>
+  <text class="box-title" x="392" y="828">job_batches</text>
+  <text class="field" x="392" y="870">PK  id : string</text>
+  <text class="field" x="392" y="894">    name : string</text>
+  <text class="field" x="392" y="918">    total_jobs : integer</text>
+
+  <rect x="710" y="800" width="300" height="128" rx="18" class="sys-body"/>
+  <rect x="710" y="800" width="300" height="44" rx="18" class="sys-head"/>
+  <text class="box-title" x="732" y="828">failed_jobs</text>
+  <text class="field" x="732" y="870">PK  id : bigint</text>
+  <text class="field" x="732" y="894">UQ  uuid : string</text>
+  <text class="field" x="732" y="918">    failed_at : timestamp</text>
+
+  <path class="line-sys" d="M530 620 C530 565, 340 565, 340 470"/>
+  <text class="legend" x="425" y="560">sessions d'usuari</text>
+
+  <text class="legend" x="1080" y="870">Les taules tecniques no alteren el model funcional principal.</text>
+  <text class="legend" x="1080" y="892">El domini de negoci de l'app es concentra en users, recipes i favorites.</text>
+</svg>

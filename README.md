@@ -2,6 +2,13 @@
 
 Aquest és el repositori del projecte **Fogons i Sabors**, una aplicació web desenvolupada amb Laravel i dissenyada per gestionar de manera eficient usuaris i un panell d'administració.
 
+## Documentació del projecte
+
+- Documentació tècnica: [https://rainonutopia.github.io/fogons-i-sabors/packages/App-Http-Controllers.html](https://rainonutopia.github.io/fogons-i-sabors/packages/App-Http-Controllers.html)
+- Manual d'usuari: [https://rainonutopia.github.io/fogons-i-sabors/Manual_Fogons_i_Sabors.pdf](https://rainonutopia.github.io/fogons-i-sabors/Manual_Fogons_i_Sabors.pdf)
+
+
+
 ## ?? Tecnologies Utilitzades
 
 El projecte utilitza un entorn modern basat en les següents tecnologies i eines:

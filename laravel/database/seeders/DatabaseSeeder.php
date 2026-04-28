@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
             FavoriteSeeder::class,
             CommentSeeder::class,
             RatingSeeder::class,
+            DuelSeeder::class,
+            DuelVoteSeeder::class,
+            DuelCommentSeeder::class,
         ]);
     }
 }

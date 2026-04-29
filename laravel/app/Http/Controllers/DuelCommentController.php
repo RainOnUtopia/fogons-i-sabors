@@ -7,10 +7,22 @@ use Illuminate\Http\Request;
 use App\Models\DuelComment;
 use App\Models\Duel;
 
+/**
+ * Controlador de comentaris per als duels.
+ * 
+ * Gestiona la creació, actualització i eliminació lògica de comentaris
+ * associats als duels culinaris. Inclou suport per a peticions AJAX.
+ * 
+ * @package App\Http\Controllers
+ */
 class DuelCommentController extends Controller
 {
     /**
      * Guarda un nou comentari per a un duel.
+     * 
+     * @param Request $request Petició amb el contingut del comentari i opcionalment el pare (per a respostes).
+     * @param Duel $duel El duel al qual s'associa el comentari.
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse Resposta JSON si es demana o redirecció.
      */
     public function store(Request $request, Duel $duel)
     {
@@ -41,6 +53,11 @@ class DuelCommentController extends Controller
 
     /**
      * Actualitza el contingut d'un comentari.
+     * 
+     * @param Request $request Petició amb el nou contingut.
+     * @param DuelComment $comment El comentari a actualitzar.
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse Resposta JSON si es demana o redirecció.
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException Si l'usuari no té permís o el comentari està eliminat.
      */
     public function update(Request $request, DuelComment $comment)
     {
@@ -77,6 +94,13 @@ class DuelCommentController extends Controller
 
     /**
      * Marca un comentari com a eliminat.
+     * 
+     * No elimina el registre de la base de dades, sinó que canvia el contingut
+     * per un missatge d'eliminació i marca el flag is_deleted.
+     * 
+     * @param Request $request Petició de l'usuari.
+     * @param DuelComment $comment El comentari a eliminar.
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse Resposta JSON si es demana o redirecció.
      */
     public function destroy(Request $request, DuelComment $comment)
     {

@@ -6,15 +6,27 @@ use App\Http\Requests\ContactRequest;
 use App\Services\ContactService;
 use Illuminate\Http\RedirectResponse;
 
+/**
+ * Controlador per gestionar el formulari de contacte.
+ * 
+ * S'encarrega de rebre les dades del formulari de contacte, validar-les
+ * i enviar-les per correu electrònic a través del service de contacte.
+ * 
+ * @package App\Http\Controllers
+ */
 class ContactController extends Controller
 {
     /**
-     * El servei de contacte.
+     * Instància del servei de contacte.
+     * 
+     * @var ContactService
      */
     protected ContactService $contactService;
 
     /**
      * Crea una nova instància del controlador.
+     * 
+     * @param ContactService $contactService Servei d'enviament de correus.
      */
     public function __construct(ContactService $contactService)
     {
@@ -23,6 +35,11 @@ class ContactController extends Controller
 
     /**
      * Processa l'enviament del formulari de contacte.
+     * 
+     * Valida les dades d'entrada i crida al servei per enviar el correu.
+     * 
+     * @param ContactRequest $request Petició amb les dades validades.
+     * @return RedirectResponse Redirecció a la pàgina anterior amb missatge d'èxit.
      */
     public function store(ContactRequest $request): RedirectResponse
     {

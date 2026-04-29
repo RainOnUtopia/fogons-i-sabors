@@ -13,12 +13,22 @@ use Illuminate\View\View;
 
 /**
  * Controlador responsable de la gestió del perfil d'usuari autenticat.
- * Permet veure, editar i eliminar el compte de l'usuari actual.
+ * 
+ * Permet veure la informació pública del perfil, editar les dades personals,
+ * actualitzar l'avatar i eliminar el compte de l'usuari actual.
+ * 
+ * @package App\Http\Controllers
  */
 class ProfileController extends Controller
 {
     /**
      * Mostra la pàgina pública del perfil de l'usuari.
+     * 
+     * Inclou la llista de receptes pròpies (Rebost) i les receptes favorites,
+     * ambdues amb suport per a cerca, filtre de dificultat, ordenació i paginació.
+     * 
+     * @param Request $request Petició amb els paràmetres de cerca i filtratge.
+     * @return View Vista del perfil amb les col·leccions de receptes.
      */
     public function show(Request $request): View
     {
@@ -111,6 +121,9 @@ class ProfileController extends Controller
 
     /**
      * Mostra el formulari d'edició del perfil de l'usuari.
+     * 
+     * @param Request $request Petició de l'usuari.
+     * @return View Vista del formulari d'edició.
      */
     public function edit(Request $request): View
     {
@@ -121,7 +134,11 @@ class ProfileController extends Controller
 
     /**
      * Actualitza la informació del perfil de l'usuari autenticat.
-     * Si l'email canvia, es requereix nova verificació.
+     * 
+     * Si l'email canvia, es requereix nova verificació (es reseteja email_verified_at).
+     * 
+     * @param ProfileUpdateRequest $request Petició amb les dades validades del perfil.
+     * @return RedirectResponse Redirecció al formulari d'edició amb missatge d'èxit.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -138,7 +155,11 @@ class ProfileController extends Controller
 
     /**
      * Actualitza la imatge de perfil de l'usuari autenticat.
-     * Només permet fitxers PNG i JPG/JPEG.
+     * 
+     * Elimina l'avatar anterior si existeix al disc 'public'.
+     * 
+     * @param Request $request Petició amb la nova imatge.
+     * @return RedirectResponse Redirecció al perfil amb missatge d'èxit.
      */
     public function updateAvatar(Request $request): RedirectResponse
     {
@@ -162,6 +183,11 @@ class ProfileController extends Controller
 
     /**
      * Elimina el compte de l'usuari autenticat del sistema.
+     * 
+     * Tanca la sessió, invalida la sessió actual i redirigeix a l'inici.
+     * 
+     * @param Request $request Petició amb el password per a la validació final.
+     * @return RedirectResponse Redirecció a la pàgina d'inici.
      */
     public function destroy(Request $request): RedirectResponse
     {

@@ -25,7 +25,8 @@ class DuelDto
         public string $endDate,
         public int $daysRemaining,
         public int $totalVotes,
-        public iterable $topLevelComments = []
+        public iterable $topLevelComments = [],
+        public int $commentsCount = 0
     ) {}
 
     public static function fromModel(Duel $duel): self
@@ -39,6 +40,7 @@ class DuelDto
             challenger: [
                 'id' => $duel->challenger->id,
                 'name' => $duel->challenger->name,
+                'avatar' => $duel->challenger->avatar,
             ],
             challengerRecipe: [
                 'id' => $duel->challengerRecipe->id,
@@ -48,6 +50,7 @@ class DuelDto
             challenged: [
                 'id' => $duel->challenged->id,
                 'name' => $duel->challenged->name,
+                'avatar' => $duel->challenged->avatar,
             ],
             challengedRecipe: [
                 'id' => $duel->challengedRecipe->id,
@@ -66,7 +69,8 @@ class DuelDto
             endDate: $duel->end_date->toIso8601String(),
             daysRemaining: (int) $daysRemaining,
             totalVotes: $duel->challenger_votes_count + $duel->challenged_votes_count,
-            topLevelComments: $duel->topLevelComments ?? []
+            topLevelComments: $duel->topLevelComments ?? [],
+            commentsCount: $duel->comments()->count()
         );
     }
 }

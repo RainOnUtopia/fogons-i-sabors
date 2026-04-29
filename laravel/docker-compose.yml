@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
     ports:
       # Exposem el port a l'amfitrió, canviat a 33060 per evitar conflictes amb el MySQL local
-      - "33060:3306"
+      - "33061:3306"
     environment:
       MYSQL_DATABASE: ${DB_DATABASE:-fogonsisabors}
       MYSQL_USER: ${DB_USERNAME:-fogonsisabors}

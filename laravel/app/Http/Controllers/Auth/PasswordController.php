@@ -8,10 +8,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * Controlador per gestionar el canvi de contrasenya de l'usuari autenticat.
+ * 
+ * Permet a l'usuari canviar la seva contrasenya actual per una de nova,
+ * validant que coneix la contrasenya actual.
+ * 
+ * @package App\Http\Controllers
+ * @subpackage Auth
+ */
 class PasswordController extends Controller
 {
     /**
      * Actualitza la contrasenya de l'usuari.
+     * 
+     * @param Request $request Petició amb la contrasenya actual i la nova.
+     * @return RedirectResponse Redirecció enrere amb l'estat d'actualització.
      */
     public function update(Request $request): RedirectResponse
     {

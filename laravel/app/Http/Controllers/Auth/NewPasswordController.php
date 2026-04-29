@@ -14,10 +14,22 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * Controlador per gestionar l'establiment d'una nova contrasenya.
+ * 
+ * Gestiona la visualització del formulari de reinici (amb el token)
+ * i el processament del canvi de contrasenya a la base de dades.
+ * 
+ * @package App\Http\Controllers
+ * @subpackage Auth
+ */
 class NewPasswordController extends Controller
 {
     /**
      * Mostra la vista de reinici de contrasenya.
+     * 
+     * @param Request $request Petició amb el token de reinici.
+     * @return View Vista del formulari per introduir la nova contrasenya.
      */
     public function create(Request $request): View
     {
@@ -26,8 +38,10 @@ class NewPasswordController extends Controller
 
     /**
      * Gestiona la petició de nova contrasenya.
-     *
-     * @throws ValidationException
+     * 
+     * @param Request $request Petició amb les dades del reinici i el token.
+     * @return RedirectResponse Redirecció al login si té èxit, o de tornada amb errors.
+     * @throws ValidationException Si la validació de les dades falla.
      */
     public function store(Request $request): RedirectResponse
     {

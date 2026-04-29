@@ -9,10 +9,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * Controlador per gestionar la confirmació de la contrasenya de l'usuari.
+ * 
+ * S'utilitza quan l'usuari intenta accedir a una zona protegida que requereix
+ * una re-autenticació recent amb la seva contrasenya.
+ * 
+ * @package App\Http\Controllers
+ * @subpackage Auth
+ */
 class ConfirmablePasswordController extends Controller
 {
     /**
      * Mostra la vista per confirmar la contrasenya.
+     * 
+     * @return View Vista del formulari de confirmació de contrasenya.
      */
     public function show(): View
     {
@@ -21,6 +32,10 @@ class ConfirmablePasswordController extends Controller
 
     /**
      * Confirma la contrasenya de l'usuari.
+     * 
+     * @param Request $request Petició amb la contrasenya entregada.
+     * @return RedirectResponse Redirecció a la destinació original després de confirmar.
+     * @throws ValidationException Si la contrasenya no és correcta.
      */
     public function store(Request $request): RedirectResponse
     {

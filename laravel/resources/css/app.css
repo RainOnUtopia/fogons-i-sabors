@@ -5176,6 +5176,78 @@ body.bg-light .edit-container {
     border-radius: 10px;
 }
 
+.my-duels-arena-page .duels-arena-hero {
+    margin-bottom: 28px;
+}
+
+.my-duels-panel {
+    padding: 0;
+}
+
+.my-duels-tabs {
+    width: fit-content;
+    max-width: 100%;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 34px;
+    padding: 4px;
+    border-radius: 9px;
+    background: #f1f0ef;
+    list-style: none;
+}
+
+.my-duels-tab {
+    min-width: 116px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #6f6768;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.my-duels-tab:hover {
+    color: var(--primary);
+}
+
+.my-duels-tab.active {
+    background: #fff;
+    color: var(--primary);
+    box-shadow: 0 1px 4px rgba(32, 24, 21, 0.09);
+}
+
+.my-duels-panel .tab-pane.active .duel-card {
+    animation-name: duelListCardEnter;
+}
+
+.my-duels-panel .duel-card-actions {
+    gap: 12px;
+}
+
+.my-duels-panel .duel-card-actions form {
+    flex: 0 1 auto;
+}
+
+.my-duels-panel .duel-card-action-btn {
+    min-width: 176px;
+    height: 39px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
 @media (max-width: 991.98px) {
     .duels-arena-tabs {
         justify-content: flex-start;
@@ -5245,6 +5317,21 @@ body.bg-light .edit-container {
     }
 
     .duels-arena-page .duel-card-main-link {
+        width: 100%;
+    }
+
+    .my-duels-tabs {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .my-duels-tabs .nav-item,
+    .my-duels-tab {
+        flex: 1 0 auto;
+    }
+
+    .my-duels-panel .duel-card-actions form,
+    .my-duels-panel .duel-card-action-btn {
         width: 100%;
     }
 }

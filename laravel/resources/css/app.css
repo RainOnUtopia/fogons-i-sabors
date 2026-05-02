@@ -6686,3 +6686,16 @@ body.bg-light .edit-container {
         width: 100%;
     }
 }
+
+.duel-card-status--cancelled{
+    font-weight: bolder;
+    color: #c62828;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    i{
+        color: #c62828;
+        font-size: 2.5rem;
+    }
+}

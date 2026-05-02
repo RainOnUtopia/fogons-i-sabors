@@ -30,15 +30,22 @@ class DuelVoteSeeder extends Seeder
                 ->take(5);
 
             foreach ($sampleVoters as $voter) {
-                DuelVote::query()->updateOrCreate(
-                    ['duel_id' => $duel->id, 'user_id' => $voter->id, 'recipe_id' => $duel->challenger_recipe_id],
-                    ['rating' => random_int(2, 5)]
-                );
-
-                DuelVote::query()->updateOrCreate(
-                    ['duel_id' => $duel->id, 'user_id' => $voter->id, 'recipe_id' => $duel->challenged_recipe_id],
-                    ['rating' => random_int(1, 5)]
-                );
+                if(random_int(0, 1) === 0) {
+                    continue; // Simula que no tots els votants voten en tots els duels
+                }
+                if(random_int(0, 1) === 0) {
+                    // Vota només per la recepta del challenger
+                    DuelVote::query()->updateOrCreate(
+                        ['duel_id' => $duel->id, 'user_id' => $voter->id, 'recipe_id' => $duel->challenger_recipe_id],
+                        ['rating' => 5]
+                    );
+                } else {
+                    // Vota només per la recepta del challenged
+                    DuelVote::query()->updateOrCreate(
+                        ['duel_id' => $duel->id, 'user_id' => $voter->id, 'recipe_id' => $duel->challenged_recipe_id],
+                        ['rating' => 5]
+                    );
+                }
             }
         }
     }

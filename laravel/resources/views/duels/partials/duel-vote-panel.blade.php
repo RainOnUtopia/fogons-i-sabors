@@ -10,15 +10,21 @@
     <div class="duel-vote-panel duel-vote-panel--support {{ $isDisabled ? 'duel-vote-panel--disabled' : '' }}">
         @auth
             @if(!$isDisabled)
+               @if(!$isDuelVotedbyUser || ($currentRating==5))
                 <form action="{{ route('duels.vote', $duel->id) }}" method="POST">
                     @csrf
                     <input type="hidden" name="recipe_id" value="{{ $recipe['id'] }}">
                     <input type="hidden" name="rating" value="5">
                     <button type="submit" class="duel-support-button">
                         <i class="bi bi-fire"></i>
-                        Donar suport al xef {{ $chefName ?? $recipe['title'] }}
+                        @if($currentRating==5)
+                            Has donat suport al xef {{ $chefName ?? $recipe['title'] }}
+                        @else
+                            Donar suport al xef {{ $chefName ?? $recipe['title'] }}
+                        @endif
                     </button>
                 </form>
+                @endif
             @else
                 <p class="duel-vote-helper mb-0">{{ $disabledMessage }}</p>
             @endif

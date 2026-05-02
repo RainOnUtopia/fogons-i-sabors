@@ -39,11 +39,26 @@
             </div>
 
             <div class="duel-card-vs-wrap" aria-hidden="true">
-                <div class="duel-card-vs">VS</div>
-                <div class="duel-card-time">
-                    <i class="bi bi-clock"></i>
-                    {{ $remainingLabel }}
-                </div>
+                @if($duel->status==='cancelat')
+                    <div class="duel-card-status duel-card-status--cancelled">
+                        <i class="bi bi-x-circle"></i>
+                        Cancelat
+                    </div>
+                @else
+                    <div class="duel-card-vs">VS</div>
+                    <div class="duel-card-time">
+                        @if($duel->status==='iniciat')
+                            <i class="bi bi-clock"></i>
+                            {{ $remainingLabel }}
+                        @elseif($duel->status==='peticio de cancelacio')
+                            <i class="bi bi-slash-circle"></i>
+                            Peticio de cancelacio
+                        @elseif($duel->status==='finalitzat')
+                            <i class="bi bi-check-circle"></i>
+                            Finalitzat
+                        @endif
+                    </div>
+                @endif
             </div>
 
             <div class="duel-card-entrant duel-card-entrant--challenged">

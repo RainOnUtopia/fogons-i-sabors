@@ -253,6 +253,7 @@
                             'compactSupport' => true,
                             'chefName' => $duelDto->challenger['name'],
                             'disabledMessage' => 'La votació d\'aquesta recepta està tancada perquè el duel ja no és actiu.',
+                            'isDuelVotedbyUser' => count($userVotes)>0,
                         ])
                     </div>
                 </div>
@@ -328,6 +329,7 @@
                             'compactSupport' => true,
                             'chefName' => $duelDto->challenged['name'],
                             'disabledMessage' => 'La votació d\'aquesta recepta està tancada perquè el duel ja no és actiu.',
+                            'isDuelVotedbyUser' => count($userVotes)>0,
                         ])
                     </div>
                 </div>

@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="860" viewBox="0 0 1480 860" role="img" aria-labelledby="title desc">
+  <title id="title">Diagrama de base de dades - Duels (crear, votar, resultats, llistats i admin)</title>
+  <desc id="desc">Diagrama entitat-relacio per a l'apartat de duels: creacio de duel, votacions, comentaris, resultats, llistat de duels d'usuari i panell d'administracio.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6efe6; }
+      .title { font: 700 28px Georgia, serif; fill: #2f241f; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #6f6158; }
+      .pill { fill: #ffffff; stroke: #be3144; stroke-width: 2; }
+      .pill-text { font: 700 12px Arial, sans-serif; fill: #8f2130; letter-spacing: 0.5px; }
+      .box-title { font: 700 18px Arial, sans-serif; fill: #fff; }
+      .field { font: 14px Consolas, "Courier New", monospace; fill: #2f241f; }
+      .small { font: 13px Arial, sans-serif; fill: #5b4b43; }
+      .core-head { fill: #be3144; }
+      .core-body { fill: #fffdfa; stroke: #d5b7ab; stroke-width: 2; }
+      .line-core { stroke: #be3144; stroke-width: 3; fill: none; }
+      .line-muted { stroke: #8f7f77; stroke-width: 2; fill: none; stroke-dasharray: 6 6; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1480" height="860" rx="0"/>
+
+  <text class="title" x="50" y="55">Base de dades - Duels</text>
+  <text class="subtitle" x="50" y="82">Disseny per a: crear duel, votar recepta, veure resultats, llistat de duels i control d'administracio.</text>
+
+  <!-- section pills -->
+  <rect class="pill" x="50" y="98" width="130" height="28" rx="14"/>
+  <text class="pill-text" x="66" y="117">CREAR DUEL</text>
+
+  <rect class="pill" x="192" y="98" width="140" height="28" rx="14"/>
+  <text class="pill-text" x="208" y="117">VOTAR RECEPTA</text>
+
+  <rect class="pill" x="344" y="98" width="120" height="28" rx="14"/>
+  <text class="pill-text" x="360" y="117">RESULTATS</text>
+
+  <rect class="pill" x="476" y="98" width="180" height="28" rx="14"/>
+  <text class="pill-text" x="492" y="117">LLISTAT DE DUELS</text>
+
+  <rect class="pill" x="668" y="98" width="200" height="28" rx="14"/>
+  <text class="pill-text" x="684" y="117">PANEL ADMIN DUELS</text>
+
+  <rect class="pill" x="880" y="98" width="150" height="28" rx="14"/>
+  <text class="pill-text" x="896" y="117">COMENTARIS</text>
+
+  <!-- users -->
+  <rect x="60" y="150" width="360" height="250" rx="18" class="core-body"/>
+  <rect x="60" y="150" width="360" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="85" y="182">users</text>
+  <text class="field" x="85" y="225">PK  id : bigint</text>
+  <text class="field" x="85" y="251">UQ  email : string</text>
+  <text class="field" x="85" y="277">    name : string</text>
+  <text class="field" x="85" y="303">    role : enum</text>
+  <text class="field" x="85" y="329">    avatar : string?</text>
+  <text class="field" x="85" y="355">    victories_count : int</text>
+
+  <!-- recipes -->
+  <rect x="500" y="150" width="460" height="260" rx="18" class="core-body"/>
+  <rect x="500" y="150" width="460" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="525" y="182">recipes</text>
+  <text class="field" x="525" y="225">PK  id : bigint</text>
+  <text class="field" x="525" y="251">    title : string</text>
+  <text class="field" x="525" y="277">FK  user_id : bigint?</text>
+  <text class="field" x="525" y="303">    average_rating : decimal</text>
+  <text class="field" x="525" y="329">    ratings_count : int</text>
+  <text class="field" x="525" y="355">    ...</text>
+
+  <!-- duels -->
+  <rect x="500" y="440" width="560" height="360" rx="18" class="core-body"/>
+  <rect x="500" y="440" width="560" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="525" y="472">duels</text>
+  <text class="field" x="525" y="515">PK  id : bigint</text>
+  <text class="field" x="525" y="541">FK  challenger_id : bigint</text>
+  <text class="field" x="525" y="567">FK  challenger_recipe_id : bigint</text>
+  <text class="field" x="525" y="593">FK  challenged_id : bigint</text>
+  <text class="field" x="525" y="619">FK  challenged_recipe_id : bigint</text>
+  <text class="field" x="525" y="645">    status : enum</text>
+  <text class="field" x="525" y="671">    duel_result : enum?</text>
+  <text class="field" x="525" y="697">    start_date : timestamp</text>
+  <text class="field" x="525" y="723">    end_date : timestamp</text>
+  <text class="field" x="525" y="749">FK  winner_user_id : bigint?</text>
+  <text class="field" x="525" y="775">FK  winner_recipe_id : bigint?</text>
+
+  <text class="field" x="820" y="541">    challenger_votes_count : int</text>
+  <text class="field" x="820" y="567">    challenged_votes_count : int</text>
+  <text class="field" x="820" y="593">    challenger_average_rating : dec</text>
+  <text class="field" x="820" y="619">    challenged_average_rating : dec</text>
+  <text class="field" x="820" y="645">UQ  (challenger_recipe_id,</text>
+  <text class="field" x="820" y="671">    challenged_recipe_id)</text>
+
+  <!-- duel_votes -->
+  <rect x="1120" y="170" width="320" height="240" rx="18" class="core-body"/>
+  <rect x="1120" y="170" width="320" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="1145" y="202">duel_votes</text>
+  <text class="field" x="1145" y="245">PK  id : bigint</text>
+  <text class="field" x="1145" y="271">FK  duel_id : bigint</text>
+  <text class="field" x="1145" y="297">FK  user_id : bigint</text>
+  <text class="field" x="1145" y="323">FK  recipe_id : bigint</text>
+  <text class="field" x="1145" y="349">    rating : tinyint (1..5)</text>
+  <text class="field" x="1145" y="375">UQ  (duel_id, user_id, recipe_id)</text>
+
+  <!-- duel_comments -->
+  <rect x="1120" y="460" width="320" height="280" rx="18" class="core-body"/>
+  <rect x="1120" y="460" width="320" height="52" rx="18" class="core-head"/>
+  <text class="box-title" x="1145" y="492">duel_comments</text>
+  <text class="field" x="1145" y="535">PK  id : bigint</text>
+  <text class="field" x="1145" y="561">FK  user_id : bigint</text>
+  <text class="field" x="1145" y="587">FK  duel_id : bigint</text>
+  <text class="field" x="1145" y="613">FK  parent_id : bigint?</text>
+  <text class="field" x="1145" y="639">    content : text</text>
+  <text class="field" x="1145" y="665">    is_deleted : boolean</text>
+  <text class="field" x="1145" y="691">IX  (duel_id, parent_id)</text>
+
+  <!-- relations -->
+  <!-- users 1:N recipes -->
+  <path class="line-core" d="M420 275 C460 275, 460 275, 500 275"/>
+  <text class="small" x="450" y="262">1:N</text>
+  <text class="small" x="445" y="292">crea</text>
+
+  <!-- users 1:N duels (challenger/challenged) -->
+  <path class="line-core" d="M240 400 C240 520, 420 560, 500 560"/>
+  <text class="small" x="295" y="510">1:N</text>
+  <text class="small" x="295" y="530">participa</text>
+
+  <!-- recipes 1:N duels (as participants) -->
+  <path class="line-core" d="M730 410 C730 430, 730 430, 730 440"/>
+  <text class="small" x="744" y="430">1:N</text>
+  <text class="small" x="744" y="450">es bat en duel</text>
+
+  <!-- duels 1:N duel_votes -->
+  <path class="line-core" d="M1060 560 C1100 560, 1100 310, 1120 310"/>
+  <text class="small" x="1085" y="430">1:N</text>
+
+  <!-- duel_votes to users/recipes (muted) -->
+  <path class="line-muted" d="M1120 300 C900 220, 650 220, 420 250"/>
+  <text class="small" x="820" y="205">FKs</text>
+
+  <!-- duels 1:N duel_comments -->
+  <path class="line-core" d="M1060 640 C1100 640, 1100 600, 1120 600"/>
+  <text class="small" x="1085" y="625">1:N</text>
+
+  <!-- duel_comments self 1:N replies -->
+  <path class="line-muted" d="M1280 740 C1400 740, 1400 800, 1280 800"/>
+  <text class="small" x="1345" y="772">self</text>
+
+</svg>
+

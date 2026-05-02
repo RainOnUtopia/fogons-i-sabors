@@ -1,127 +1,133 @@
 @extends('layouts.admin')
 
-@section('title', 'Moderació de Duels')
+@section('title', 'Moderaci&oacute; de Duels')
 
 @section('content')
-<div class="users-container">
-    <div class="users-header">
-        <div class="users-header-content">
-            <h1 class="users-page-title">Peticions de Cancel·lació de Duels</h1>
+<div class="admin-duels-page">
+    <div class="admin-duels-shell">
+        <div class="admin-duels-topbar">
+            <div>
+                <a href="{{ route('admin.dashboard') }}" class="admin-duels-back">
+                    <i class="bi bi-arrow-left"></i>
+                    Panell Admin
+                </a>
+                <h1 class="admin-duels-title">Moderaci&oacute; de Duels</h1>
+            </div>
         </div>
-        <div class="users-header-actions">
-            <a href="{{ route('admin.dashboard') }}" class="users-dashboard-btn">
-                <i class="bi bi-arrow-left"></i>
-                Panell Admin
-            </a>
-        </div>
-    </div>
 
-    <!-- Missatges d'estat-->
-    @if (session('success'))
-        <div class="users-alert-container">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @if (session('success'))
+            <div class="alert alert-success shadow-sm border-0 rounded-4 mb-4" role="alert">
                 {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        </div>
-    @endif
-    @if (session('error'))
-        <div class="users-alert-container">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger shadow-sm border-0 rounded-4 mb-4" role="alert">
                 {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        </div>
-    @endif
-    @if ($errors->any())
-        <div class="users-alert-container">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger shadow-sm border-0 rounded-4 mb-4" role="alert">
                 <ul class="mb-0">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        </div>
-    @endif
+        @endif
 
-    <div class="users-card">
-        <div class="users-card-header">
-            <h2 class="users-card-title">Llista de Peticions</h2>
-        </div>
-
-        <div class="users-table-wrapper">
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th class="users-table-header">DUEL ID</th>
-                        <th class="users-table-header">PARTICIPANTS</th>
-                        <th class="users-table-header">RECEPTES</th>
-                        <th class="users-table-header">ESTAT</th>
-                        <th class="users-table-header">ACCIONS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($duels as $duel)
-                        <tr class="users-table-row">
-                            <td class="users-table-cell">#{{ $duel->id }}</td>
-                            <td class="users-table-cell">
-                                <div><strong>Reptador:</strong> {{ $duel->challengerName }}</div>
-                                <div><strong>Reptat:</strong> {{ $duel->challengedName }}</div>
-                            </td>
-                            <td class="users-table-cell">
-                                <div class="text-truncate" style="max-width: 200px;" title="{{ $duel->challengerRecipeTitle }}">
-                                    <i class="bi bi-journal-text"></i> {{ $duel->challengerRecipeTitle }}
-                                </div>
-                                <div class="text-truncate" style="max-width: 200px;" title="{{ $duel->challengedRecipeTitle }}">
-                                    <i class="bi bi-journal-text"></i> {{ $duel->challengedRecipeTitle }}
-                                </div>
-                            </td>
-                            <td class="users-table-cell">
-                                <span class="users-badge users-badge-inactive">Pendent</span>
-                            </td>
-                            <td class="users-table-cell users-actions-cell">
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <a href="{{ route('duels.show', $duel->id) }}" target="_blank" class="btn btn-sm btn-info btn-detall text-white d-flex align-items-center gap-1">
-                                        <i class="bi bi-eye"></i> Veure
-                                    </a>
-                                    
-                                    <form action="{{ route('duels.status.update', $duel->id) }}" method="POST" class="m-0">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="cancelat">
-                                        <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center gap-1" onclick="return confirm('Estàs segur d\'aprovar la cancel·lació? El duel quedarà cancel·lat definitivament.')">
-                                            <i class="bi bi-check-circle"></i> Aprovar
-                                        </button>
-                                    </form>
-
-                                    <form action="{{ route('duels.status.update', $duel->id) }}" method="POST" class="m-0">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="iniciat">
-                                        <button type="submit" class="btn btn-sm btn-success btn-detall d-flex align-items-center gap-1" onclick="return confirm('Estàs segur de rebutjar la petició? El duel tornarà a estar iniciat.')">
-                                            <i class="bi bi-x-circle"></i> Rebutjar
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="users-table-cell text-center py-4 text-muted">
-                                No hi ha cap petició de cancel·lació pendent.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <div class="admin-duels-stats">
+            <article class="admin-duels-stat">
+                <i class="bi bi-crosshair admin-duels-stat-icon admin-duels-stat-icon--danger"></i>
+                <strong>{{ $duelStats['active'] ?? 0 }}</strong>
+                <span>Duels actius</span>
+            </article>
+            <article class="admin-duels-stat">
+                <i class="bi bi-exclamation-triangle admin-duels-stat-icon admin-duels-stat-icon--warning"></i>
+                <strong>{{ $duelStats['pending'] ?? $duels->total() }}</strong>
+                <span>Pendent d'aprovaci&oacute;</span>
+            </article>
+            <article class="admin-duels-stat">
+                <i class="bi bi-check-circle admin-duels-stat-icon admin-duels-stat-icon--success"></i>
+                <strong>{{ $duelStats['completedToday'] ?? 0 }}</strong>
+                <span>Completats avui</span>
+            </article>
         </div>
 
-        <!-- Paginació -->
-        <div class="users-pagination-wrapper pagination-container mt-4">
-            {{ $duels->links("pagination::bootstrap-5") }}
-        </div>
+        <section class="admin-duels-panel">
+            <div class="admin-duels-panel-head">
+                <h2>Sol&middot;licituds de Duel Pendents</h2>
+            </div>
+
+            <div class="admin-duels-requests">
+                @forelse($duels as $duel)
+                    <article class="admin-duels-request">
+                        <div class="admin-duels-avatars" aria-hidden="true">
+                            <div class="admin-duels-avatar">
+                                @if($duel->challengerAvatar)
+                                    <img src="{{ asset('storage/' . $duel->challengerAvatar) }}" alt="">
+                                @else
+                                    <span>{{ mb_strtoupper(mb_substr($duel->challengerName, 0, 1)) }}</span>
+                                @endif
+                            </div>
+                            <div class="admin-duels-avatar admin-duels-avatar--second">
+                                @if($duel->challengedAvatar)
+                                    <img src="{{ asset('storage/' . $duel->challengedAvatar) }}" alt="">
+                                @else
+                                    <span>{{ mb_strtoupper(mb_substr($duel->challengedName, 0, 1)) }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="admin-duels-request-copy">
+                            <h3>{{ $duel->challengerRecipeTitle }} vs {{ $duel->challengedRecipeTitle }}</h3>
+                            <p>
+                                Sol&middot;licitat per {{ $duel->challengerName }}
+                                <span>&middot;</span>
+                                Duel #{{ $duel->id }}
+                            </p>
+                        </div>
+
+                        <div class="admin-duels-request-actions">
+                            <a href="{{ route('duels.show', $duel->id) }}" target="_blank" rel="noopener" class="admin-duels-action admin-duels-action--ghost">
+                                Veure
+                            </a>
+
+                            <form action="{{ route('duels.status.update', $duel->id) }}" method="POST" class="m-0">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" value="iniciat">
+                                <button type="submit" class="admin-duels-action admin-duels-action--ghost" onclick="return confirm('Segur que vols rebutjar la petici&oacute;? El duel tornar&agrave; a estar iniciat.')">
+                                    Declinar
+                                </button>
+                            </form>
+
+                            <form action="{{ route('duels.status.update', $duel->id) }}" method="POST" class="m-0">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" value="cancelat">
+                                <button type="submit" class="admin-duels-action admin-duels-action--primary" onclick="return confirm('Segur que vols aprovar la cancel&middot;laci&oacute;? El duel quedar&agrave; cancel&middot;lat definitivament.')">
+                                    Aprovar
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                @empty
+                    <div class="admin-duels-empty">
+                        <i class="bi bi-check-circle"></i>
+                        <h3>No hi ha cap petici&oacute; pendent</h3>
+                        <p>Quan arribi una nova sol&middot;licitud de cancel&middot;laci&oacute;, apareixer&agrave; aqu&iacute;.</p>
+                    </div>
+                @endforelse
+            </div>
+
+            @if($duels->hasPages())
+                <div class="admin-duels-pagination pagination-container">
+                    {{ $duels->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
+        </section>
     </div>
 </div>
 @endsection

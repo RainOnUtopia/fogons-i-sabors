@@ -2,8 +2,38 @@
     $currentRating = $currentRating ?? 0;
     $isDisabled = $isDisabled ?? false;
     $disabledMessage = $disabledMessage ?? null;
+    $compactSupport = $compactSupport ?? false;
+    $chefName = $chefName ?? null;
 @endphp
 
+@if($compactSupport)
+    <div class="duel-vote-panel duel-vote-panel--support {{ $isDisabled ? 'duel-vote-panel--disabled' : '' }}">
+        @auth
+            @if(!$isDisabled)
+                <form action="{{ route('duels.vote', $duel->id) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="recipe_id" value="{{ $recipe['id'] }}">
+                    <input type="hidden" name="rating" value="5">
+                    <button type="submit" class="duel-support-button">
+                        <i class="bi bi-fire"></i>
+                        Donar suport al xef {{ $chefName ?? $recipe['title'] }}
+                    </button>
+                </form>
+            @else
+                <p class="duel-vote-helper mb-0">{{ $disabledMessage }}</p>
+            @endif
+        @else
+            @if(!$isDisabled)
+                <a href="{{ route('login') }}" class="duel-support-button">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Inicia sessio per donar suport
+                </a>
+            @else
+                <p class="duel-vote-helper mb-0">{{ $disabledMessage }}</p>
+            @endif
+        @endauth
+    </div>
+@else
 <div class="duel-vote-panel {{ $isDisabled ? 'duel-vote-panel--disabled' : '' }}">
     <div class="duel-vote-panel-head">
         <h3 class="duel-vote-title">Quina nota li dones?</h3>
@@ -67,3 +97,4 @@
         @endif
     @endauth
 </div>
+@endif

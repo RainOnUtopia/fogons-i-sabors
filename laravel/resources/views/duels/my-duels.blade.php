@@ -1,19 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="section-ui">
-        <div class="recipe-page-container-mb d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-4">
-            <div class="flex-grow-1">
-                <h1 class="recipe-hero-title">Els meus duels</h1>
-                <p class="recipe-hero-subtitle">Des d'aquí pots seguir els duels que has obert i els reptes que t'han llançat.</p>
+    <div class="section-ui duels-arena-page my-duels-arena-page">
+        <div class="duels-arena-hero recipe-page-container-mb">
+            <div>
+                <p class="duels-arena-kicker">
+                    <i class="bi bi-collection"></i>
+                    La meva arena
+                </p>
+                <h1 class="duels-arena-title">Els meus duels</h1>
+                <p class="duels-arena-subtitle">Segueix els duels que has obert i els reptes que t'han llan&ccedil;at.</p>
             </div>
 
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{{ route('duels.index') }}" class="btn-secondary-ui">
+            <div class="duels-arena-actions">
+                <a href="{{ route('duels.index') }}" class="duels-arena-utility-link">
                     <i class="bi bi-arrow-left"></i>
                     Tornar al llistat
                 </a>
-                <a href="{{ route('duels.create') }}" class="btn-primary-ui">
+                <a href="{{ route('duels.create') }}" class="duels-arena-utility-link duels-arena-utility-link--primary">
                     <i class="bi bi-plus-lg"></i>
                     Crear duel
                 </a>
@@ -37,7 +41,7 @@
                     <ul class="list-unstyled mb-0 d-flex flex-column gap-1" style="font-size: 13px;">
                         @foreach($errors->all() as $error)
                             <li class="position-relative lh-base ps-3">
-                                <span class="position-absolute start-0">•</span>
+                                <span class="position-absolute start-0">&bull;</span>
                                 {{ $error }}
                             </li>
                         @endforeach
@@ -46,11 +50,11 @@
             @endif
         </div>
 
-        <div class="recipe-page-container-mb card-ui p-4 p-md-5">
-            <ul class="nav nav-tabs mb-4 profile-tabs" role="tablist">
+        <div class="recipe-page-container-mb my-duels-panel">
+            <ul class="my-duels-tabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button
-                        class="nav-link {{ $activeTab === 'created' ? 'active' : '' }} fw-bold"
+                        class="my-duels-tab {{ $activeTab === 'created' ? 'active' : '' }}"
                         id="duels-created-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#duels-created-pane"
@@ -64,7 +68,7 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button
-                        class="nav-link {{ $activeTab === 'received' ? 'active' : '' }} fw-bold"
+                        class="my-duels-tab {{ $activeTab === 'received' ? 'active' : '' }}"
                         id="duels-received-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#duels-received-pane"
@@ -93,7 +97,7 @@
                                     <i class="bi bi-lightning-charge"></i>
                                 </div>
                                 <h3 class="duel-empty-title">Encara no has obert cap duel</h3>
-                                <p class="duel-empty-text">Quan en creïs un, el podràs seguir aquí i veure com avança la votació.</p>
+                                <p class="duel-empty-text">Quan en creis un, el podras seguir aqui i veure com avan&ccedil;a la votacio.</p>
                                 <a href="{{ route('duels.create') }}" class="btn-primary-ui">
                                     <i class="bi bi-plus-lg"></i>
                                     Crear duel
@@ -123,7 +127,7 @@
                                     <i class="bi bi-inbox"></i>
                                 </div>
                                 <h3 class="duel-empty-title">Encara no has rebut cap repte</h3>
-                                <p class="duel-empty-text">Quan algú et repti, el trobaràs aquí per seguir el duel i entrar directament al detall.</p>
+                                <p class="duel-empty-text">Quan algu et repti, el trobaras aqui per seguir el duel i entrar directament al detall.</p>
                             </div>
                         @endforelse
                     </div>

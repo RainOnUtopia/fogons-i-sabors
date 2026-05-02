@@ -8,6 +8,15 @@
         $isParticipant = auth()->check() && in_array(auth()->id(), [$duelDto->challenger['id'], $duelDto->challenged['id']], true);
         $challengerIsWinner = $duelDto->winnerRecipeId === $duelDto->challengerRecipe['id'];
         $challengedIsWinner = $duelDto->winnerRecipeId === $duelDto->challengedRecipe['id'];
+        $end = \Illuminate\Support\Carbon::parse($duelDto->endDate);
+        $remaining = $end->isFuture() ? now()->diff($end) : null;
+        $remainingLabel = $remaining
+            ? trim(($remaining->days ? $remaining->days . 'd ' : '') . ($remaining->h ? $remaining->h . 'h ' : '') . ($remaining->i ? $remaining->i . 'm' : ''))
+            : 'Tancat';
+        $remainingLabel = $remainingLabel !== '' ? $remainingLabel : 'Ara';
+        $combinedAverage = $duelDto->challengerAverageRating + $duelDto->challengedAverageRating;
+        $challengerSupport = $combinedAverage > 0 ? ($duelDto->challengerAverageRating / $combinedAverage) * 100 : 50;
+        $challengedSupport = 100 - $challengerSupport;
         $resultMessage = match (true) {
             $duelDto->status === 'cancelat' => 'Aquest duel s\'ha cancel·lat. Ja no es pot votar ni fer cap altra acció.',
             $duelDto->duelResult === 'guanyador' && $challengerIsWinner => $duelDto->challenger['name'] . ' s\'ha endut la victòria amb la recepta "' . $duelDto->challengerRecipe['title'] . '".',
@@ -18,24 +27,37 @@
         };
     @endphp
 
-    <div class="section-ui">
+    <div class="section-ui duel-detail-arena-page">
         <div class="recipe-page-container-mb">
             <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-4">
                 <div class="flex-grow-1">
-                    <div class="recipe-breadcrumb mb-3">
+                    <div class="recipe-breadcrumb mb-3 duel-detail-old-breadcrumb">
                         <a href="{{ route('duels.index') }}">Duels</a>
                         <span class="separator">/</span>
                         <span class="active">Detall</span>
                     </div>
-                    <h1 class="recipe-show-title mb-2">{{ $duelDto->challenger['name'] }} vs {{ $duelDto->challenged['name'] }}</h1>
+                    <a href="{{ route('duels.index') }}" class="duel-detail-back">
+                        <i class="bi bi-arrow-left"></i>
+                        Sortir de l'arena
+                    </a>
+                    <div class="duel-detail-title-row">
+                        <span class="duel-detail-title-icon">
+                            <i class="bi bi-tools"></i>
+                        </span>
+                        <h1 class="duel-detail-title">Arena de Duel Culinari</h1>
+                    </div>
                     <p class="recipe-show-desc mb-0">Compara les dues receptes, mira com va la votació i decideix quina et convenç més.</p>
                 </div>
 
-                <div class="d-flex flex-wrap gap-2">
+                <div class="d-flex flex-wrap gap-2 duel-detail-old-status">
                     @include('duels.partials.duel-status-badge', ['value' => $duelDto->status])
                     @if($duelDto->duelResult)
                         @include('duels.partials.duel-status-badge', ['value' => $duelDto->duelResult])
                     @endif
+                </div>
+                <div class="duel-detail-timer" data-duel-countdown data-end="{{ \Illuminate\Support\Carbon::parse($duelDto->endDate)->toIso8601String() }}">
+                    <i class="bi bi-clock"></i>
+                    <span data-duel-countdown-value>{{ $remainingLabel }}</span>
                 </div>
             </div>
         </div>
@@ -153,7 +175,7 @@
             @endif
         </div>
 
-        <div class="recipe-page-container-mb card-ui p-4 p-md-5">
+        <div class="recipe-page-container-mb card-ui p-4 p-md-5 duel-detail-contenders-wrap">
             <div class="duel-battle-stage">
                 <div class="duel-stage-vs" aria-hidden="true">
                     <span>VS</span>
@@ -195,6 +217,16 @@
                         <div class="duel-entry-title-wrap">
                             <h3 class="duel-entry-title">{{ $duelDto->challengerRecipe['title'] }}</h3>
                         </div>
+                        <p class="duel-detail-author"> Chef {{ $duelDto->challenger['name'] }}</p>
+                        <div class="duel-detail-support">
+                            <div class="duel-detail-support-head">
+                                <span>Suport de la comunitat</span>
+                                <strong>{{ round($challengerSupport) }}%</strong>
+                            </div>
+                            <div class="duel-detail-support-track">
+                                <span style="width: {{ $challengerSupport }}%;"></span>
+                            </div>
+                        </div>
                         <div class="duel-entry-stats">
                             <div class="duel-entry-stat">
                                 <i class="bi bi-star-fill"></i>
@@ -218,6 +250,8 @@
                             'recipe' => $duelDto->challengerRecipe,
                             'currentRating' => $userVotes[$duelDto->challengerRecipe['id']] ?? 0,
                             'isDisabled' => !$isVotingOpen,
+                            'compactSupport' => true,
+                            'chefName' => $duelDto->challenger['name'],
                             'disabledMessage' => 'La votació d\'aquesta recepta està tancada perquè el duel ja no és actiu.',
                         ])
                     </div>
@@ -258,6 +292,16 @@
                         <div class="duel-entry-title-wrap">
                             <h3 class="duel-entry-title">{{ $duelDto->challengedRecipe['title'] }}</h3>
                         </div>
+                        <p class="duel-detail-author">Chef {{ $duelDto->challenged['name'] }}</p>
+                        <div class="duel-detail-support">
+                            <div class="duel-detail-support-head">
+                                <span>Suport de la comunitat</span>
+                                <strong>{{ round($challengedSupport) }}%</strong>
+                            </div>
+                            <div class="duel-detail-support-track">
+                                <span style="width: {{ $challengedSupport }}%;"></span>
+                            </div>
+                        </div>
                         <div class="duel-entry-stats">
                             <div class="duel-entry-stat">
                                 <i class="bi bi-star-fill"></i>
@@ -281,6 +325,8 @@
                             'recipe' => $duelDto->challengedRecipe,
                             'currentRating' => $userVotes[$duelDto->challengedRecipe['id']] ?? 0,
                             'isDisabled' => !$isVotingOpen,
+                            'compactSupport' => true,
+                            'chefName' => $duelDto->challenged['name'],
                             'disabledMessage' => 'La votació d\'aquesta recepta està tancada perquè el duel ja no és actiu.',
                         ])
                     </div>
@@ -400,6 +446,40 @@
 
 @push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const countdown = document.querySelector('[data-duel-countdown]');
+    if (!countdown) return;
+
+    const output = countdown.querySelector('[data-duel-countdown-value]');
+    const endTime = new Date(countdown.dataset.end).getTime();
+
+    function formatRemaining(distance) {
+        if (distance <= 0 || Number.isNaN(distance)) {
+            countdown.classList.add('is-ended');
+            return 'Tancat';
+        }
+
+        const totalSeconds = Math.floor(distance / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        if (days > 0) {
+            return `${days}d ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function tickCountdown() {
+        output.textContent = formatRemaining(endTime - Date.now());
+    }
+
+    tickCountdown();
+    window.setInterval(tickCountdown, 1000);
+});
+
 function escapeHtml(unsafe) {
     return (unsafe || "").toString()
          .replace(/&/g, "&amp;")

@@ -79,7 +79,16 @@ class DuelController extends Controller
             
         $this->transformPaginatorCollection($duels);
 
-        return view('admin.duels.cancellations', compact('duels'));
+        $duelStats = [
+            'active' => Duel::query()->where('status', 'iniciat')->count(),
+            'pending' => Duel::query()->where('status', 'peticio de cancelacio')->count(),
+            'completedToday' => Duel::query()
+                ->where('status', 'finalitzat')
+                ->whereDate('updated_at', today())
+                ->count(),
+        ];
+
+        return view('admin.duels.cancellations', compact('duels', 'duelStats'));
     }
 
     /**
